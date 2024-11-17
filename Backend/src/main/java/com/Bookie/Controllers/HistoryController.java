@@ -26,7 +26,7 @@ public class HistoryController {
     private final HistoryService historyService;
 
 
-    // CREATE - POST Method to create a new doctor
+
     @PostMapping("create")
     @Operation(
             summary = "Create a history",
@@ -37,15 +37,7 @@ public class HistoryController {
             @ApiResponse(responseCode = "201", description = "History created successfully",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = HistoryDtoRequest.class),
                             examples = @ExampleObject(name = "history",
-                                    value = """
-                                            {
-                                                "title": "new title",
-                                                   "syopsis: "description of history",
-                                                    "creator_id": 1,
-                                                     "genre": "NOVEL",
-                                                    "img": "Base64:veryletterandnumber"
-                                            }
-                                            """)))
+                                    value = "{\"id\": 1,\"title\": \"new title\", \"syopsis\": \"description of history\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber\"}")))
     })
     public ResponseEntity<?> crateHistory(@RequestBody @Valid HistoryDtoRequest historyDto) {
         try {
