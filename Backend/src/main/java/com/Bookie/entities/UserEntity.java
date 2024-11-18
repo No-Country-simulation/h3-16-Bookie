@@ -20,7 +20,6 @@ public class UserEntity {
     @Column(unique = true, nullable = false)
     private String email;
 
-    private String password;
 
     private String auth0UserId;
 
