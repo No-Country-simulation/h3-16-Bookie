@@ -18,6 +18,6 @@ public class HistoryService {
 
     public HistoryDtoResponse createHistory(@Valid HistoryDtoRequest historyDto){
         HistoryEntity history = historyRepository.save(new HistoryEntity());
-        return new HistoryDtoResponse(history.getId(),new HistoryDtoRequest(history.getTitle(),history.getSyopsis(),history.getCreator().getId(),history.getGenre(),history.getImg()));
+        return new HistoryDtoResponse(history.getId(),history.getTitle(),history.getSyopsis(),history.getCreator().getId(),history.getGenre(),history.getImg());
     }
 }
