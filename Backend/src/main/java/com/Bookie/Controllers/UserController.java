@@ -13,6 +13,9 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 public class UserController {
@@ -29,6 +32,22 @@ public class UserController {
         JwtAuthenticationToken jwtToken = (JwtAuthenticationToken) authentication;
         String userName = jwtToken.getName(); // O cualquier información que necesites
         return ResponseEntity.ok("Authenticated user: " + userName);
+    }
+
+    @GetMapping("/sync")
+    public ResponseEntity<Map<String, Object>> getSyncInfo2(Authentication authentication) {
+        JwtAuthenticationToken jwtToken = (JwtAuthenticationToken) authentication;
+        Map<String, Object> tokenAttributes = jwtToken.getTokenAttributes();
+
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("user_id", tokenAttributes.get("sub")); // Identificador del usuario
+        response.put("email", tokenAttributes.get("email")); // Email del usuario
+        response.put("name", tokenAttributes.get("name"));   // Nombre del usuario
+        response.put("roles", tokenAttributes.get("roles")); // Roles (si están configurados en el token)
+        response.put("custom_claims", tokenAttributes);      // Agrega todos los atributos si deseas verlos
+
+        return ResponseEntity.ok(response);
     }
 }
 

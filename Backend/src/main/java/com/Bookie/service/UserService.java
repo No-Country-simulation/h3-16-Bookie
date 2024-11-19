@@ -37,7 +37,23 @@ public class UserService {
                     newUser.setAuth0UserId(auth0UserId);
                     newUser.setEmail(email);
                     newUser.setName(name);
-                    newUser.setPassword(""); // Opcional, ya que Auth0 maneja la autenticación
+                    //newUser.setPassword(""); // Opcional, ya que Auth0 maneja la autenticación
+                    userRepository.save(newUser);
+                }
+        );
+    }
+
+    public void saveUser(String auth0UserId, String email, String name) {
+        userRepository.findByEmail(email).ifPresentOrElse(
+                user -> {
+                    user.setName(name);
+                    userRepository.save(user);
+                },
+                () -> {
+                    UserEntity newUser = new UserEntity();
+                    newUser.setAuth0UserId(auth0UserId);
+                    newUser.setEmail(email);
+                    newUser.setName(name);
                     userRepository.save(newUser);
                 }
         );

@@ -35,7 +35,8 @@ public class SecurityConfig {
                                 "/configuration/ui",
                                 "/swagger-resources/**",
                                 "/configuration/security",
-                                "/webjars/**").permitAll()
+                                "/webjars/**",
+                                "/api/webhooks/auth0/user-created").permitAll()
                         .requestMatchers("/api/public").permitAll()  // Permite acceso sin autenticación a la ruta pública
                         .anyRequest().authenticated()  // Requiere autenticación para todas las demás rutas
                 )
