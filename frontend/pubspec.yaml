@@ -40,8 +40,6 @@ flutter:
     - assets/icon/
     - assets/sf_airport_route.geojson
     - assets/sportcar.glb
-    - assets/sas_blue.glb
-    - assets/sas_blue.gltf
 
 flutter_launcher_icons:
   android: "launcher_icon"
