@@ -52,10 +52,10 @@ class HistoryControllerTest {
     void crateHistory(){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HistoryDtoRequest json = new HistoryDtoRequest("Historia del monte embrujado",
+        HistoryDtoRequest HistoryDtoRequest = new HistoryDtoRequest("Historia del monte embrujado",
                 "Encuantro sercano con almas en pena",1L, GenreLiterary.FANTASIA,"http://portada.jpg");
 
-        String jsonS = """
+        String json = """
                 {
                   "title":"Historia del monte embrujado",
                     
@@ -66,15 +66,16 @@ class HistoryControllerTest {
                     "img": "http://portada.jpg"
                 }
                 """;
-        HttpEntity<String> request = new HttpEntity<>(json.toString(),headers);
-        ResponseEntity<HistoryDtoRequest> crateHistoryResult = testRestTemplate.exchange("/api/webhooks/auth0/user-created", HttpMethod.POST, request, HistoryDtoRequest.class);
+        HttpEntity<String> request = new HttpEntity<>(json,headers);
+        ResponseEntity<HistoryDtoRequest> crateHistoryResult = testRestTemplate.exchange("/api/v1/history", HttpMethod.POST, request, HistoryDtoRequest.class);
         System.out.println("crateHistoryResult = " + crateHistoryResult);
+        System.out.println("HistoryDtoRequest = " + json);
 
         assertAll(
                 () -> assertEquals(HttpStatus.CREATED, crateHistoryResult.getStatusCode()),
                 () -> assertEquals(201, crateHistoryResult.getStatusCode().value()),
-                () -> assertEquals(crateHistoryResult.getBody().title(),json.title()),
-                () -> assertEquals(crateHistoryResult.getBody().genre(),json.genre())
+                () -> assertEquals(crateHistoryResult.getBody().title(),HistoryDtoRequest.title()),
+                () -> assertEquals(crateHistoryResult.getBody().genre(),HistoryDtoRequest.genre())
         );
     }
 }
