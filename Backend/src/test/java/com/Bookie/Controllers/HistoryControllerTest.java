@@ -57,13 +57,11 @@ class HistoryControllerTest {
 
         String json = """
                 {
-                  "title":"Historia del monte embrujado",
-                    
-                   "syopsis": "Encuantro sercano con almas en pena",
-                      
-                    "creator_id": "1",
-                    "genre": "MISTERY",
-                    "img": "http://portada.jpg"
+                  "title":"Historia del monte embrujado",             \s
+                                    "synopsis": "Encuantro sercano con almas en pena",
+                                     "creator_id": "1",
+                                     "genre": "SUSPENSO",
+                                     "img": "http://portada.jpg"
                 }
                 """;
         HttpEntity<String> request = new HttpEntity<>(json,headers);

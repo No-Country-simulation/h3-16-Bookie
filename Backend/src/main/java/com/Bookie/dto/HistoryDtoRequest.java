@@ -10,7 +10,7 @@ public record HistoryDtoRequest(
         @NotBlank
         String title,
         @NotBlank
-        String syopsis,
+        String synopsis,
         @NotBlank
         Long creator_id,
         @NotNull

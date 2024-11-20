@@ -32,7 +32,7 @@ public class HistoryService {
                 .creator(user.get())
                 .genre(historyDto.genre())
                 .title(historyDto.title())
-                .syopsis(historyDto.syopsis())
+                .syopsis(historyDto.synopsis())
                 .img(historyDto.img())
                 .build();
         HistoryEntity history = historyRepository.save(historyEntity);
