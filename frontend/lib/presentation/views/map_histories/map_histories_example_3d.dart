@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 
-class ModelLayerWidget extends StatefulWidget {
-  ModelLayerWidget({super.key});
+class MapHistories3D extends StatefulWidget {
+  MapHistories3D({super.key});
 
   final _state = _ModelLayerState();
   MapboxMap? getMapboxMap() => _state.mapboxMap;
@@ -16,7 +16,7 @@ class ModelLayerWidget extends StatefulWidget {
   }
 }
 
-class _ModelLayerState extends State<ModelLayerWidget> {
+class _ModelLayerState extends State<MapHistories3D> {
   MapboxMap? mapboxMap;
 
   var position = Position(24.9448, 60.17180);
