@@ -8,7 +8,7 @@ import 'package:bookie/presentation/views/settings/settings_theme_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/splash', // Ruta inicial
+  initialLocation: '/home/0', // Ruta inicial
   routes: [
     GoRoute(path: "/splash", builder: (context, state) => const SplashScreen()),
     GoRoute(path: "/login", builder: (context, state) => LoginScreen()),

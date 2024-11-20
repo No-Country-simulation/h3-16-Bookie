@@ -21,8 +21,8 @@ class FeedScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ReadSection(readStories: readStories),
             UnreadSection(unreadStories: unreadStories),
+            ReadSection(readStories: readStories),
           ],
         ),
       ),
