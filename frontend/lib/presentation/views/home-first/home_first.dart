@@ -1,6 +1,6 @@
 import 'package:bookie/presentation/widgets/section/home_first/hero_section.dart';
 import 'package:bookie/presentation/widgets/section/home_first/read_section.dart';
-import 'package:bookie/presentation/widgets/section/home_first/unread_section.dart';
+import 'package:bookie/presentation/widgets/section/home_first/history_close_section.dart';
 import 'package:bookie/shared/data/histories.dart';
 import 'package:flutter/material.dart';
 
@@ -44,7 +44,7 @@ class HomeFirstScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             HeroSection(unreadStories: unreadStories),
-            UnreadSection(unreadStories: unreadStories),
+            HistoryCloseSection(unreadStories: unreadStories),
             ReadSection(readStories: readStories),
           ],
         ),

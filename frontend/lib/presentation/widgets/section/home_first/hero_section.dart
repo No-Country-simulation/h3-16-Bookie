@@ -1,4 +1,4 @@
-import 'package:bookie/presentation/widgets/cards/hero.dart';
+import 'package:bookie/presentation/widgets/cards/hero_card.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +9,8 @@ class HeroSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return SizedBox(
       height: 270, // Altura del slider
       child: Swiper(
@@ -37,8 +39,8 @@ class HeroSection extends StatelessWidget {
         autoplayDelay: 3000, // Intervalo de autoplay (3 segundos)
         pagination: SwiperPagination(
           builder: DotSwiperPaginationBuilder(
-            activeColor: Colors.grey[800], // Color de los puntos activos
-            color: Colors.grey, // Color de los puntos inactivos
+            activeColor: colors.primary, // Color de los puntos activos
+            color: colors.secondary, // Color de los puntos inactivos
             size: 8.0, // Tamaño de los puntos inactivos
             activeSize: 10.0, // Tamaño de los puntos activos
           ),

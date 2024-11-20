@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 
-class UnreadCard extends ConsumerStatefulWidget {
+class HistoryCloseCard extends ConsumerStatefulWidget {
   final String id; // ID único
   final String imageUrl;
   final String title;
@@ -15,7 +15,7 @@ class UnreadCard extends ConsumerStatefulWidget {
   final bool isFavorite;
   final VoidCallback onCardPress;
 
-  const UnreadCard({
+  const HistoryCloseCard({
     super.key,
     required this.id, // Requiere un id único
     required this.imageUrl,
@@ -29,10 +29,10 @@ class UnreadCard extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<UnreadCard> createState() => _UnreadCardState();
+  ConsumerState<HistoryCloseCard> createState() => _UnreadCardState();
 }
 
-class _UnreadCardState extends ConsumerState<UnreadCard> {
+class _UnreadCardState extends ConsumerState<HistoryCloseCard> {
   bool isLoading = true;
 
   @override
