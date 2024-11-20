@@ -1,5 +1,8 @@
 package com.Bookie.Controllers;
 
+import com.Bookie.dto.HistoryDtoRequest;
+import com.Bookie.dto.HistoryDtoResponse;
+import com.Bookie.enums.GenreLiterary;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +39,7 @@ class HistoryControllerTest {
         HttpEntity<String> request = new HttpEntity<>(headers);
 
         ResponseEntity<JsonNode> result = testRestTemplate.exchange("/api/v1/history/all", HttpMethod.GET,request, JsonNode.class);
-        System.out.println("result = " + result);
+        System.out.println("getAllHistoties = " + result);
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK, result.getStatusCode()),
@@ -45,4 +48,33 @@ class HistoryControllerTest {
         );
     }
 
+    @Test
+    void crateHistory(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HistoryDtoRequest json = new HistoryDtoRequest("Historia del monte embrujado",
+                "Encuantro sercano con almas en pena",1L, GenreLiterary.FANTASIA,"http://portada.jpg");
+
+        String jsonS = """
+                {
+                  "title":"Historia del monte embrujado",
+                    
+                   "syopsis": "Encuantro sercano con almas en pena",
+                      
+                    "creator_id": "1",
+                    "genre": "MISTERY",
+                    "img": "http://portada.jpg"
+                }
+                """;
+        HttpEntity<String> request = new HttpEntity<>(json.toString(),headers);
+        ResponseEntity<HistoryDtoRequest> crateHistoryResult = testRestTemplate.exchange("/api/webhooks/auth0/user-created", HttpMethod.POST, request, HistoryDtoRequest.class);
+        System.out.println("crateHistoryResult = " + crateHistoryResult);
+
+        assertAll(
+                () -> assertEquals(HttpStatus.CREATED, crateHistoryResult.getStatusCode()),
+                () -> assertEquals(201, crateHistoryResult.getStatusCode().value()),
+                () -> assertEquals(crateHistoryResult.getBody().title(),json.title()),
+                () -> assertEquals(crateHistoryResult.getBody().genre(),json.genre())
+        );
+    }
 }
