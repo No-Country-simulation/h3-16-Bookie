@@ -38,7 +38,8 @@ public class SecurityConfig {
                                 "/webjars/**",
                                 "/api/webhooks/auth0/user-created").permitAll()
                         .requestMatchers("/api/public").permitAll()  // Permite acceso sin autenticación a la ruta pública
-                        .anyRequest().authenticated()  // Requiere autenticación para todas las demás rutas
+                                .anyRequest().permitAll()
+                        // .anyRequest().authenticated()  // Requiere autenticación para todas las demás rutas
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(Customizer.withDefaults())  // Configura JWT como el tipo de autenticación para el recurso
