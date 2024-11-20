@@ -1,4 +1,4 @@
-package com.Bookie.repository;
+package com.Bookie.config.repository;
 
 import com.Bookie.entities.HistoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
