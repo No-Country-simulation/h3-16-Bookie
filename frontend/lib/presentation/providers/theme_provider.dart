@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final colorListProvider = Provider((ref) => colorList);
 
 // Un simple boolean
-final isDarkmodeProvider = StateProvider((ref) => false);
+final isDarkmodeProvider = StateProvider((ref) => true);
 
 // Un simple int
 final selectedColorProvider = StateProvider((ref) => 0);

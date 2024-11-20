@@ -1,16 +1,18 @@
-import 'package:bookie/presentation/widgets/section/read_section.dart';
-import 'package:bookie/presentation/widgets/section/unread_section.dart';
+import 'package:bookie/presentation/widgets/section/home_first/hero_section.dart';
+import 'package:bookie/presentation/widgets/section/home_first/read_section.dart';
+import 'package:bookie/presentation/widgets/section/home_first/unread_section.dart';
 import 'package:bookie/shared/data/histories.dart';
 import 'package:flutter/material.dart';
 
-class FeedScreen extends StatelessWidget {
-  static const String name = 'feed';
+class HomeFirstScreen extends StatelessWidget {
+  static const String name = 'first-screen';
 
-  const FeedScreen({super.key});
+  const HomeFirstScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // navbar
       appBar: AppBar(
         // title: const Text('Historias cerca...'),
         leading: Padding(
@@ -35,10 +37,13 @@ class FeedScreen extends StatelessWidget {
                   IconButton(onPressed: () {}, icon: const Icon(Icons.search))),
         ],
       ),
+
+      // body
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            HeroSection(unreadStories: unreadStories),
             UnreadSection(unreadStories: unreadStories),
             ReadSection(readStories: readStories),
           ],
