@@ -58,7 +58,7 @@ class HistoryControllerTest {
         String json = """
                 {
                   "title":"Historia del monte embrujado",             \s
-                                    "synopsis": "Encuantro sercano con almas en pena",
+                                  gi   "synopsis": "Encuantro sercano con almas en pena",
                                      "creator_id": "1",
                                      "genre": "SUSPENSO",
                                      "img": "http://portada.jpg"
