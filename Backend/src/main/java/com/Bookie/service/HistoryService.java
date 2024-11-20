@@ -38,11 +38,11 @@ public class HistoryService {
                     "chapters": [
                       {
                         "id": 12,
-                        "title": "capitulo 1 intercambio",
+                        "title": "capitulo 1 obelisco Argentina",
                         "order": "1",
                         "img": "foto.jpg",
-                        "latitude": "",
-                        "longitude": "",
+                        "latitude": "-34.603851",
+                        "longitude": "-58.381775",
                         "publish": "true",
                         "complete": "false",
                         "page": [
@@ -62,11 +62,11 @@ public class HistoryService {
                       },
                       {
                         "id": 13,
-                        "title": "capitulo 2 encuentro",
+                        "title": "capitulo 2 encuentro flor metalica Argentina",
                         "order": "2",
                         "img": "foto.jpg",
-                        "latitude": "",
-                        "longitude": "",
+                        "latitude": "-34.603851",
+                        "longitude": "-58.381775",
                         "publish": "true",
                         "complete": "true",
                         "page": [
