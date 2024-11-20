@@ -12,9 +12,27 @@ class FeedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Historias cerca...'),
+        // title: const Text('Historias cerca...'),
+        leading: Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Image.asset(
+              'assets/images/logo_remove_background.png',
+            )),
+        // title: const Text("Bookie"),
+        centerTitle: false,
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text("Hola, Luis"),
+          ),
+          CircleAvatar(
+            backgroundImage: NetworkImage(
+                "https://i.pinimg.com/736x/61/c9/a3/61c9a321f61a2650790911e828ada56d.jpg"),
+          ),
+          Padding(
+              padding: const EdgeInsets.all(4.0),
+              child:
+                  IconButton(onPressed: () {}, icon: const Icon(Icons.search))),
         ],
       ),
       body: SingleChildScrollView(
