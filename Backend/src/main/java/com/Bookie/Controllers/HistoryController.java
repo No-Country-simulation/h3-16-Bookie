@@ -1,7 +1,6 @@
 package com.Bookie.Controllers;
 
 import com.Bookie.dto.HistoryDtoRequest;
-import com.Bookie.dto.HistoryDtoResponse;
 import com.Bookie.service.HistoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
