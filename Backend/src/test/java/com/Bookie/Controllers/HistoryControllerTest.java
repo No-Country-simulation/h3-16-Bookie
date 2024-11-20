@@ -1,5 +1,6 @@
-package com.Bookie;
+package com.Bookie.Controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +10,11 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UserTest {
+class HistoryControllerTest {
+
 
     private TestRestTemplate testRestTemplate;
 
@@ -28,31 +29,20 @@ public class UserTest {
         restTemplateBuilder = restTemplateBuilder.rootUri("http://localhost:" + port);
         testRestTemplate = new TestRestTemplate(restTemplateBuilder);
     }
-
     @Test
-    void createClinic() {
+    void getAllHistoties() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> request = new HttpEntity<>(headers);
 
-
-        String json = """
-                {
-                  "name":"Osecactest",
-                    
-                         "user_id": "3265874",
-                      
-                         "email": "falsa 123"
-                    
-                }
-                """;
-        HttpEntity<String> request = new HttpEntity<>(json,headers);
-        ResponseEntity<String> result = testRestTemplate.exchange("/api/webhooks/auth0/user-created", HttpMethod.POST, request, String.class);
+        ResponseEntity<JsonNode> result = testRestTemplate.exchange("/api/v1/history/all", HttpMethod.GET,request, JsonNode.class);
         System.out.println("result = " + result);
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK, result.getStatusCode()),
                 () -> assertEquals(200, result.getStatusCode().value()),
-                () -> assertEquals(result.getBody(),"User synchronized successfully.")
+                () -> assertTrue(!result.getBody().isEmpty())
         );
     }
+
 }

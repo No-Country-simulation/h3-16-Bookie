@@ -28,7 +28,7 @@ public class HistoryController {
 
 
 
-    @PostMapping("create")
+    @PostMapping
     @Operation(
             summary = "Create a history",
             description = "Create a new history",
@@ -45,6 +45,22 @@ public class HistoryController {
 return ResponseEntity.status(HttpStatus.CREATED).body(historyService.createHistory(historyDto));
         } catch (Exception ex){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error",ex.getMessage()));
+        }
+    }
+
+
+
+    @GetMapping("/all")
+    @Operation(
+            summary = "List all histories",
+            description = "List all registered histories",
+            tags = {"History"}
+    )
+    public ResponseEntity<?> getAllHistoties() {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(historyService.getAll());
+        } catch (Exception ex){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error",ex.getMessage()));
         }
     }
 }
