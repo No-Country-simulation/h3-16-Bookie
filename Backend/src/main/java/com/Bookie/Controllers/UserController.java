@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -48,6 +49,27 @@ public class UserController {
         response.put("custom_claims", tokenAttributes);      // Agrega todos los atributos si deseas verlos
 
         return ResponseEntity.ok(response);
+    }
+
+    //IMPORTANTE este metodo despues abria que quitarlo o hacerlo solo para administrador!
+    @GetMapping("/users")
+    public ResponseEntity<List<UserEntity>> getAllUsers(Authentication authentication) {
+        List<UserEntity> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<UserEntity> getAuthenticatedUser(Authentication authentication) {
+        JwtAuthenticationToken jwtToken = (JwtAuthenticationToken) authentication;
+        String auth0UserId = jwtToken.getTokenAttributes().get("sub").toString();
+
+        UserEntity user = userService.getUserByAuth0Id(auth0UserId);
+
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
 
