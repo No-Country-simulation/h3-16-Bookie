@@ -76,10 +76,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final isDarkmode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Crear cuenta", style: TextStyle(color: Colors.white)),
+        title: Text("Crear cuenta",
+            style: TextStyle(color: isDarkmode ? Colors.black : Colors.white)),
         backgroundColor: colors.primary, // Icono de la barra de navegación
       ),
       body: Stack(
@@ -177,7 +179,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             child: Text("Crear cuenta",
                                 style: TextStyle(
-                                    fontSize: 18, color: Colors.white)),
+                                    fontSize: 18,
+                                    color: isDarkmode
+                                        ? Colors.black
+                                        : Colors.white)),
                           ),
                         ],
                       ),

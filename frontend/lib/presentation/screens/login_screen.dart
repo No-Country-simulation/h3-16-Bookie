@@ -75,10 +75,12 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final isDarkmode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Iniciar sesión", style: TextStyle(color: Colors.white)),
+        title: Text("Iniciar sesión",
+            style: TextStyle(color: isDarkmode ? Colors.black : Colors.white)),
         backgroundColor: colors.primary,
       ),
       body: Stack(
@@ -158,7 +160,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             child: Text("Iniciar sesión",
                                 style: TextStyle(
-                                    fontSize: 18, color: Colors.white)),
+                                    fontSize: 18,
+                                    color: isDarkmode
+                                        ? Colors.black
+                                        : Colors.white)),
                           ),
                         ],
                       ),

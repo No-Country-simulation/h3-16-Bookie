@@ -27,6 +27,36 @@ class HistoryScreen extends StatelessWidget {
     // Función para abrir Google Maps con un recorrido desde la ubicación actual hasta el destino
     Future<void> openGoogleMaps() async {
       try {
+        // Verifica si los permisos de ubicación están concedidos
+        LocationPermission permission = await Geolocator.checkPermission();
+
+        // Si los permisos no se han otorgado, solicita permisos
+        if (permission == LocationPermission.denied) {
+          permission = await Geolocator.requestPermission();
+          if (permission == LocationPermission.denied) {
+            // Permiso denegado
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Permiso de ubicación denegado')),
+              );
+            }
+            return;
+          }
+        }
+
+        // Si los permisos están permanentemente denegados, muestra un mensaje
+        if (permission == LocationPermission.deniedForever) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                    'Permiso de ubicación denegado permanentemente. Ve a la configuración para habilitarlo.'),
+              ),
+            );
+          }
+          return;
+        }
+
         // Obtener la ubicación actual del usuario
         Position position = await Geolocator.getCurrentPosition(
           locationSettings: locationSettings,
@@ -36,6 +66,7 @@ class HistoryScreen extends StatelessWidget {
         final googleMapsUrl =
             "https://www.google.com/maps/dir/?api=1&origin=$currentLocation&destination=${history['latitud']},${history['longitud']}&travelmode=driving";
 
+        // Intentar abrir Google Maps
         if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
           await launchUrl(Uri.parse(googleMapsUrl),
               mode: LaunchMode.externalApplication);
