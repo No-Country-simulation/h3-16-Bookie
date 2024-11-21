@@ -5,15 +5,15 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:geolocator/geolocator.dart';
 
 class HistoryScreen extends StatelessWidget {
-  final String cardId; // Recibimos el id desde la ruta
+  final String historyId; // Recibimos el id desde la ruta
   static const String name = 'history';
 
-  const HistoryScreen({super.key, required this.cardId});
+  const HistoryScreen({super.key, required this.historyId});
 
   @override
   Widget build(BuildContext context) {
     final history = [...readStories, ...unreadStories].firstWhere(
-      (history) => history['id'] == cardId,
+      (history) => history['id'] == historyId,
     );
 
     final colors = Theme.of(context).colorScheme;
@@ -53,7 +53,7 @@ class HistoryScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('History $cardId'),
+        title: Text('History $historyId'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -69,7 +69,7 @@ class HistoryScreen extends StatelessWidget {
         children: [
           // Hero Image (25% de la pantalla)
           Hero(
-            tag: 'hero-image-$cardId',
+            tag: 'hero-image-$historyId',
             child: Container(
               width: double.infinity,
               height: MediaQuery.of(context).size.height * 0.25,

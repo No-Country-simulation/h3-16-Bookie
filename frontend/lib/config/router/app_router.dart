@@ -3,6 +3,7 @@ import 'package:bookie/presentation/screens/home_screen.dart';
 import 'package:bookie/presentation/screens/login_screen.dart';
 import 'package:bookie/presentation/screens/register_screen.dart';
 import 'package:bookie/presentation/screens/splash_screen.dart';
+import 'package:bookie/presentation/screens/writer_screen.dart';
 import 'package:bookie/presentation/views/settings/settings_profile_screen.dart';
 import 'package:bookie/presentation/views/settings/settings_theme_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -34,13 +35,24 @@ final appRouter = GoRouter(
       ],
     ),
 
-    // Ruta para ver la información de un card específico
+    // Ruta para ver la información de una historia específica
     GoRoute(
       path: '/history/:id', // Ruta dinámica con el parámetro 'id'
       name: HistoryScreen.name,
       builder: (context, state) {
         final cardId = state.pathParameters['id'] ?? '';
-        return HistoryScreen(cardId: cardId); // Pasa el id al HistoryScreen
+        return HistoryScreen(historyId: cardId); // Pasa el id al HistoryScreen
+      },
+    ),
+
+    // Ruta para ver la información de un writer específico
+    GoRoute(
+      path: '/writer/:writerId', // Ruta dinámica con el parámetro 'id'
+      name: WriterProfileScreen.name,
+      builder: (context, state) {
+        final writerId = state.pathParameters['writerId'] ?? '';
+        return WriterProfileScreen(
+            writerId: writerId); // Pasa el id al ProfileScreen
       },
     ),
 

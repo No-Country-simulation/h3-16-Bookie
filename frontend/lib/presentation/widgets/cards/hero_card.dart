@@ -1,9 +1,7 @@
-import 'package:bookie/presentation/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 
-class HeroCard extends ConsumerStatefulWidget {
+class HeroCard extends StatefulWidget {
   final String id; // ID único
   final String imageUrl;
   final String title;
@@ -28,10 +26,10 @@ class HeroCard extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<HeroCard> createState() => _HeroCardState();
+  State<HeroCard> createState() => _HeroCardState();
 }
 
-class _HeroCardState extends ConsumerState<HeroCard> {
+class _HeroCardState extends State<HeroCard> {
   bool isLoading = true;
 
   @override
@@ -64,12 +62,15 @@ class _HeroCardState extends ConsumerState<HeroCard> {
 
   @override
   Widget build(BuildContext context) {
+    // muchos repites este codigo revisar como factorizarlo mas adelante
     // final colors = Theme.of(context).colorScheme;
-    final isDarkmode = ref.watch(isDarkmodeProvider);
+    final isDarkmode = Theme.of(context).brightness == Brightness.dark;
     final shimmerBaseColor = isDarkmode ? Colors.grey[900]! : Colors.grey[300]!;
     final shimmerHighlightColor =
         isDarkmode ? Colors.grey[800]! : Colors.grey[100]!;
     final containerShimmer = isDarkmode ? Colors.black : Colors.white;
+
+    final colors = Theme.of(context).colorScheme;
 
     return Container(
       color: Colors.transparent,
@@ -96,12 +97,13 @@ class _HeroCardState extends ConsumerState<HeroCard> {
                     widget.title,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 18,
+                      color: colors.primary,
                     ),
                   ),
           ),
 
-          ///subtitle
+          ///sinopsis
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
             child: isLoading
@@ -119,7 +121,7 @@ class _HeroCardState extends ConsumerState<HeroCard> {
                   )
                 : Text(
                     widget.synopsis ?? '',
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                    style: TextStyle(fontSize: 14),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -144,14 +146,17 @@ class _HeroCardState extends ConsumerState<HeroCard> {
                           ),
                         ),
                       )
-                    : Container(
-                        width: double.infinity,
-                        height: 180,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          image: DecorationImage(
-                            image: NetworkImage(widget.imageUrl),
-                            fit: BoxFit.cover,
+                    : GestureDetector(
+                        onTap: widget.onCardPress,
+                        child: Container(
+                          width: double.infinity,
+                          height: 180,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            image: DecorationImage(
+                              image: NetworkImage(widget.imageUrl),
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),

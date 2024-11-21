@@ -1,53 +1,135 @@
-import 'package:bookie/presentation/widgets/section/home_first/hero_section.dart';
-import 'package:bookie/presentation/widgets/section/home_first/read_section.dart';
-import 'package:bookie/presentation/widgets/section/home_first/history_close_section.dart';
-import 'package:bookie/shared/data/histories.dart';
 import 'package:flutter/material.dart';
+import 'package:bookie/presentation/widgets/navbar/navbar_homepage.dart';
+import 'package:bookie/presentation/widgets/section/home_first/hero_section.dart';
+import 'package:bookie/presentation/widgets/section/home_first/stories_read_section.dart';
+import 'package:bookie/presentation/widgets/section/home_first/close_stories_section.dart';
+import 'package:bookie/presentation/widgets/section/home_first/writers_section.dart';
+import 'package:bookie/shared/data/histories.dart';
+import 'package:bookie/shared/data/writers.dart';
+import 'package:go_router/go_router.dart';
 
-class HomeFirstScreen extends StatelessWidget {
+class HomeFirstScreen extends StatefulWidget {
   static const String name = 'first-screen';
 
   const HomeFirstScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // navbar
-      appBar: AppBar(
-        // title: const Text('Historias cerca...'),
-        leading: Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Image.asset(
-              'assets/images/logo_remove_background.png',
-            )),
-        // title: const Text("Bookie"),
-        centerTitle: false,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text("Hola, Luis"),
-          ),
-          CircleAvatar(
-            backgroundImage: NetworkImage(
-                "https://i.pinimg.com/736x/61/c9/a3/61c9a321f61a2650790911e828ada56d.jpg"),
-          ),
-          Padding(
-              padding: const EdgeInsets.all(4.0),
-              child:
-                  IconButton(onPressed: () {}, icon: const Icon(Icons.search))),
-        ],
-      ),
+  State<HomeFirstScreen> createState() => _HomeFirstScreenState();
+}
 
-      // body
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            HeroSection(unreadStories: unreadStories),
-            HistoryCloseSection(unreadStories: unreadStories),
-            ReadSection(readStories: readStories),
-          ],
-        ),
+class _HomeFirstScreenState extends State<HomeFirstScreen> {
+  final PageController _pageController = PageController();
+  final TextEditingController _searchController = TextEditingController();
+
+  List<Map<String, dynamic>> allStories = [];
+  List<Map<String, dynamic>> filteredStories = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // Combinar historias leídas y no leídas
+    allStories = [...readStories, ...unreadStories];
+    filteredStories = allStories;
+  }
+
+  void _onSearch(String query) {
+    setState(() {
+      filteredStories = allStories
+          .where((story) =>
+              story['title'].toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
+  void _showSearchSection() {
+    _pageController.animateToPage(1,
+        duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+  }
+
+  void _hideSearchSection() {
+    _pageController.animateToPage(0,
+        duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+    _searchController.clear();
+    _onSearch('');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: PageView(
+        controller: _pageController,
+        physics: const NeverScrollableScrollPhysics(),
+        children: [
+          // Página principal
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                NavBarCustom(
+                  userName: "Luis",
+                  avatarUrl:
+                      "https://i.pinimg.com/736x/61/c9/a3/61c9a321f61a2650790911e828ada56d.jpg",
+                  onSearchTapped: _showSearchSection, // Botón de búsqueda
+                ),
+                HeroSection(unreadStories: unreadStories),
+                CloseStoriesSection(unreadStories: unreadStories),
+                StoriesReadSection(readStories: readStories),
+                WritersSection(writers: writers),
+              ],
+            ),
+          ),
+
+          // Sección de búsqueda
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: _hideSearchSection,
+                    ),
+                    Expanded(
+                      child: TextField(
+                        controller: _searchController,
+                        decoration: const InputDecoration(
+                          hintText: 'Buscar historias...',
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: _onSearch,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: filteredStories.length,
+                  itemBuilder: (context, index) {
+                    final story = filteredStories[index];
+                    return ListTile(
+                      leading: Image.network(
+                        story['imageUrl'],
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                      ),
+                      title: Text(story['title']),
+                      subtitle: Text(
+                          story.containsKey('chapter') ? story['chapter'] : ''),
+                      onTap: () {
+                        // Acción al seleccionar una historia
+                        print("Seleccionaste: ${story['title']}");
+                        context.go('/history/${story['id']}');
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

@@ -1,5 +1,5 @@
 import 'package:bookie/presentation/providers/favorites_provider.dart';
-import 'package:bookie/presentation/widgets/cards/history_close_card.dart';
+import 'package:bookie/presentation/widgets/cards/close_stories_card.dart';
 import 'package:bookie/shared/data/histories.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -54,7 +54,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                       )..forward(), // Inicia la animación
                       curve: Curves.easeOut,
                     )),
-                    child: HistoryCloseCard(
+                    child: CloseStoriesCard(
                       id: card['id'] as String,
                       imageUrl: card['imageUrl'] as String,
                       title: card['title'] as String,

@@ -3,20 +3,26 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class HeroSection extends StatelessWidget {
+class HeroSection extends StatefulWidget {
   final List<Map<String, dynamic>> unreadStories;
   const HeroSection({super.key, required this.unreadStories});
 
   @override
+  State<HeroSection> createState() => _HeroSectionState();
+}
+
+class _HeroSectionState extends State<HeroSection> {
+  @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return SizedBox(
       height: 270, // Altura del slider
       child: Swiper(
-        itemCount: unreadStories.length,
+        itemCount: widget.unreadStories.length,
         itemBuilder: (BuildContext context, int index) {
-          final story = unreadStories[index];
+          final story = widget.unreadStories[index];
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: HeroCard(
@@ -40,7 +46,7 @@ class HeroSection extends StatelessWidget {
         pagination: SwiperPagination(
           builder: DotSwiperPaginationBuilder(
             activeColor: colors.primary, // Color de los puntos activos
-            color: colors.secondary, // Color de los puntos inactivos
+            color: isDarkMode ? Colors.grey[700] : Colors.grey[300],
             size: 8.0, // Tamaño de los puntos inactivos
             activeSize: 10.0, // Tamaño de los puntos activos
           ),

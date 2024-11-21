@@ -1,11 +1,11 @@
-import 'package:bookie/presentation/widgets/cards/history_close_card.dart';
+import 'package:bookie/presentation/widgets/cards/close_stories_card.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class HistoryCloseSection extends StatelessWidget {
+class CloseStoriesSection extends StatelessWidget {
   final List<Map<String, dynamic>> unreadStories;
 
-  const HistoryCloseSection({super.key, required this.unreadStories});
+  const CloseStoriesSection({super.key, required this.unreadStories});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,8 @@ class HistoryCloseSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start, // Alineación a la izquierda
       children: [
         // Título "Más historias"
-        Padding(
+        Container(
+          alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Text(
             "Historias cercanas",
@@ -27,16 +28,17 @@ class HistoryCloseSection extends StatelessWidget {
         // Sección de "Más historias" con Scroll Horizontal
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.all(8.0),
           child: Row(
             children: List.generate(
               unreadStories.length,
               (index) {
                 final story = unreadStories[index];
                 return Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.only(right: 4.0),
                   child: SizedBox(
-                    width: 200, // Ajusta el tamaño del card
-                    child: HistoryCloseCard(
+                    width: 150, // Ajusta el tamaño del card
+                    child: CloseStoriesCard(
                       id: story['id']!,
                       imageUrl: story['imageUrl']!,
                       title: story['title']!,

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-class ReadCard extends StatefulWidget {
+class StoriesReadCard extends StatefulWidget {
   final String imageUrl;
   final String title;
   final String chapter;
   final VoidCallback onCardPress;
 
-  const ReadCard({
+  const StoriesReadCard({
     super.key,
     required this.imageUrl,
     required this.title,
@@ -16,10 +16,10 @@ class ReadCard extends StatefulWidget {
   });
 
   @override
-  State<ReadCard> createState() => _ReadCardState();
+  State<StoriesReadCard> createState() => _StoriesReadCardState();
 }
 
-class _ReadCardState extends State<ReadCard> {
+class _StoriesReadCardState extends State<StoriesReadCard> {
   bool isLoading = true;
 
   @override
@@ -56,32 +56,40 @@ class _ReadCardState extends State<ReadCard> {
 
   @override
   Widget build(BuildContext context) {
+    // muchos repites este codigo revisar como factorizarlo mas adelante
+    final isDarkmode = Theme.of(context).brightness == Brightness.dark;
+    final shimmerBaseColor = isDarkmode ? Colors.grey[900]! : Colors.grey[300]!;
+    final shimmerHighlightColor =
+        isDarkmode ? Colors.grey[800]! : Colors.grey[100]!;
+    final containerShimmer = isDarkmode ? Colors.black : Colors.white;
+
     final colors = Theme.of(context).colorScheme;
 
     return InkWell(
       onTap: widget.onCardPress, // Acción al presionar el card
-      splashColor:
-          colors.primary.withOpacity(0.3), // Color de la onda al presionar
-      highlightColor:
-          colors.primary.withOpacity(0.1), // Color de la onda al presionar
-      borderRadius: BorderRadius.circular(10),
+      focusColor: Colors.transparent,
+      splashColor: colors.primary.withOpacity(0.3),
+      customBorder: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        side: BorderSide(color: Colors.transparent),
+      ),
       child: Card(
-        elevation: 5,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        color: containerShimmer,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Imagen del card con Shimmer (loader)
             isLoading
                 ? Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    highlightColor: Colors.grey[100]!,
-                    child: Container(
-                      width: double.infinity,
-                      height: 120,
-                      color: Colors.white,
+                    baseColor: shimmerBaseColor,
+                    highlightColor: shimmerHighlightColor,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        width: double.infinity,
+                        height: 120,
+                        color: containerShimmer,
+                      ),
                     ),
                   )
                 : Container(
@@ -100,16 +108,19 @@ class _ReadCardState extends State<ReadCard> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   isLoading
                       ? Shimmer.fromColors(
-                          baseColor: Colors.grey[300]!,
-                          highlightColor: Colors.grey[100]!,
-                          child: Container(
-                            width: 150,
-                            height: 20,
-                            color: Colors.white,
+                          baseColor: shimmerBaseColor,
+                          highlightColor: shimmerHighlightColor,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              width: 150,
+                              height: 20,
+                              color: containerShimmer,
+                            ),
                           ),
                         )
                       : Text(
@@ -117,45 +128,39 @@ class _ReadCardState extends State<ReadCard> {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
+                            color: colors.primary,
                           ),
+                          textAlign: TextAlign.center,
                         ),
-                  SizedBox(height: 2),
+                  SizedBox(height: 1),
                   isLoading
                       ? Shimmer.fromColors(
-                          baseColor: Colors.grey[300]!,
-                          highlightColor: Colors.grey[100]!,
-                          child: Container(
-                            width: 100,
-                            height: 14,
-                            color: Colors.white,
+                          baseColor: shimmerBaseColor,
+                          highlightColor: shimmerHighlightColor,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              width: 100,
+                              height: 14,
+                              color: containerShimmer,
+                            ),
                           ),
                         )
                       : Text(
                           widget.chapter,
                           style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 14,
+                            fontSize: 12,
                           ),
                         ),
-                  SizedBox(height: 2),
-                  isLoading
-                      ? Shimmer.fromColors(
-                          baseColor: Colors.grey[300]!,
-                          highlightColor: Colors.grey[100]!,
-                          child: Container(
-                            width: 100,
-                            height: 14,
-                            color: Colors.white,
-                          ),
-                        )
-                      : Text(
-                          "Continuar",
-                          style: TextStyle(
-                            color: colors.primary,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                  SizedBox(height: 1),
+                  Text(
+                    "Continuar",
+                    style: TextStyle(
+                      color: colors.primary.withOpacity(0.8),
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
             ),
