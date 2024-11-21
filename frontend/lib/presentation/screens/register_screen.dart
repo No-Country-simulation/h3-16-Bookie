@@ -97,8 +97,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           BorderRadius.circular(16), // Bordes redondeados
                       child: Image.asset(
                         GeneralConstants.logo, // Cambia por la URL de tu imagen
-                        width: 150, // Ancho de la imagen
-                        height: 150, // Alto de la imagen
+                        width: 240, // Ancho de la imagen
+                        height: 120, // Alto de la imagen
                         fit: BoxFit.cover,
                       ),
                     ),

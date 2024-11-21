@@ -14,12 +14,13 @@ class NavBarCustom extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Image.asset('assets/images/logo_remove_background.png', height: 60),
+          Image.asset('assets/images/logo.webp', height: 50),
           Row(
             children: [
               Text(
@@ -37,7 +38,10 @@ class NavBarCustom extends StatelessWidget {
               const SizedBox(width: 8),
               IconButton(
                 onPressed: onSearchTapped,
-                icon: const Icon(Icons.search),
+                icon: const Icon(
+                  Icons.search,
+                ),
+                color: colors.primary,
               ),
             ],
           ),

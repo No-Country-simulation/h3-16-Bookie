@@ -76,8 +76,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 borderRadius: BorderRadius.circular(16), // Bordes redondeados
                 child: Image.asset(
                   GeneralConstants.logo, // Cambia por la URL de tu imagen
-                  width: 150, // Ancho de la imagen
-                  height: 150, // Alto de la imagen
+                  width: 240, // Ancho de la imagen
+                  height: 120, // Alto de la imagen
                   fit: BoxFit.cover, // Ajuste de la imagen
                   // loadingBuilder: (context, child, loadingProgress) {
                   //   if (loadingProgress == null) {
@@ -97,27 +97,27 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               const SizedBox(height: 20),
               // Texto con el nombre de la aplicación o un eslogan
-              Text(
-                'Bookie',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: colors.primary,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'Viaja entre libros\nY descubre nuevas aventuras',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: colors.primary,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
+              // Text(
+              //   'Bookie',
+              //   textAlign: TextAlign.center,
+              //   style: TextStyle(
+              //     color: colors.primary,
+              //     fontSize: 24,
+              //     fontWeight: FontWeight.bold,
+              //     fontStyle: FontStyle.italic,
+              //   ),
+              // ),
+              // const SizedBox(height: 20),
+              // Text(
+              //   'Viaja entre libros\nY descubre nuevas aventuras',
+              //   textAlign: TextAlign.center,
+              //   style: TextStyle(
+              //     color: colors.primary,
+              //     fontSize: 18,
+              //     fontWeight: FontWeight.bold,
+              //     fontStyle: FontStyle.italic,
+              //   ),
+              // ),
               const SizedBox(height: 40),
               // Espacio reservado para el loader, sin causar movimiento
               SizedBox(
