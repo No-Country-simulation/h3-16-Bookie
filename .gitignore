@@ -1,0 +1,6 @@
+/Backend/*.ide
+/Backend/**/*.ide
+/Backend\src\main\resources\application.properties
+/Backend/**/*.properties
+/**/*.properties
+
