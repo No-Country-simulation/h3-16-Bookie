@@ -65,7 +65,6 @@ android {
 }
 
 dependencies {
-    implementation 'com.mapbox.maps:android:11.8.0'  // Agregamos la dependencia de Mapbox
 }
 
 flutter {
