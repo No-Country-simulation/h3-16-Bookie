@@ -37,10 +37,13 @@ class _MapStoriesGoogleMapsState extends State<MapStoriesGoogleMaps> {
           _controller.complete(controller);
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
         onPressed: _enable3DView,
-        label: const Text('Habilitar 3D'),
-        icon: const Icon(Icons.threed_rotation),
+        child: const Icon(Icons.threed_rotation),
+        // label: const Text('Habilitar 3D'),
+        // label: const Text('Habilitar 3D'),
+        // icon: const Icon(Icons.threed_rotation),
       ),
     );
   }
