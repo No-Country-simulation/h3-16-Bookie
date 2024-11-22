@@ -1,7 +1,6 @@
 package com.Bookie.Controllers;
 
 import com.Bookie.dto.HistoryDtoRequest;
-import com.Bookie.dto.HistoryDtoResponse;
 import com.Bookie.service.HistoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,7 +26,6 @@ public class HistoryController {
     private final HistoryService historyService;
 
 
-
     @PostMapping
     @Operation(
             summary = "Create a history",
@@ -38,16 +36,15 @@ public class HistoryController {
             @ApiResponse(responseCode = "201", description = "History created successfully",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = HistoryDtoRequest.class),
                             examples = @ExampleObject(name = "history",
-                                     value = "{\"id\": 1,\"title\": \"new title\", \"syopsis\": \"description of history\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber\"}")))
+                                    value = "{\"id\": 1,\"title\": \"new title\", \"synopsis\": \"description of history\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber\"}")))
     })
     public ResponseEntity<?> crateHistory(@RequestBody @Valid HistoryDtoRequest historyDto) {
         try {
-return ResponseEntity.status(HttpStatus.CREATED).body(historyService.createHistory(historyDto));
-        } catch (Exception ex){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error",ex.getMessage()));
+            return ResponseEntity.status(HttpStatus.CREATED).body(historyService.createHistory(historyDto));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", ex.getMessage()));
         }
     }
-
 
 
     @GetMapping("/all")
@@ -59,8 +56,8 @@ return ResponseEntity.status(HttpStatus.CREATED).body(historyService.createHisto
     public ResponseEntity<?> getAllHistoties() {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(historyService.getAll());
-        } catch (Exception ex){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error",ex.getMessage()));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", ex.getMessage()));
         }
     }
 }

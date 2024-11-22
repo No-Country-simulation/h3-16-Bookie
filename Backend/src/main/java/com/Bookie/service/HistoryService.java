@@ -3,7 +3,10 @@ package com.Bookie.service;
 import com.Bookie.dto.HistoryDtoRequest;
 import com.Bookie.dto.HistoryDtoResponse;
 import com.Bookie.entities.HistoryEntity;
-import com.Bookie.repository.HistoryRepository;
+import com.Bookie.entities.UserEntity;
+import com.Bookie.config.repository.HistoryRepository;
+import com.Bookie.config.repository.UserRepository;
+import com.Bookie.enums.GenreLiterary;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 public class HistoryService {
@@ -19,9 +24,32 @@ public class HistoryService {
     @Autowired
     private HistoryRepository historyRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public HistoryDtoResponse createHistory(@Valid HistoryDtoRequest historyDto) {
-        HistoryEntity history = historyRepository.save(new HistoryEntity());
-        return new HistoryDtoResponse(history.getId(), history.getTitle(), history.getSyopsis(), history.getCreator().getId(), history.getGenre(), history.getImg());
+        Optional<UserEntity> user = userRepository.findById(historyDto.creator_id());
+        HistoryEntity historyEntity = HistoryEntity.builder()
+                .creator(user.get())
+                .genre(historyDto.genre())
+                .title(historyDto.title())
+                .syopsis(historyDto.synopsis())
+                .img(historyDto.img())
+                .publish(false)
+                .build();
+        HistoryEntity history = historyRepository.save(historyEntity);
+
+
+
+
+
+
+           /* final Boolean publish = false;
+            HistoryEntity history = historyRepository.insertHistory(historyDto.title(), historyDto.synopsis(), publish, historyDto.creator_id(), historyDto.genre().name(),
+                    historyDto.img());*/
+
+            return new HistoryDtoResponse(history.getId(), history.getTitle(), history.getSyopsis(), history.getCreator().getId(), history.getGenre(), history.getImg());
+
     }
 
     public JsonNode getAll() throws JsonProcessingException {

@@ -10,8 +10,8 @@ public record HistoryDtoRequest(
         @NotBlank
         String title,
         @NotBlank
-        String syopsis,
-        @NotBlank
+        String synopsis,
+        @NotNull
         Long creator_id,
         @NotNull
         GenreLiterary genre,
