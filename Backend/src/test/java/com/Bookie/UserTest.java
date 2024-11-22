@@ -32,10 +32,14 @@ public class UserTest {
     @LocalServerPort
     private int port;
 
+    private  ObjectMapper mapper;
+
     @BeforeEach
     void setUp() {
         restTemplateBuilder = restTemplateBuilder.rootUri("http://localhost:" + port);
         testRestTemplate = new TestRestTemplate(restTemplateBuilder);
+        mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
     @Test
@@ -72,11 +76,13 @@ public class UserTest {
    List<UserEntity> users = UserRepository.findAll();
 
    //mapeando arreglo a json
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
          String json = mapper.writeValueAsString(users);
          System.out.println(json);
 
         assertNotEquals(users.isEmpty(),null);
     }
+
+
+
 }

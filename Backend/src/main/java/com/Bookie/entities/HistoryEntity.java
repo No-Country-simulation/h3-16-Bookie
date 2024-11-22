@@ -21,12 +21,14 @@ public class HistoryEntity {
     @Column(name = "syopsis")
     private String syopsis;
     @Column(name = "publish")
-    private Boolean publish;
+    private Boolean publish = false;
     @ManyToOne
     @JoinColumn(name = "UserEntity_id")
     private UserEntity creator;
     @Enumerated(EnumType.STRING)
+    @Column(name = "genre")
     private GenreLiterary genre;
     @Column(name = "img", columnDefinition = "text", length = 1000)
     private String img;
+
 }

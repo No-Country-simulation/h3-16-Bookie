@@ -11,7 +11,7 @@ public record HistoryDtoRequest(
         String title,
         @NotBlank
         String synopsis,
-        @NotBlank
+        @NotNull
         Long creator_id,
         @NotNull
         GenreLiterary genre,

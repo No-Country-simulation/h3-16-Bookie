@@ -53,16 +53,17 @@ class HistoryControllerTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HistoryDtoRequest HistoryDtoRequest = new HistoryDtoRequest("Historia del monte embrujado",
-                "Encuantro sercano con almas en pena",1L, GenreLiterary.FANTASIA,"http://portada.jpg");
+                "Encuantro sercano con almas en pena",1L, GenreLiterary.NOVELA,"http://portada.jpg");
 
         String json = """
                 {
-                  "title":"Historia del monte embrujado",             \s
-                                  gi   "synopsis": "Encuantro sercano con almas en pena",
-                                     "creator_id": "1",
-                                     "genre": "SUSPENSO",
-                                     "img": "http://portada.jpg"
+                    "title": "Historia del monte embrujado",
+                    "synopsis": "Encuantro cercano con almas en pena",
+                    "creator_id": 1,
+                    "genre": "NOVELA",
+                    "img": "Base64:veryletterandnumber"
                 }
+                            
                 """;
         HttpEntity<String> request = new HttpEntity<>(json,headers);
         ResponseEntity<HistoryDtoRequest> crateHistoryResult = testRestTemplate.exchange("/api/v1/history", HttpMethod.POST, request, HistoryDtoRequest.class);

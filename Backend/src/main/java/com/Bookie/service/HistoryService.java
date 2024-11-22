@@ -6,6 +6,7 @@ import com.Bookie.entities.HistoryEntity;
 import com.Bookie.entities.UserEntity;
 import com.Bookie.config.repository.HistoryRepository;
 import com.Bookie.config.repository.UserRepository;
+import com.Bookie.enums.GenreLiterary;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,9 +35,21 @@ public class HistoryService {
                 .title(historyDto.title())
                 .syopsis(historyDto.synopsis())
                 .img(historyDto.img())
+                .publish(false)
                 .build();
         HistoryEntity history = historyRepository.save(historyEntity);
-        return new HistoryDtoResponse(history.getId(), history.getTitle(), history.getSyopsis(), history.getCreator().getId(), history.getGenre(), history.getImg());
+
+
+
+
+
+
+           /* final Boolean publish = false;
+            HistoryEntity history = historyRepository.insertHistory(historyDto.title(), historyDto.synopsis(), publish, historyDto.creator_id(), historyDto.genre().name(),
+                    historyDto.img());*/
+
+            return new HistoryDtoResponse(history.getId(), history.getTitle(), history.getSyopsis(), history.getCreator().getId(), history.getGenre(), history.getImg());
+
     }
 
     public JsonNode getAll() throws JsonProcessingException {
