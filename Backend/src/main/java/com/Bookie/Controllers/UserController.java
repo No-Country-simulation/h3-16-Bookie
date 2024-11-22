@@ -1,12 +1,16 @@
 package com.Bookie.Controllers;
 
+import com.Bookie.dto.HistoryDtoRequest;
 import com.Bookie.entities.UserEntity;
 import com.Bookie.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -28,6 +32,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    //este endpoint esta en duda...
     @GetMapping("/api/auth/sync")
     public ResponseEntity<String> getSyncInfo(Authentication authentication) {
         JwtAuthenticationToken jwtToken = (JwtAuthenticationToken) authentication;
@@ -35,6 +40,11 @@ public class UserController {
         return ResponseEntity.ok("Authenticated user: " + userName);
     }
 
+    /**
+     *
+     * @param authentication
+     * @return
+     */
     @GetMapping("/sync")
     public ResponseEntity<Map<String, Object>> getSyncInfo2(Authentication authentication) {
         JwtAuthenticationToken jwtToken = (JwtAuthenticationToken) authentication;
@@ -51,6 +61,14 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+
+    /**
+     *
+     *
+     *
+     * @param authentication
+     * @return
+     */
     //IMPORTANTE este metodo despues abria que quitarlo o hacerlo solo para administrador!
     @GetMapping("/users")
     public ResponseEntity<List<UserEntity>> getAllUsers(Authentication authentication) {
@@ -58,6 +76,23 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    /**
+     *
+     * @param authentication
+     * @return
+     */
+
+    @Operation(
+            summary = "get user",
+            description = "get a user from postgresql from a token",
+            tags = {"User"}
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Get user Succesfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Authentication.class),
+                            examples = @ExampleObject(name = "history",
+                                    value = "{\"id\": 1,\"name\": \"Jorge\", \"email\": \"test@test.com\", \"auth0UserId\": google-oauth2|123456789\"}")))
+    })
     @GetMapping("/user")
     public ResponseEntity<UserEntity> getAuthenticatedUser(Authentication authentication) {
         JwtAuthenticationToken jwtToken = (JwtAuthenticationToken) authentication;
