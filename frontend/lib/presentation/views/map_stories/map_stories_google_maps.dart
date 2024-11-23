@@ -37,14 +37,17 @@ class _MapStoriesGoogleMapsState extends State<MapStoriesGoogleMaps> {
           _controller.complete(controller);
         },
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: _enable3DView,
-        child: const Icon(Icons.threed_rotation),
-        // label: const Text('Habilitar 3D'),
-        // label: const Text('Habilitar 3D'),
-        // icon: const Icon(Icons.threed_rotation),
-      ),
+
+      // TODO ERROR: este componente (floatingActionButton) EN EL WIDGET DONDE ESTA EL GOOGLE MAPS esta dando error en el compilado debug (presionando F5) pero no en release
+      // TODO ERROR: si deseas verlo: flutter run --debug
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: _enable3DView,
+      //   child: const Icon(Icons.threed_rotation),
+      //   // label: const Text('Habilitar 3D'),
+      //   // label: const Text('Habilitar 3D'),
+      //   // icon: const Icon(Icons.threed_rotation),
+      // ),
     );
   }
 
