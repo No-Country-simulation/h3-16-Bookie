@@ -1,6 +1,7 @@
 package com.Bookie.Controllers;
 
 import com.Bookie.dto.HistoryDtoRequest;
+import com.Bookie.dto.HistoryDtoRequestUpdate;
 import com.Bookie.dto.HistoryDtoResponse;
 import com.Bookie.enums.GenreLiterary;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -61,12 +62,12 @@ class HistoryControllerTest {
                     "synopsis": "Encuantro cercano con almas en pena",
                     "creator_id": 1,
                     "genre": "NOVELA",
-                    "img": "Base64:veryletterandnumber"
+                    "img": "http://portada.jpg"
                 }
                             
                 """;
         HttpEntity<String> request = new HttpEntity<>(json,headers);
-        ResponseEntity<HistoryDtoRequest> crateHistoryResult = testRestTemplate.exchange("/api/v1/history", HttpMethod.POST, request, HistoryDtoRequest.class);
+        ResponseEntity<HistoryDtoResponse> crateHistoryResult = testRestTemplate.exchange("/api/v1/history", HttpMethod.POST, request, HistoryDtoResponse.class);
         System.out.println("crateHistoryResult = " + crateHistoryResult);
         System.out.println("HistoryDtoRequest = " + json);
 
@@ -75,6 +76,37 @@ class HistoryControllerTest {
                 () -> assertEquals(201, crateHistoryResult.getStatusCode().value()),
                 () -> assertEquals(crateHistoryResult.getBody().title(),HistoryDtoRequest.title()),
                 () -> assertEquals(crateHistoryResult.getBody().genre(),HistoryDtoRequest.genre())
+        );
+    }
+
+
+    @Test
+    void updateHistory(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HistoryDtoRequestUpdate HistoryDtoRequest = new HistoryDtoRequestUpdate("Historia del monte embrujado2",
+                "Encuantro sercano con almas en pena2", GenreLiterary.NOVELA,"http://portada2.jpg");
+
+        String json = """
+                {
+                 "title": "Historia del monte embrujado2",
+                    "synopsis": "Encuantro cercano con almas en pena2",
+                    "genre": "NOVELA",
+                    "img": "http://portada2.jpg"
+                }
+                            
+                """;
+        HttpEntity<String> request = new HttpEntity<>(json,headers);
+        ResponseEntity<HistoryDtoResponse> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/2", HttpMethod.PUT, request, HistoryDtoResponse.class);
+        System.out.println("updateHistory = " + crateHistoryResult);
+        System.out.println("HistoryDtoRequest = " + json);
+
+        assertAll(
+                () -> assertEquals(HttpStatus.OK, crateHistoryResult.getStatusCode()),
+                () -> assertEquals(200, crateHistoryResult.getStatusCode().value()),
+                () -> assertEquals(crateHistoryResult.getBody().title(),HistoryDtoRequest.title()),
+                () -> assertEquals(crateHistoryResult.getBody().genre(),HistoryDtoRequest.genre()),
+                () -> assertEquals(crateHistoryResult.getBody().id(),2)
         );
     }
 }

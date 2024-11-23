@@ -1,6 +1,7 @@
 package com.Bookie.Controllers;
 
 import com.Bookie.dto.HistoryDtoRequest;
+import com.Bookie.dto.HistoryDtoRequestUpdate;
 import com.Bookie.service.HistoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -9,7 +10,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +44,27 @@ public class HistoryController {
     public ResponseEntity<?> crateHistory(@RequestBody @Valid HistoryDtoRequest historyDto) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(historyService.createHistory(historyDto));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", ex.getMessage()));
+        }
+    }
+
+
+    @PutMapping("/{id}")
+    @Operation(
+            summary = "Update history",
+            description = "Updating history data",
+            tags = {"History"}
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "History created successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = HistoryDtoRequestUpdate.class),
+                            examples = @ExampleObject(name = "history",
+                                    value = "{\"id\": 1,\"title\": \"new title\", \"synopsis\": \"description of history\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber\"}")))
+    })
+    public ResponseEntity<?> updateHistory(@RequestBody @Valid HistoryDtoRequestUpdate historyDto, @PathVariable  Long id) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(historyService.updateHistory(historyDto,id));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", ex.getMessage()));
         }

@@ -1,6 +1,7 @@
 package com.Bookie.entities;
 
 import com.Bookie.enums.GenreLiterary;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +25,7 @@ public class HistoryEntity {
     private Boolean publish = false;
     @ManyToOne
     @JoinColumn(name = "UserEntity_id")
+    @JsonIgnore
     private UserEntity creator;
     @Enumerated(EnumType.STRING)
     @Column(name = "genre")
