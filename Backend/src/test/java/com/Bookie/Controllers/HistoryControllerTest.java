@@ -67,7 +67,7 @@ class HistoryControllerTest {
                             
                 """;
         HttpEntity<String> request = new HttpEntity<>(json,headers);
-        ResponseEntity<HistoryDtoRequest> crateHistoryResult = testRestTemplate.exchange("/api/v1/history", HttpMethod.POST, request, HistoryDtoRequest.class);
+        ResponseEntity<HistoryDtoResponse> crateHistoryResult = testRestTemplate.exchange("/api/v1/history", HttpMethod.POST, request, HistoryDtoResponse.class);
         System.out.println("crateHistoryResult = " + crateHistoryResult);
         System.out.println("HistoryDtoRequest = " + json);
 
