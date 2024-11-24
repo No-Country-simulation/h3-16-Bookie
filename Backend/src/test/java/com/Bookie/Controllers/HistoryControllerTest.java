@@ -29,7 +29,6 @@ class HistoryControllerTest {
     private HttpHeaders headers;
 
 
-
     @Autowired
     private RestTemplateBuilder restTemplateBuilder;
 
@@ -82,7 +81,6 @@ class HistoryControllerTest {
         System.out.println("HistoryDtoRequest = " + json);
 
 
-
         assertAll(
                 () -> assertEquals(HttpStatus.CREATED, crateHistoryResult.getStatusCode()),
                 () -> assertEquals(201, crateHistoryResult.getStatusCode().value()),
@@ -126,7 +124,7 @@ class HistoryControllerTest {
     void deleteHistory() {
 
         HttpEntity<String> request = new HttpEntity<>(headers);
-        ResponseEntity<String> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/11", HttpMethod.DELETE, request, String.class);
+        ResponseEntity<String> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/12", HttpMethod.DELETE, request, String.class);
         System.out.println("updateHistory = " + crateHistoryResult);
 
 
@@ -134,6 +132,23 @@ class HistoryControllerTest {
                 () -> assertEquals(HttpStatus.ACCEPTED, crateHistoryResult.getStatusCode()),
                 () -> assertEquals(202, crateHistoryResult.getStatusCode().value()),
                 () -> assertEquals(crateHistoryResult.getBody(), "Delete ok")
+
+        );
+    }
+
+
+    @Test
+    void publishHistory() {
+
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        ResponseEntity<HistoryDtoResponse> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/1", HttpMethod.PATCH, request, HistoryDtoResponse.class);
+        System.out.println("updateHistory = " + crateHistoryResult);
+
+
+        assertAll(
+                () -> assertEquals(HttpStatus.ACCEPTED, crateHistoryResult.getStatusCode()),
+                () -> assertEquals(202, crateHistoryResult.getStatusCode().value()),
+                () -> assertTrue(crateHistoryResult.getBody().publish())
 
         );
     }

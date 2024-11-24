@@ -41,7 +41,7 @@ public class HistoryService {
         HistoryEntity history = historyRepository.save(historyEntity);
 
 
-        return new HistoryDtoResponse(history.getId(), history.getTitle(), history.getSyopsis(), history.getCreator(), history.getGenre(), history.getImg());
+        return new HistoryDtoResponse(history.getId(), history.getTitle(), history.getSyopsis(), history.getCreator(), history.getGenre(), history.getImg(),history.getPublish());
 
     }
 
@@ -59,13 +59,21 @@ public class HistoryService {
         if (historyDto.genre() != null) history.setGenre(historyDto.genre());
 
         HistoryEntity historyDb = historyRepository.save(history);
-        // return new HistoryDtoResponse(historyDb);
-        return new HistoryDtoResponse(historyDb.getId(), historyDb.getTitle(), historyDb.getSyopsis(), historyDb.getCreator(), historyDb.getGenre(), historyDb.getImg());
+
+        return new HistoryDtoResponse(historyDb.getId(), historyDb.getTitle(), historyDb.getSyopsis(), historyDb.getCreator(), historyDb.getGenre(), historyDb.getImg(),historyDb.getPublish());
     }
 
     public String deleteHistory(@NotNull Long id) {
         HistoryEntity history = historyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
         historyRepository.delete(history);
         return "Delete ok";
+    }
+
+    public HistoryDtoResponse publishHistory(@NotNull Long id) {
+        HistoryEntity history = historyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
+        history.setPublish(true);
+        HistoryEntity historyDb = historyRepository.save(history);
+        return new HistoryDtoResponse(historyDb.getId(), historyDb.getTitle(), historyDb.getSyopsis(), historyDb.getCreator(), historyDb.getGenre(), historyDb.getImg(),historyDb.getPublish());
+
     }
 }

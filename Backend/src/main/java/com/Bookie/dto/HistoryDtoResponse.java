@@ -17,9 +17,10 @@ public record HistoryDtoResponse(
         UserEntity creator_id,
         @NotNull
         GenreLiterary genre,
-        String img
+        String img,
+        boolean publish
 ) {
         public HistoryDtoResponse(HistoryEntity historyEntity){
-                this(historyEntity.getId(),historyEntity.getTitle(),historyEntity.getSyopsis(),historyEntity.getCreator(),historyEntity.getGenre(),historyEntity.getImg());
+                this(historyEntity.getId(),historyEntity.getTitle(),historyEntity.getSyopsis(),historyEntity.getCreator(),historyEntity.getGenre(),historyEntity.getImg(),historyEntity.getPublish());
         }
 }
