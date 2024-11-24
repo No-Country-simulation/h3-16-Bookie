@@ -76,4 +76,11 @@ public class HistoryService {
         return new HistoryDtoResponse(historyDb.getId(), historyDb.getTitle(), historyDb.getSyopsis(), historyDb.getCreator(), historyDb.getGenre(), historyDb.getImg(),historyDb.getPublish());
 
     }
+
+    public HistoryDtoResponse getHistory(Long id) {
+        HistoryEntity history = historyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
+
+        return new HistoryDtoResponse(history);
+
+    }
 }

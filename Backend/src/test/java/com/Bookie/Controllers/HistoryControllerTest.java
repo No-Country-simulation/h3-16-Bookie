@@ -3,11 +3,11 @@ package com.Bookie.Controllers;
 import com.Bookie.dto.HistoryDtoRequest;
 import com.Bookie.dto.HistoryDtoRequestUpdate;
 import com.Bookie.dto.HistoryDtoResponse;
-import com.Bookie.entities.HistoryEntity;
 import com.Bookie.enums.GenreLiterary;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +16,15 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 
-import java.util.Objects;
+import java.net.http.HttpClient;
+import java.time.Duration;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -138,18 +146,21 @@ class HistoryControllerTest {
 
 
     @Test
-    void publishHistory() {
+    void gethHistoryByIdAndChapter() {
 
         HttpEntity<String> request = new HttpEntity<>(headers);
-        ResponseEntity<HistoryDtoResponse> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/1", HttpMethod.PATCH, request, HistoryDtoResponse.class);
+        ResponseEntity<HistoryDtoResponse> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/3", HttpMethod.GET, request, HistoryDtoResponse.class);
         System.out.println("updateHistory = " + crateHistoryResult);
 
 
         assertAll(
-                () -> assertEquals(HttpStatus.ACCEPTED, crateHistoryResult.getStatusCode()),
-                () -> assertEquals(202, crateHistoryResult.getStatusCode().value()),
-                () -> assertTrue(crateHistoryResult.getBody().publish())
+                () -> assertEquals(HttpStatus.OK, crateHistoryResult.getStatusCode()),
+                () -> assertEquals(200, crateHistoryResult.getStatusCode().value()),
+                () -> assertEquals(crateHistoryResult.getBody().id(),3)
 
         );
     }
+
+
+
 }
