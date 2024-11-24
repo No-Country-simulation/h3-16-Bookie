@@ -2,6 +2,7 @@ package com.Bookie.Controllers;
 
 import com.Bookie.dto.HistoryDtoRequest;
 import com.Bookie.dto.HistoryDtoRequestUpdate;
+import com.Bookie.dto.HistoryDtoResponse;
 import com.Bookie.service.HistoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,7 +39,7 @@ public class HistoryController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "History created successfully",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = HistoryDtoRequest.class),
-                            examples = @ExampleObject(name = "history",
+                            examples = @ExampleObject(name = "HistoryDtoRequest",
                                     value = "{\"id\": 1,\"title\": \"new title\", \"synopsis\": \"description of history\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber\"}")))
     })
     public ResponseEntity<?> crateHistory(@RequestBody @Valid HistoryDtoRequest historyDto) {
@@ -59,7 +60,7 @@ public class HistoryController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "History created successfully",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = HistoryDtoRequestUpdate.class),
-                            examples = @ExampleObject(name = "history",
+                            examples = @ExampleObject(name = "HistoryDtoRequestUpdate",
                                     value = "{\"id\": 1,\"title\": \"new title\", \"synopsis\": \"description of history\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber\"}")))
     })
     public ResponseEntity<?> updateHistory(@RequestBody @Valid HistoryDtoRequestUpdate historyDto, @PathVariable  Long id) {
@@ -83,6 +84,27 @@ public class HistoryController {
     public ResponseEntity<?> deleteHistory(@PathVariable  Long id) {
         try {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(historyService.deleteHistory(id));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(Map.of("error", ex.getMessage()));
+        }
+    }
+
+
+    @PatchMapping("/{id}")
+    @Operation(
+            summary = "publish history",
+            description = "publishing  the story so they can read it",
+            tags = {"History"}
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "Publication of the history successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = HistoryDtoResponse.class),
+                            examples = @ExampleObject(name = "HistoryDtoResponse",
+                                    value = "{\"id\": 1,\"title\": \"new title\", \"synopsis\": \"description of history\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber\"}")))
+    })
+    public ResponseEntity<?> publishHistory(@PathVariable  Long id) {
+        try {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(historyService.publishHistory(id));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(Map.of("error", ex.getMessage()));
         }
