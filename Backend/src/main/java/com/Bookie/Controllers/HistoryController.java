@@ -71,6 +71,24 @@ public class HistoryController {
     }
 
 
+    @DeleteMapping("/{id}")
+    @Operation(
+            summary = "Delete history",
+            description = "Deleting stories and their chapters",
+            tags = {"History"}
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "History delete successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE) )})
+    public ResponseEntity<?> deleteHistory(@PathVariable  Long id) {
+        try {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(historyService.deleteHistory(id));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(Map.of("error", ex.getMessage()));
+        }
+    }
+
+
     @GetMapping("/all")
     @Operation(
             summary = "List all histories",

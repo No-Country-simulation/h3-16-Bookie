@@ -51,15 +51,21 @@ public class HistoryService {
     }
 
     public HistoryDtoResponse updateHistory(HistoryDtoRequestUpdate historyDto, @NotNull Long id) {
-     HistoryEntity history = historyRepository.findById(id).orElseThrow(()->   new EntityNotFoundException("Entity not found"));
+        HistoryEntity history = historyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
 
-     if(historyDto.title() != null) history.setTitle(historyDto.title());
-        if(historyDto.img() != null) history.setImg(historyDto.img());
-        if(historyDto.synopsis() != null) history.setSyopsis(historyDto.synopsis());
-        if(historyDto.genre() != null) history.setGenre(historyDto.genre());
+        if (historyDto.title() != null) history.setTitle(historyDto.title());
+        if (historyDto.img() != null) history.setImg(historyDto.img());
+        if (historyDto.synopsis() != null) history.setSyopsis(historyDto.synopsis());
+        if (historyDto.genre() != null) history.setGenre(historyDto.genre());
 
         HistoryEntity historyDb = historyRepository.save(history);
-       // return new HistoryDtoResponse(historyDb);
-        return new HistoryDtoResponse(historyDb.getId(),historyDb.getTitle(),historyDb.getSyopsis(),historyDb.getCreator(),historyDb.getGenre(),historyDb.getImg());
+        // return new HistoryDtoResponse(historyDb);
+        return new HistoryDtoResponse(historyDb.getId(), historyDb.getTitle(), historyDb.getSyopsis(), historyDb.getCreator(), historyDb.getGenre(), historyDb.getImg());
+    }
+
+    public String deleteHistory(@NotNull Long id) {
+        HistoryEntity history = historyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
+        historyRepository.delete(history);
+        return "Delete ok";
     }
 }
