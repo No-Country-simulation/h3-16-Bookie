@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 
-class RouteLine extends StatefulWidget {
+class MapHistoriesRouteline extends StatefulWidget {
   static const String name = 'map histories';
 
-  const RouteLine({super.key});
+  const MapHistoriesRouteline({super.key});
 
   @override
-  State createState() => RouteLineState();
+  State createState() => MapHistoriesRoutelineState();
 }
 
-class RouteLineState extends State<RouteLine> {
+class MapHistoriesRoutelineState extends State<MapHistoriesRouteline> {
   late MapboxMap mapboxMap;
   final _sfAirport =
       Point(coordinates: Position(-122.39470445734368, 37.7080221537549));

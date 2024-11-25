@@ -1,9 +1,7 @@
 import 'package:bookie/presentation/views/create_history/create_history_screen.dart';
 import 'package:bookie/presentation/views/favorites/favorites_screen.dart';
 import 'package:bookie/presentation/views/feed/feed_screen.dart';
-import 'package:bookie/presentation/views/map_histories/map3.dart';
-// import 'package:bookie/presentation/views/map_histories/map_histories_screen.dart';
-// import 'package:bookie/presentation/views/map_histories/map_histories_screen2.dart';
+import 'package:bookie/presentation/views/map_histories/map_histories_example_3d.dart';
 import 'package:bookie/presentation/views/settings/settings_screen.dart';
 import 'package:bookie/presentation/widgets/shared/custom_bottom_navigation.dart';
 import 'package:flutter/material.dart';
@@ -23,12 +21,10 @@ class HomeScreen extends StatelessWidget {
         index: pageIndex, // Índice de la página actual
         children: [
           FeedScreen(),
-          // MapHistoriesScreen(),
-          ModelLayerWidget(),
+          MapHistories3D(),
           CreateHistoryScreen(),
           FavoritesScreen(),
           SettingsScreen(),
-          // RouteLine(),
         ],
       ), // Contenedor de pantalla de inicio
       bottomNavigationBar: CustomBottomNavigation(currentIndex: pageIndex),

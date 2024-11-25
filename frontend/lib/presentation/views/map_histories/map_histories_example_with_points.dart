@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 
-class MapHistoriesScreen extends StatefulWidget {
+class MapHistoriesPoints extends StatefulWidget {
   static const String name = 'map histories';
 
-  const MapHistoriesScreen({super.key});
+  const MapHistoriesPoints({super.key});
 
   @override
-  State<MapHistoriesScreen> createState() => _MapHistoriesScreenState();
+  State<MapHistoriesPoints> createState() => _MapHistoriesPointsState();
 }
 
-class _MapHistoriesScreenState extends State<MapHistoriesScreen> {
+class _MapHistoriesPointsState extends State<MapHistoriesPoints> {
   MapboxMap? mapboxMap;
   Map<String, dynamic>? selectedHistory;
 
