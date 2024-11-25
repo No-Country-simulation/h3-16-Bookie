@@ -37,7 +37,7 @@ public class SecurityConfig {
                                 "/configuration/security",
                                 "/webjars/**",
                                 "/api/webhooks/auth0/user-created").permitAll()
-                        .requestMatchers("/api/public").permitAll()  // Permite acceso sin autenticación a la ruta pública
+                       // .requestMatchers("/api/public").permitAll()  // Permite acceso sin autenticación a la ruta pública
                                 .anyRequest().permitAll()
                         // .anyRequest().authenticated()  // Requiere autenticación para todas las demás rutas
                 )
