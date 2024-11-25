@@ -4,10 +4,10 @@ import com.Bookie.dto.HistoryDtoRequest;
 import com.Bookie.dto.HistoryDtoRequestUpdate;
 import com.Bookie.dto.HistoryDtoResponse;
 import com.Bookie.enums.GenreLiterary;
+import com.Bookie.util.JsonUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,16 +15,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
-
-import java.net.http.HttpClient;
-import java.time.Duration;
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.Duration;
-import java.util.concurrent.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -157,6 +147,24 @@ class HistoryControllerTest {
                 () -> assertEquals(HttpStatus.OK, crateHistoryResult.getStatusCode()),
                 () -> assertEquals(200, crateHistoryResult.getStatusCode().value()),
                 () -> assertEquals(crateHistoryResult.getBody().id(),3)
+
+        );
+    }
+
+
+    @Test
+    void gethHistoryByUserId() throws JsonProcessingException {
+
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        ResponseEntity<JsonNode> result = testRestTemplate.exchange("/api/v1/history/user/1", HttpMethod.GET, request, JsonNode.class);
+
+        JsonUtil.toJsonPrint("List<history> historybyuser",result);
+
+
+        assertAll(
+                () -> assertEquals(HttpStatus.OK, result.getStatusCode()),
+                () -> assertEquals(200, result.getStatusCode().value()),
+                () -> assertTrue(!result.getBody().isEmpty())
 
         );
     }

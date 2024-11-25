@@ -2,18 +2,18 @@ package com.Bookie.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.context.annotation.Bean;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 
 public class JsonUtil {
 
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    public static void toJsonPrint(String title, Object object) throws JsonProcessingException {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        String formattedJson = objectMapper.writeValueAsString(object);
+        System.out.println(title + " : " + formattedJson);
 
-
-    public static String toJson(Object object) throws JsonProcessingException {
-
-        return objectMapper.writeValueAsString(object);
 
     }
 }
