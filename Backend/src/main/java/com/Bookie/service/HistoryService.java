@@ -9,7 +9,6 @@ import com.Bookie.config.repository.HistoryRepository;
 import com.Bookie.config.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,5 +74,18 @@ public class HistoryService {
         HistoryEntity historyDb = historyRepository.save(history);
         return new HistoryDtoResponse(historyDb.getId(), historyDb.getTitle(), historyDb.getSyopsis(), historyDb.getCreator(), historyDb.getGenre(), historyDb.getImg(),historyDb.getPublish());
 
+    }
+
+    public HistoryDtoResponse getHistory(@NotNull Long id) {
+        HistoryEntity history = historyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
+
+        return new HistoryDtoResponse(history);
+
+    }
+
+    public List<HistoryDtoResponse> getHistoryByUserId(@NotNull Long userId) {
+        var user = userRepository.findById(userId);
+       List<HistoryEntity>  history = historyRepository.findByCreator(user.get());
+        return history.stream().map(HistoryDtoResponse::new).toList();
     }
 }
