@@ -1,5 +1,7 @@
 package com.Bookie.dto;
 
+import com.Bookie.entities.HistoryEntity;
+import com.Bookie.entities.UserEntity;
 import com.Bookie.enums.GenreLiterary;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,10 +13,14 @@ public record HistoryDtoResponse(
         String title,
         @NotBlank
         String syopsis,
-        @NotBlank
-        Long creator_id,
+        @NotNull
+        UserEntity creator_id,
         @NotNull
         GenreLiterary genre,
-        String img
+        String img,
+        boolean publish
 ) {
+        public HistoryDtoResponse(HistoryEntity historyEntity){
+                this(historyEntity.getId(),historyEntity.getTitle(),historyEntity.getSyopsis(),historyEntity.getCreator(),historyEntity.getGenre(),historyEntity.getImg(),historyEntity.getPublish());
+        }
 }

@@ -1,19 +1,20 @@
 package com.Bookie.service;
 
 import com.Bookie.dto.HistoryDtoRequest;
+import com.Bookie.dto.HistoryDtoRequestUpdate;
 import com.Bookie.dto.HistoryDtoResponse;
 import com.Bookie.entities.HistoryEntity;
 import com.Bookie.entities.UserEntity;
 import com.Bookie.config.repository.HistoryRepository;
 import com.Bookie.config.repository.UserRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,82 +35,57 @@ public class HistoryService {
                 .title(historyDto.title())
                 .syopsis(historyDto.synopsis())
                 .img(historyDto.img())
+                .publish(false)
                 .build();
         HistoryEntity history = historyRepository.save(historyEntity);
-        return new HistoryDtoResponse(history.getId(), history.getTitle(), history.getSyopsis(), history.getCreator().getId(), history.getGenre(), history.getImg());
+
+
+        return new HistoryDtoResponse(history.getId(), history.getTitle(), history.getSyopsis(), history.getCreator(), history.getGenre(), history.getImg(),history.getPublish());
+
     }
 
-    public JsonNode getAll() throws JsonProcessingException {
-        String jsonString = """
-                {
-                  "history": {
-                    "id": 10,
-                    "title": "Historia del monte embrujado",
-                    "synopsis": "Encuantro sercano con almas en pena",
-                    "publish": "true",
-                    "img": "foto.jpg",
-                    "genre": "MISTERY",
-                    "complete": "false",
-                    "chapters": [
-                      {
-                        "id": 12,
-                        "title": "capitulo 1 obelisco Argentina",
-                        "order": "1",
-                        "img": "foto.jpg",
-                        "latitude": "-34.603851",
-                        "longitude": "-58.381775",
-                        "publish": "true",
-                        "complete": "false",
-                        "page": [
-                          {
-                            "id": 12,
-                            "description": "Texto de la pagina",
-                            "order": "1",
-                            "complete": "true"
-                          },
-                          {
-                            "id": 31,
-                            "description": "Texto de la pagina",
-                            "order": "2",
-                            "complete": "false"
-                          }
-                        ]
-                      },
-                      {
-                        "id": 13,
-                        "title": "capitulo 2 encuentro flor metalica Argentina",
-                        "order": "2",
-                        "img": "foto.jpg",
-                        "latitude": "-34.603851",
-                        "longitude": "-58.381775",
-                        "publish": "true",
-                        "complete": "true",
-                        "page": [
-                          {
-                            "id": 19,
-                            "description": "Texto de la pagina",
-                            "order": "1",
-                            "complete": "false"
-                          },
-                          {
-                            "id": 51,
-                            "description": "Texto de la pagina",
-                            "order": "2",
-                            "complete": "false"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                }
-                               
-                               
-                """;
+    public List<HistoryEntity> getAll() {
+        return historyRepository.findAll();
 
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode jsonNode = mapper.readTree(jsonString);
-        return jsonNode;
-        //  "": "",
+    }
 
+    public HistoryDtoResponse updateHistory(HistoryDtoRequestUpdate historyDto, @NotNull Long id) {
+        HistoryEntity history = historyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
+
+        if (historyDto.title() != null) history.setTitle(historyDto.title());
+        if (historyDto.img() != null) history.setImg(historyDto.img());
+        if (historyDto.synopsis() != null) history.setSyopsis(historyDto.synopsis());
+        if (historyDto.genre() != null) history.setGenre(historyDto.genre());
+
+        HistoryEntity historyDb = historyRepository.save(history);
+
+        return new HistoryDtoResponse(historyDb.getId(), historyDb.getTitle(), historyDb.getSyopsis(), historyDb.getCreator(), historyDb.getGenre(), historyDb.getImg(),historyDb.getPublish());
+    }
+
+    public String deleteHistory(@NotNull Long id) {
+        HistoryEntity history = historyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
+        historyRepository.delete(history);
+        return "Delete ok";
+    }
+
+    public HistoryDtoResponse publishHistory(@NotNull Long id) {
+        HistoryEntity history = historyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
+        history.setPublish(true);
+        HistoryEntity historyDb = historyRepository.save(history);
+        return new HistoryDtoResponse(historyDb.getId(), historyDb.getTitle(), historyDb.getSyopsis(), historyDb.getCreator(), historyDb.getGenre(), historyDb.getImg(),historyDb.getPublish());
+
+    }
+
+    public HistoryDtoResponse getHistory(@NotNull Long id) {
+        HistoryEntity history = historyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
+
+        return new HistoryDtoResponse(history);
+
+    }
+
+    public List<HistoryDtoResponse> getHistoryByUserId(@NotNull Long userId) {
+        var user = userRepository.findById(userId);
+       List<HistoryEntity>  history = historyRepository.findByCreator(user.get());
+        return history.stream().map(HistoryDtoResponse::new).toList();
     }
 }
