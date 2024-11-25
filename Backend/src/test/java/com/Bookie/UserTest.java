@@ -68,7 +68,38 @@ public class UserTest {
                 () -> assertEquals(result.getBody(),"User synchronized successfully.")
         );
     }
-    
+
+    /**
+     * http://deploy-bookie-production.up.railway.app/api/webhooks/auth0/user-created
+     * deploy
+     */
+    @Test
+    void createClinicDeploy() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+
+        String json = """
+                {
+                  "name":"Dario",
+                    
+                         "user_id": "326Dario",
+                      
+                         "email": "Dario@gmail.com"
+                    
+                }
+                """;
+        HttpEntity<String> request = new HttpEntity<>(json,headers);
+        ResponseEntity<String> result = testRestTemplate.exchange("http://deploy-bookie-production.up.railway.app/api/webhooks/auth0/user-created", HttpMethod.POST, request, String.class);
+        System.out.println("result = " + result);
+
+        assertAll(
+                () -> assertEquals(HttpStatus.OK, result.getStatusCode()),
+                () -> assertEquals(200, result.getStatusCode().value()),
+                () -> assertEquals(result.getBody(),"User synchronized successfully.")
+        );
+    }
+
     
     @Test
     @Transactional
