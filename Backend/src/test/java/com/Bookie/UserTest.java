@@ -50,11 +50,11 @@ public class UserTest {
 
         String json = """
                 {
-                  "name":"lionel",
+                  "name":"Dario",
                     
-                         "user_id": "3265874djfj",
+                         "user_id": "326Dario",
                       
-                         "email": "algo@gmail.com"
+                         "email": "Dario@gmail.com"
                     
                 }
                 """;
