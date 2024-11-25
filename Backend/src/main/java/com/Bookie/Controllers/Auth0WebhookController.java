@@ -2,9 +2,11 @@ package com.Bookie.Controllers;
 
 import com.Bookie.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.*;
 import java.util.Map;
 
 @RestController
@@ -19,7 +21,7 @@ public class Auth0WebhookController {
         this.userService = userService;
     }
 
-    @PostMapping("/user-created")
+    @PostMapping(value = "/user-created",consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> handleUserCreated(@RequestBody Map<String, Object> userData) {
         String auth0UserId = userData.get("user_id").toString();
         String email = userData.get("email").toString();
