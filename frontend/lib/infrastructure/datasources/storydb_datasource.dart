@@ -11,7 +11,7 @@ class StoryDbDatasource extends StoryDatasource {
   ));
 
   @override
-  Future<List<Story>> getStories({int page = 1}) async {
+  Future<List<Story>> getStories() async {
     final response = await dio.get('/v1/history/all');
     final storiesDBResponse = StoryDbResponse.fromJsonList(response.data);
 

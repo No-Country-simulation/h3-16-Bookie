@@ -8,7 +8,7 @@ class StoryRepositoryImpl implements StoryRepository {
   StoryRepositoryImpl(this.datasource);
 
   @override
-  Future<List<Story>> getStories({int page = 1}) {
-    return datasource.getStories(page: page);
+  Future<List<Story>> getStories() {
+    return datasource.getStories();
   }
 }

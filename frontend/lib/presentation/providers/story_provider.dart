@@ -9,24 +9,21 @@ final storyRepositoryProvider = Provider((ref) {
 
 final getStoriesProvider =
     StateNotifierProvider<StoriesNotifier, List<Story>>((ref) {
-  final fetchMoreStories = ref.watch(storyRepositoryProvider).getStories;
+  final fetchStories = ref.watch(storyRepositoryProvider).getStories;
 
-  return StoriesNotifier(fetchMoreStories: fetchMoreStories);
+  return StoriesNotifier(fetchStories: fetchStories);
 });
 
-typedef MovieCallback = Future<List<Story>> Function({int page});
+typedef MovieCallback = Future<List<Story>> Function();
 
 class StoriesNotifier extends StateNotifier<List<Story>> {
-  int currentPage = 0;
-  MovieCallback fetchMoreStories;
+  final MovieCallback fetchStories;
 
-  StoriesNotifier({
-    required this.fetchMoreStories,
-  }) : super([]);
+  StoriesNotifier({required this.fetchStories}) : super([]);
 
-  Future<void> loadNextPage() async {
-    currentPage++;
-    final List<Story> movies = await fetchMoreStories(page: currentPage);
-    state = [...state, ...movies];
+  Future<void> loadStories() async {
+    final List<Story> stories =
+        await fetchStories(); // Obtén las historias completas o las necesarias
+    state = stories; // Actualiza el estado directamente con las historias
   }
 }
