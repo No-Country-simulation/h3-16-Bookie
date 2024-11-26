@@ -61,7 +61,7 @@ class HistoryControllerTest {
     void crateHistory() {
 
         HistoryDtoRequest HistoryDtoRequest = new HistoryDtoRequest("Historia del monte embrujado",
-                "Encuantro sercano con almas en pena", 1L, GenreLiterary.NOVELA, "http://portada.jpg");
+                "Encuantro sercano con almas en pena", 1L, GenreLiterary.NOVELA, "http://portada.jpg","ARGENTINA","BUENOS AIRES");
 
         String json = """
                 {

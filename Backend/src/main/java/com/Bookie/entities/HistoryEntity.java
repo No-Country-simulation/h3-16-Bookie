@@ -34,7 +34,7 @@ public class HistoryEntity {
     private String img;
 
     @ManyToOne
-    @Column(name = "country")
+    @JoinColumn(name = "CountryEntity_id")
     @JsonIgnore
-    private CountryEntity countryHistory;
+    private CountryEntity histories;
 }
