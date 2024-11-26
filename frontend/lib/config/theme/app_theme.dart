@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 const colorList = <Color>[
   Colors.yellow,
@@ -26,11 +27,14 @@ class AppTheme {
             'Selected color must be less or equal than ${colorList.length - 1}');
 
   ThemeData getTheme() => ThemeData(
-        useMaterial3: true,
-        brightness: isDarkmode ? Brightness.dark : Brightness.light,
-        colorSchemeSeed: colorList[selectedColor],
-        appBarTheme: const AppBarTheme(centerTitle: false),
-      );
+      useMaterial3: true,
+      brightness: isDarkmode ? Brightness.dark : Brightness.light,
+      colorSchemeSeed: colorList[selectedColor],
+      appBarTheme: const AppBarTheme(centerTitle: false),
+      textTheme: GoogleFonts.acmeTextTheme().apply(
+        bodyColor: isDarkmode ? Colors.white : Colors.black,
+        displayColor: isDarkmode ? Colors.white : Colors.black,
+      ));
 
   AppTheme copyWith({int? selectedColor, bool? isDarkmode}) => AppTheme(
         selectedColor: selectedColor ?? this.selectedColor,
