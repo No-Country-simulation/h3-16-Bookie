@@ -91,7 +91,7 @@ class UserSettingsScreen extends StatelessWidget {
                 // Lógica para cerrar sesión
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.redAccent,
+                backgroundColor: Colors.redAccent,
               ),
               child: Text('Cerrar sesión'),
             ),
