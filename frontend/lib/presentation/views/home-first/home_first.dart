@@ -1,3 +1,4 @@
+import 'package:bookie/presentation/providers/story_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:bookie/presentation/widgets/navbar/navbar_homepage.dart';
 import 'package:bookie/presentation/widgets/section/home_first/hero_section.dart';
@@ -6,18 +7,19 @@ import 'package:bookie/presentation/widgets/section/home_first/close_stories_sec
 import 'package:bookie/presentation/widgets/section/home_first/writers_section.dart';
 import 'package:bookie/shared/data/histories.dart';
 import 'package:bookie/shared/data/writers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class HomeFirstScreen extends StatefulWidget {
+class HomeFirstScreen extends ConsumerStatefulWidget {
   static const String name = 'first-screen';
 
   const HomeFirstScreen({super.key});
 
   @override
-  State<HomeFirstScreen> createState() => _HomeFirstScreenState();
+  ConsumerState<HomeFirstScreen> createState() => _HomeFirstScreenState();
 }
 
-class _HomeFirstScreenState extends State<HomeFirstScreen> {
+class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
   final PageController _pageController = PageController();
   final TextEditingController _searchController = TextEditingController();
 
@@ -27,7 +29,7 @@ class _HomeFirstScreenState extends State<HomeFirstScreen> {
   @override
   void initState() {
     super.initState();
-    // Combinar historias leídas y no leídas
+    ref.read(getStoriesProvider.notifier).loadStories();
     allStories = [...readStories, ...unreadStories];
     filteredStories = allStories;
   }
@@ -55,6 +57,15 @@ class _HomeFirstScreenState extends State<HomeFirstScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final stories = ref.watch(getStoriesProvider);
+
+    if (stories.isEmpty) {
+      // Mostrar un spinner o placeholder mientras no hay datos
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return SafeArea(
       child: PageView(
         controller: _pageController,
@@ -72,7 +83,7 @@ class _HomeFirstScreenState extends State<HomeFirstScreen> {
                   onSearchTapped: _showSearchSection, // Botón de búsqueda
                 ),
                 HeroSection(unreadStories: unreadStories),
-                CloseStoriesSection(unreadStories: unreadStories),
+                CloseStoriesSection(stories: stories),
                 StoriesReadSection(readStories: readStories),
                 WritersSection(writers: writers),
               ],

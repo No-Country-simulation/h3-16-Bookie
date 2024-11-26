@@ -1,15 +1,16 @@
+// import 'package:bookie/presentation/providers/favorites_provider.dart';
 import 'package:bookie/presentation/providers/favorites_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CloseStoriesCard extends ConsumerStatefulWidget {
-  final String id; // ID único
-  final String imageUrl;
+  final int id; // ID único
+  final String imageUrl; // URL de la imagen
   final String title;
   final String? synopsis;
-  final double? rating;
-  final int? reads;
+  // final double? rating;
+  // final int? reads;
   final String? distance;
   final bool isFavorite;
   final VoidCallback onCardPress;
@@ -20,8 +21,8 @@ class CloseStoriesCard extends ConsumerStatefulWidget {
     required this.imageUrl,
     required this.title,
     this.synopsis,
-    this.rating,
-    this.reads,
+    // this.rating,
+    // this.reads,
     this.distance,
     required this.isFavorite,
     required this.onCardPress,

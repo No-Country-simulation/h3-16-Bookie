@@ -1,6 +1,6 @@
 import 'package:bookie/presentation/providers/favorites_provider.dart';
+import 'package:bookie/presentation/providers/story_provider.dart';
 import 'package:bookie/presentation/widgets/cards/close_stories_card.dart';
-import 'package:bookie/shared/data/histories.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -19,24 +19,26 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
     with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
+    final favorites = ref.watch(favoriteProvider);
+    final stories = ref.watch(getStoriesProvider);
+
     // Filtra las tarjetas que son favoritas
-    final favoriteCards = unreadStories
-        .where((card) => ref.watch(favoriteProvider)[card['id']] ?? false)
-        .toList();
+    final favoriteStories =
+        stories.where((story) => favorites[story.id] ?? false).toList();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Favorites'),
       ),
-      body: favoriteCards.isEmpty
+      body: favoriteStories.isEmpty
           ? const Center(child: Text('No favorites yet.'))
           : MasonryGridView.count(
               crossAxisCount: 3, // Tres columnas
               mainAxisSpacing: 12.0, // Espaciado vertical
               crossAxisSpacing: 12.0, // Espaciado horizontal
-              itemCount: favoriteCards.length,
+              itemCount: favoriteStories.length,
               itemBuilder: (context, index) {
-                final card = favoriteCards[index];
+                final card = favoriteStories[index];
 
                 // Aplica un efecto de entrada animado al card
                 return AnimatedOpacity(
@@ -55,12 +57,13 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                       curve: Curves.easeOut,
                     )),
                     child: CloseStoriesCard(
-                      id: card['id'] as String,
-                      imageUrl: card['imageUrl'] as String,
-                      title: card['title'] as String,
-                      isFavorite: card['isFavorite'] as bool,
+                      id: card.id,
+                      imageUrl: card.imageUrl,
+                      title: card.title,
+                      isFavorite: card.isFavorite,
+                      distance: card.distance,
                       onCardPress: () {
-                        context.go('/history/${card['id']}');
+                        context.go('/history/${card.id}');
                       },
                     ),
                   ),
