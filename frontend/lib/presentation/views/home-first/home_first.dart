@@ -1,3 +1,4 @@
+import 'package:bookie/presentation/views/home-first/home_first_search.dart';
 import 'package:flutter/material.dart';
 import 'package:bookie/presentation/widgets/navbar/navbar_homepage.dart';
 import 'package:bookie/presentation/widgets/section/home_first/hero_section.dart';
@@ -6,10 +7,11 @@ import 'package:bookie/presentation/widgets/section/home_first/close_stories_sec
 import 'package:bookie/presentation/widgets/section/home_first/writers_section.dart';
 import 'package:bookie/shared/data/histories.dart';
 import 'package:bookie/shared/data/writers.dart';
-import 'package:go_router/go_router.dart';
 
 class HomeFirstScreen extends StatefulWidget {
   static const String name = 'first-screen';
+
+  // TODO: aqui se traera la informacion desde las apis con clean architecture(dentro habra un caso de uso donde se implemntara el filtrado de historias por distancia)
 
   const HomeFirstScreen({super.key});
 
@@ -19,38 +21,10 @@ class HomeFirstScreen extends StatefulWidget {
 
 class _HomeFirstScreenState extends State<HomeFirstScreen> {
   final PageController _pageController = PageController();
-  final TextEditingController _searchController = TextEditingController();
-
-  List<Map<String, dynamic>> allStories = [];
-  List<Map<String, dynamic>> filteredStories = [];
-
-  @override
-  void initState() {
-    super.initState();
-    // Combinar historias leídas y no leídas
-    allStories = [...readStories, ...unreadStories];
-    filteredStories = allStories;
-  }
-
-  void _onSearch(String query) {
-    setState(() {
-      filteredStories = allStories
-          .where((story) =>
-              story['title'].toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    });
-  }
 
   void _showSearchSection() {
     _pageController.animateToPage(1,
         duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-  }
-
-  void _hideSearchSection() {
-    _pageController.animateToPage(0,
-        duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-    _searchController.clear();
-    _onSearch('');
   }
 
   @override
@@ -72,7 +46,7 @@ class _HomeFirstScreenState extends State<HomeFirstScreen> {
                   onSearchTapped: _showSearchSection, // Botón de búsqueda
                 ),
                 HeroSection(unreadStories: unreadStories),
-                CloseStoriesSection(unreadStories: unreadStories),
+                CloseStoriesSection(),
                 StoriesReadSection(readStories: readStories),
                 WritersSection(writers: writers),
               ],
@@ -80,54 +54,8 @@ class _HomeFirstScreenState extends State<HomeFirstScreen> {
           ),
 
           // Sección de búsqueda
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: _hideSearchSection,
-                    ),
-                    Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        decoration: const InputDecoration(
-                          hintText: 'Buscar historias...',
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: _onSearch,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: filteredStories.length,
-                  itemBuilder: (context, index) {
-                    final story = filteredStories[index];
-                    return ListTile(
-                      leading: Image.network(
-                        story['imageUrl'],
-                        width: 50,
-                        height: 50,
-                        fit: BoxFit.cover,
-                      ),
-                      title: Text(story['title']),
-                      subtitle: Text(
-                          story.containsKey('chapter') ? story['chapter'] : ''),
-                      onTap: () {
-                        // Acción al seleccionar una historia
-                        print("Seleccionaste: ${story['title']}");
-                        context.go('/history/${story['id']}');
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
+          HomeFirstSearch(
+            pageController: _pageController,
           ),
         ],
       ),
