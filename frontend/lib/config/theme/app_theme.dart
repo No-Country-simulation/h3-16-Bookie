@@ -31,7 +31,7 @@ class AppTheme {
       brightness: isDarkmode ? Brightness.dark : Brightness.light,
       colorSchemeSeed: colorList[selectedColor],
       appBarTheme: const AppBarTheme(centerTitle: false),
-      textTheme: GoogleFonts.acmeTextTheme().apply(
+      textTheme: GoogleFonts.merriweatherTextTheme().apply(
         bodyColor: isDarkmode ? Colors.white : Colors.black,
         displayColor: isDarkmode ? Colors.white : Colors.black,
       ));
