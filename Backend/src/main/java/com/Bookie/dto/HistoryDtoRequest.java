@@ -1,8 +1,6 @@
 package com.Bookie.dto;
 
-import com.Bookie.entities.UserEntity;
 import com.Bookie.enums.GenreLiterary;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -15,6 +13,10 @@ public record HistoryDtoRequest(
         Long creator_id,
         @NotNull
         GenreLiterary genre,
-        String img
+        String img,
+       // @NotBlank
+        String country,
+      //  @NotBlank
+        String province
 ) {
 }

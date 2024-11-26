@@ -1,9 +1,12 @@
 package com.Bookie.service;
 
+import com.Bookie.config.repository.CountryRepository;
+import com.Bookie.config.repository.ProvinceRepository;
 import com.Bookie.dto.HistoryDtoRequest;
 import com.Bookie.dto.HistoryDtoRequestUpdate;
 import com.Bookie.dto.HistoryDtoResponse;
 import com.Bookie.entities.HistoryEntity;
+import com.Bookie.entities.ProvinceEntity;
 import com.Bookie.entities.UserEntity;
 import com.Bookie.config.repository.HistoryRepository;
 import com.Bookie.config.repository.UserRepository;
@@ -27,7 +30,19 @@ public class HistoryService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ProvinceRepository provinceRepository;
+
+    @Autowired
+    private CountryRepository countryRepository;
+
     public HistoryDtoResponse createHistory(@Valid HistoryDtoRequest historyDto) {
+     /*   ProvinceEntity province = provinceRepository.findByName(historyDto.province());
+        if(province == null) {
+            province =ProvinceEntity.builder().name(historyDto.province()).build();
+            province = provinceRepository.save(province);
+        }*/
+
         Optional<UserEntity> user = userRepository.findById(historyDto.creator_id());
         HistoryEntity historyEntity = HistoryEntity.builder()
                 .creator(user.get())
@@ -36,6 +51,7 @@ public class HistoryService {
                 .syopsis(historyDto.synopsis())
                 .img(historyDto.img())
                 .publish(false)
+               // .countryHistory()
                 .build();
         HistoryEntity history = historyRepository.save(historyEntity);
 

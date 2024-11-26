@@ -7,7 +7,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "CountryRepository")
+@Entity(name = "CountryEntity")
 @Table(name = "country")
 @Data
 @Builder
@@ -22,7 +22,12 @@ public class CountryEntity {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+
+    @OneToMany(mappedBy  = "country", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<ProbinceEntity> provinces = new ArrayList<>();
+    private List<ProvinceEntity> provinces = new ArrayList<>();
+
+    @OneToMany(mappedBy = "histories", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<HistoryEntity> histories = new ArrayList<>();
 }
