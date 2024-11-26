@@ -11,7 +11,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class ProbinceEntity {
+public class
+ProbinceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,6 +20,7 @@ public class ProbinceEntity {
     @Column(name = "name")
     private String name;
     @Column(name = "country")
+    @ManyToOne
     @JoinColumn(name = "CountryEntity_id")
     @JsonIgnore
     private CountryEntity country;

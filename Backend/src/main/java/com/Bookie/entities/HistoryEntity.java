@@ -33,4 +33,8 @@ public class HistoryEntity {
     @Column(name = "img", columnDefinition = "text", length = 1000)
     private String img;
 
+    @ManyToOne
+    @Column(name = "country")
+    @JsonIgnore
+    private CountryEntity countryHistory;
 }
