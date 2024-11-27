@@ -14,6 +14,8 @@ dependencies:
   dio: ^5.7.0
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   flutter_dotenv: ^5.2.1
   flutter_launcher_icons: ^0.14.1
   flutter_native_splash: ^2.4.2
@@ -39,6 +41,7 @@ flutter:
     - .env
     - assets/images/
     - assets/icon/
+    - assets/i18n/
 
 flutter_launcher_icons:
   android: "launcher_icon"

@@ -1,3 +1,5 @@
+import 'package:bookie/config/intl/get_location_for_intl.dart';
+import 'package:bookie/config/intl/i18n.dart';
 import 'package:bookie/presentation/providers/story_provider.dart';
 import 'package:bookie/presentation/views/home-first/home_first_search.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +25,7 @@ class HomeFirstScreen extends ConsumerStatefulWidget {
 
 class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
   final PageController _pageController = PageController();
+  AppLocalizations? localizations; // Cambiar a nullable
 
   List<Map<String, dynamic>> allStories = [];
   List<Map<String, dynamic>> filteredStories = [];
@@ -30,9 +33,19 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
   @override
   void initState() {
     super.initState();
+    detectLanguage().then((locale) {
+      changeLanguage(locale);
+    });
     ref.read(getStoriesProvider.notifier).loadStories();
     allStories = [...readStories, ...unreadStories];
     filteredStories = allStories;
+  }
+
+  void changeLanguage(String locale) async {
+    setState(() {
+      localizations = AppLocalizations(locale);
+      localizations?.load();
+    });
   }
 
   void _showSearchSection() {
@@ -62,11 +75,12 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 NavBarCustom(
-                  userName: "Luis",
-                  avatarUrl:
-                      "https://i.pinimg.com/736x/61/c9/a3/61c9a321f61a2650790911e828ada56d.jpg",
-                  onSearchTapped: _showSearchSection, // Botón de búsqueda
-                ),
+                    userName: "Luis",
+                    avatarUrl:
+                        "https://i.pinimg.com/736x/61/c9/a3/61c9a321f61a2650790911e828ada56d.jpg",
+                    onSearchTapped: _showSearchSection, // Botón de búsqueda
+                    localizations: localizations,
+                    changeLanguage: changeLanguage),
                 HeroSection(unreadStories: unreadStories),
                 CloseStoriesSection(stories: stories),
                 StoriesReadSection(readStories: readStories),

@@ -1,1 +1,0 @@
-GET https://maps.googleapis.com/maps/api/distancematrix/json?origins=-8.117021,-79.044069&destinations=-8.118372,-79.045564&mode=walking&key=AIzaSyAX_qQ_Nq8-3iXTI60AIH_xKsvlIQhM-Y4
