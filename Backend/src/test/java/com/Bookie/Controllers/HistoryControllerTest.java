@@ -122,7 +122,7 @@ class HistoryControllerTest {
     void deleteHistory() {
 
         HttpEntity<String> request = new HttpEntity<>(headers);
-        ResponseEntity<String> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/14", HttpMethod.DELETE, request, String.class);
+        ResponseEntity<String> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/16", HttpMethod.DELETE, request, String.class);
         System.out.println("updateHistory = " + crateHistoryResult);
 
 
