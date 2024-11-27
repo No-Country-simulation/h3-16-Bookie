@@ -245,8 +245,8 @@ const List<Map<String, dynamic>> chapters = [
   {
     'id': '1',
     'title': 'Capítulo 1: Inicio de la aventura',
-    "latitude": -8.1210228,
-    "longitude": -79.0463593
+    "latitude": -8.119488,
+    "longitude": -79.046681
   },
   {
     'id': '2',

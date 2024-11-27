@@ -6,6 +6,10 @@ import 'package:dio/dio.dart';
 Future<List<Story>> getSortedStories(List<Story> stories) async {
   // Obtener la posición actual
   final currentPosition = await determinePosition();
+
+  print(
+      "POSICION ACTUAL : ${currentPosition.latitude}, ${currentPosition.longitude}");
+
   final origin = "${currentPosition.latitude},${currentPosition.longitude}";
 
   final distancesCalculateFromGeolocator = stories
@@ -40,6 +44,10 @@ Future<List<Story>> getSortedStories(List<Story> stories) async {
     final element = rows[i];
     final distance = element['distance']['value']; // En metros
     final distanceGeolocator = distancesCalculateFromGeolocator[i].toInt();
+
+    print("DISTANCIA DESDE GOOGLE MAPAS : $distance");
+
+    print("DISTANCIA DESDE GEOLOCATOR : $distanceGeolocator");
 
     stories[i].distance =
         distance - distanceGeolocator > 100 ? distanceGeolocator : distance;
