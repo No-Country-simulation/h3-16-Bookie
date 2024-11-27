@@ -139,7 +139,7 @@ class HistoryControllerTest {
 
 
     @Test
-    void gethHistoryByIdAndChapter() {
+    void gethHistoryByIdAndtheirChapters() {
 
         HttpEntity<String> request = new HttpEntity<>(headers);
         ResponseEntity<HistoryDtoResponse> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/28", HttpMethod.GET, request, HistoryDtoResponse.class);
