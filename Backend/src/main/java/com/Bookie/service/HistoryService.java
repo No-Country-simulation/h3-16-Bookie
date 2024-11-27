@@ -39,18 +39,18 @@ public class HistoryService {
 
     public HistoryDtoResponse createHistory(@Valid HistoryDtoRequest historyDto) {
         /**<p> buscar el pais con su perobincia </p>*/
-        CountryEntity country = countryRepository.findByName(historyDto.country());
+        CountryEntity country = countryRepository.findByName(historyDto.country().toUpperCase());
 
         if(country== null){
 
             /** <p> Crear el country </p> */
-            country = countryRepository.save(new CountryEntity(historyDto.country()));
+            country = countryRepository.save(new CountryEntity(historyDto.country().toUpperCase()));
 
 
             /** <p> buscar la probincia </p> */
-            ProvinceEntity province = provinceRepository.findByName(historyDto.province());
+            ProvinceEntity province = provinceRepository.findByName(historyDto.province().toUpperCase());
             if(province == null) {
-                province =ProvinceEntity.builder().name(historyDto.province()).country(country).build();
+                province =ProvinceEntity.builder().name(historyDto.province().toUpperCase()).country(country).build();
                 province = provinceRepository.save(province);
             }
 
@@ -59,7 +59,7 @@ public class HistoryService {
         }
 
 
-
+        /** <p> Buscar el usuario y guardar todo en la bbdd </p> */
         Optional<UserEntity> user = userRepository.findById(historyDto.creator_id());
         HistoryEntity historyEntity = HistoryEntity.builder()
                 .creator(user.get())
@@ -73,7 +73,7 @@ public class HistoryService {
         HistoryEntity history = historyRepository.save(historyEntity);
 
 
-        return new HistoryDtoResponse(history.getId(), history.getTitle(), history.getSyopsis(), history.getCreator(), history.getGenre(), history.getImg(),history.getPublish());
+        return new HistoryDtoResponse(history);
 
     }
 
@@ -92,7 +92,7 @@ public class HistoryService {
 
         HistoryEntity historyDb = historyRepository.save(history);
 
-        return new HistoryDtoResponse(historyDb.getId(), historyDb.getTitle(), historyDb.getSyopsis(), historyDb.getCreator(), historyDb.getGenre(), historyDb.getImg(),historyDb.getPublish());
+        return new HistoryDtoResponse(history);
     }
 
     public String deleteHistory(@NotNull Long id) {
@@ -105,7 +105,7 @@ public class HistoryService {
         HistoryEntity history = historyRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
         history.setPublish(true);
         HistoryEntity historyDb = historyRepository.save(history);
-        return new HistoryDtoResponse(historyDb.getId(), historyDb.getTitle(), historyDb.getSyopsis(), historyDb.getCreator(), historyDb.getGenre(), historyDb.getImg(),historyDb.getPublish());
+        return new HistoryDtoResponse(history);
 
     }
 
