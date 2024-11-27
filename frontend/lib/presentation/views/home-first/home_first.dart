@@ -23,7 +23,6 @@ class HomeFirstScreen extends ConsumerStatefulWidget {
 
 class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
   final PageController _pageController = PageController();
-  final TextEditingController _searchController = TextEditingController();
 
   List<Map<String, dynamic>> allStories = [];
   List<Map<String, dynamic>> filteredStories = [];
@@ -34,15 +33,6 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
     ref.read(getStoriesProvider.notifier).loadStories();
     allStories = [...readStories, ...unreadStories];
     filteredStories = allStories;
-  }
-
-  void _onSearch(String query) {
-    setState(() {
-      filteredStories = allStories
-          .where((story) =>
-              story['title'].toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    });
   }
 
   void _showSearchSection() {

@@ -11,7 +11,7 @@ class CloseStoriesCard extends ConsumerStatefulWidget {
   final String? synopsis;
   // final double? rating;
   // final int? reads;
-  final String? distance;
+  final int distance;
   final bool isFavorite;
   final VoidCallback onCardPress;
 
@@ -23,7 +23,7 @@ class CloseStoriesCard extends ConsumerStatefulWidget {
     this.synopsis,
     // this.rating,
     // this.reads,
-    this.distance,
+    required this.distance,
     required this.isFavorite,
     required this.onCardPress,
   });
@@ -109,7 +109,6 @@ class _CloseStoriesCardState extends ConsumerState<CloseStoriesCard> {
                           ),
                         ),
                       ),
-
                 // Botón de favorito
                 Positioned(
                   top: 8,
@@ -213,7 +212,7 @@ class _CloseStoriesCardState extends ConsumerState<CloseStoriesCard> {
                         //   Text(
                         //       '${HumanFormats.humanReadbleNumber(widget.reads ?? 0)} reads'),
                         Text(
-                          widget.distance ?? '',
+                          "A ${widget.distance <= 500 ? "${widget.distance}m" : "${(widget.distance / 1000).toStringAsFixed(1)}km"}",
                           style: TextStyle(
                             fontWeight: FontWeight.normal,
                             fontSize: 14,

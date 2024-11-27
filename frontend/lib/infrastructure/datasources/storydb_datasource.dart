@@ -1,4 +1,5 @@
 import 'package:bookie/config/constants/environment.dart';
+import 'package:bookie/config/helpers/sorted.dart';
 import 'package:bookie/domain/datasources/story_datasource.dart';
 import 'package:bookie/domain/entities/story.dart';
 import 'package:bookie/infrastructure/mappers/storydb_mapper.dart';
@@ -20,6 +21,10 @@ class StoryDbDatasource extends StoryDatasource {
         .map((storydb) => StoryMapper.storyDBToEntity(storydb))
         .toList();
 
-    return stories;
+    // Ordenar las historias por la distancia
+    final List<Story> sortedStories = await getSortedStories(
+        stories); // Ordenar las historias por la distancia
+
+    return sortedStories;
   }
 }

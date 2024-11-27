@@ -1,3 +1,4 @@
+import 'package:bookie/domain/entities/story.dart';
 import 'package:geolocator/geolocator.dart';
 
 Future<Position> determinePosition() async {
@@ -27,6 +28,7 @@ Future<Position> determinePosition() async {
   // Devuelve la posición actual
   return await Geolocator.getCurrentPosition(
     locationSettings: const LocationSettings(
+      // accuracy: LocationAccuracy.bestForNavigation,
       accuracy: LocationAccuracy.high,
       distanceFilter: 50, // Actualiza cada 100 metros
     ),
@@ -35,13 +37,13 @@ Future<Position> determinePosition() async {
 
 double distanceFromGeolocator(
   Position currentPosition,
-  Map<String, dynamic> story,
+  Story story,
 ) {
   final distance = Geolocator.distanceBetween(
     currentPosition.latitude,
     currentPosition.longitude,
-    story['latitud'],
-    story['longitud'],
+    story.chapters![0].latitude,
+    story.chapters![0].longitude,
   );
 
   return distance;

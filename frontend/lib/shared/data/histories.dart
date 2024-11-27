@@ -52,6 +52,18 @@ final readStories = [
 
 final unreadStories = [
   {
+    'id': '6',
+    'imageUrl': 'https://picsum.photos/id/17/200/300',
+    'title': 'Title 7',
+    'synopsis': 'Synopsis 7',
+    'rating': 4.5,
+    'reads': 10000,
+    'distance': 'a 2 km',
+    'isFavorite': false,
+    "latitud": -8.079058,
+    "longitud": -79.121091,
+  },
+  {
     'id': '7',
     'imageUrl': 'https://picsum.photos/id/17/200/300',
     'title': 'Title 7',
@@ -228,3 +240,24 @@ final distanceData = {
     }
   ]
 };
+
+const List<Map<String, dynamic>> chapters = [
+  {
+    'id': '1',
+    'title': 'Capítulo 1: Inicio de la aventura',
+    "latitude": -8.1210228,
+    "longitude": -79.0463593
+  },
+  {
+    'id': '2',
+    'title': 'Capítulo 2: Encuentro inesperado',
+    'latitude': -8.120438,
+    'longitude': -79.045685
+  },
+  {
+    'id': '3',
+    'title': 'Capítulo 3: El desafío',
+    'latitude': -8.121115,
+    'longitude': -79.045816,
+  },
+];

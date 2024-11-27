@@ -1,16 +1,26 @@
 import 'package:bookie/config/constants/environment.dart';
 import 'package:bookie/config/geolocator/geolocator.dart';
+import 'package:bookie/domain/entities/story.dart';
 import 'package:dio/dio.dart';
 
-Future<List<Map<String, dynamic>>> getSortedStoriesFromGoogleMaps(
-    List<Map<String, dynamic>> unreadStories) async {
+Future<List<Story>> getSortedStories(List<Story> stories) async {
   // Obtener la posición actual
   final currentPosition = await determinePosition();
   final origin = "${currentPosition.latitude},${currentPosition.longitude}";
 
+  final distancesCalculateFromGeolocator = stories
+      .map(
+        (story) => distanceFromGeolocator(
+          currentPosition,
+          story,
+        ),
+      )
+      .toList();
+
   // Crear las coordenadas de destino
-  final destinations = unreadStories
-      .map((story) => "${story['latitud']},${story['longitud']}")
+  final destinations = stories
+      .map((story) =>
+          "${story.chapters![0].latitude},${story.chapters![0].longitude}")
       .join('|');
 
   // Llamar a la API de Google Maps Distance Matrix
@@ -26,28 +36,16 @@ Future<List<Map<String, dynamic>>> getSortedStoriesFromGoogleMaps(
   // Procesar la respuesta de la API
   final rows = response.data['rows'][0]['elements'];
 
-  final enrichedStories = unreadStories.asMap().entries.map((entry) {
-    final index = entry.key;
-    final story = entry.value;
-    final element = rows[index];
-    final distance = element['distance']['value'];
-    final distanceInKm =
-        (distance / 1000).toStringAsFixed(1); // Convertir metros a km
-    final distanceInMeters =
-        distance.toStringAsFixed(0); // Convertir metros a m
+  for (int i = 0; i < stories.length; i++) {
+    final element = rows[i];
+    final distance = element['distance']['value']; // En metros
+    final distanceGeolocator = distancesCalculateFromGeolocator[i].toInt();
 
-    return {
-      ...story,
-      'distance':
-          "a ${distance <= 500 ? "${distanceInMeters}m" : "${distanceInKm}km"}",
-      'distanceInMeters': distance,
-    };
-  }).toList();
+    stories[i].distance =
+        distance - distanceGeolocator > 100 ? distanceGeolocator : distance;
+  }
 
-  // Ordenar por distancia en metros
-  enrichedStories.sort((a, b) {
-    return a['distanceInMeters'].compareTo(b['distanceInMeters']);
-  });
+  stories.sort((a, b) => a.distance.compareTo(b.distance));
 
-  return enrichedStories;
+  return stories;
 }

@@ -71,12 +71,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
         Position position = await determinePosition();
 
         //todo: posiblemente quitarlo sino revisar - para mostrar la distancia si va caminando o en auto antes de ir a google maps
-        final distanceGeolocator = distanceFromGeolocator(position, history);
+        // final distanceGeolocator = distanceFromGeolocator(position, history);
 
         final currentLocation = "${position.latitude},${position.longitude}";
 
+        // final googleMapsUrl =
+        //     "https://www.google.com/maps/dir/?api=1&origin=$currentLocation&destination=${history['latitud']},${history['longitud']}&travelmode=${distanceGeolocator > 500 ? 'driving' : 'walking'}";
         final googleMapsUrl =
-            "https://www.google.com/maps/dir/?api=1&origin=$currentLocation&destination=${history['latitud']},${history['longitud']}&travelmode=${distanceGeolocator > 500 ? 'driving' : 'walking'}";
+            "https://www.google.com/maps/dir/?api=1&origin=$currentLocation&destination=${history['latitud']},${history['longitud']}&travelmode=driving";
 
         // Intentar abrir Google Maps
         if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
