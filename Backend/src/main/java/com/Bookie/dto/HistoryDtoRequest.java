@@ -14,9 +14,9 @@ public record HistoryDtoRequest(
         @NotNull
         GenreLiterary genre,
         String img,
-       // @NotBlank
+        @NotBlank
         String country,
-      //  @NotBlank
+        @NotBlank
         String province
 ) {
 }

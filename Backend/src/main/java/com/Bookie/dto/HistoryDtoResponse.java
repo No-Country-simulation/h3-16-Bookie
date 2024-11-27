@@ -18,9 +18,15 @@ public record HistoryDtoResponse(
         @NotNull
         GenreLiterary genre,
         String img,
-        boolean publish
+        boolean publish,
+        @NotBlank
+        String country,
+        @NotBlank
+        String province
 ) {
         public HistoryDtoResponse(HistoryEntity historyEntity){
-                this(historyEntity.getId(),historyEntity.getTitle(),historyEntity.getSyopsis(),historyEntity.getCreator(),historyEntity.getGenre(),historyEntity.getImg(),historyEntity.getPublish());
+                this(historyEntity.getId(),historyEntity.getTitle(),historyEntity.getSyopsis(),historyEntity.getCreator(),
+                        historyEntity.getGenre(),historyEntity.getImg(),historyEntity.getPublish(),
+                        historyEntity.getCountries().getName(),historyEntity.getCountries().getProvinces().get(0).getName());
         }
 }

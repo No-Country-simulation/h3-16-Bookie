@@ -36,5 +36,5 @@ public class HistoryEntity {
     @ManyToOne
     @JoinColumn(name = "CountryEntity_id")
     @JsonIgnore
-    private CountryEntity histories;
+    private CountryEntity countries;
 }
