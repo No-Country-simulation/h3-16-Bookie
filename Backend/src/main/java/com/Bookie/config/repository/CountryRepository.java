@@ -4,4 +4,5 @@ import com.Bookie.entities.CountryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CountryRepository extends JpaRepository<CountryEntity,Long> {
+    CountryEntity findByName(String country);
 }

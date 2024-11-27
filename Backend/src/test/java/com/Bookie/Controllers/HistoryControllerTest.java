@@ -58,7 +58,7 @@ class HistoryControllerTest {
     }
 
     @Test
-    void crateHistory() {
+    void crateHistory() throws JsonProcessingException {
 
         HistoryDtoRequest HistoryDtoRequest = new HistoryDtoRequest("Historia del monte embrujado",
                 "Encuantro sercano con almas en pena", 1L, GenreLiterary.NOVELA, "http://portada.jpg","ARGENTINA","BUENOS AIRES");
@@ -69,14 +69,17 @@ class HistoryControllerTest {
                     "synopsis": "Encuantro cercano con almas en pena",
                     "creator_id": 1,
                     "genre": "NOVELA",
-                    "img": "http://portada.jpg"
+                    "img": "http://portada.jpg",
+                     "country" :"ARGENTINA",
+                    "province": "BUENOS AIRES"
                 }
                             
                 """;
         HttpEntity<String> request = new HttpEntity<>(json, headers);
         ResponseEntity<HistoryDtoResponse> crateHistoryResult = testRestTemplate.exchange("/api/v1/history", HttpMethod.POST, request, HistoryDtoResponse.class);
-        System.out.println("crateHistoryResult = " + crateHistoryResult);
+
         System.out.println("HistoryDtoRequest = " + json);
+        JsonUtil.toJsonPrint("crateHistoryResult",crateHistoryResult);
 
 
         assertAll(
