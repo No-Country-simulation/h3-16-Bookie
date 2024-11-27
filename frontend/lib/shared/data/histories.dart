@@ -72,8 +72,8 @@ final unreadStories = [
     'reads': 20000,
     'distance': 'a 4 km',
     'isFavorite': false,
-    "latitud": -8.079058,
-    "longitud": -79.121091,
+    "latitud": -8.014978,
+    "longitud": -78.832017,
   },
   {
     'id': '9',
@@ -84,8 +84,8 @@ final unreadStories = [
     'reads': 30000,
     'distance': 'a 6 km',
     'isFavorite': false,
-    "latitud": -8.079048,
-    "longitud": -79.123095,
+    "latitud": -8.120568,
+    "longitud": -79.045331,
   },
   {
     'id': '10',
@@ -96,8 +96,8 @@ final unreadStories = [
     'reads': 40000,
     'distance': 'a 8 km',
     'isFavorite': false,
-    "latitud": -8.079018,
-    "longitud": -79.121021,
+    "latitud": -8.132049,
+    "longitud": -79.051103,
   },
   {
     'id': '11',
@@ -120,8 +120,8 @@ final unreadStories = [
     'reads': 60000,
     'distance': 'a 12 km',
     'isFavorite': false,
-    "latitud": -8.079070,
-    "longitud": -79.121018,
+    "latitud": -8.120296,
+    "longitud": -79.043255,
   },
   {
     'id': '13',
@@ -156,8 +156,8 @@ final unreadStories = [
     'reads': 90000,
     'distance': 'a 18 km',
     'isFavorite': false,
-    "latitud": -8.079130,
-    "longitud": -79.121048,
+    "latitud": -8.102607,
+    "longitud": -79.039027,
   },
   {
     'id': '16',
@@ -168,8 +168,63 @@ final unreadStories = [
     'reads': 100000,
     'distance': 'a 20 km',
     'isFavorite': false,
-    "latitud": -8.079150,
-    "longitud": -79.121058,
+    "latitud": -8.120324,
+    "longitud": -79.045738,
   }
   // Más historias no leídas
 ];
+
+final distanceData = {
+  'destination_addresses': [
+    'Av la Ribera 361, Huanchaco, Peru',
+    '10A 280, 13100, Peru',
+    'VXH3+QWW, Trujillo 13011, Peru',
+    'VW9X+4HV, Víctor Larco Herrera 13009, Peru',
+    'Av la Ribera 361, Huanchaco, Peru',
+    'VXH4+XM6, C. R.P. Jaime de Gondra, Víctor Larco Herrera 13011, Peru',
+    'Av la Ribera 361, Huanchaco, Peru',
+    'Av la Ribera 361, Huanchaco, Peru',
+    'Av. Mansiche 1070, Trujillo 13011, Peru',
+    'La Rivera 820, Huanchaco 13001, Peru'
+  ],
+  'origin_addresses': [
+    'Av. Antenor Orrego 1265, Víctor Larco Herrera 13011, Peru'
+  ],
+  'rows': [
+    {
+      'elements': [
+        {
+          'distance': {'text': '15.9 km', 'value': 15882},
+          'duration': {'text': '25 mins', 'value': 1516},
+          'status': 'OK'
+        },
+        {
+          'distance': {'text': '31.8 km', 'value': 31829},
+          'duration': {'text': '47 mins', 'value': 2801},
+          'status': 'OK'
+        },
+        {
+          'distance': {'text': '73 m', 'value': 73},
+          'duration': {'text': '1 min', 'value': 29},
+          'status': 'OK'
+        },
+        {
+          'distance': {'text': '2.0 km', 'value': 2035},
+          'duration': {'text': '6 mins', 'value': 383},
+          'status': 'OK'
+        },
+        {
+          'distance': {'text': '15.9 km', 'value': 15874},
+          'duration': {'text': '25 mins', 'value': 1514},
+          'status': 'OK'
+        },
+        {
+          'distance': {'text': '31.8 km', 'value': 31819},
+          'duration': {'text': '47 mins', 'value': 2800},
+          'status': 'OK'
+        }
+      ],
+      'status': 'OK'
+    }
+  ]
+};

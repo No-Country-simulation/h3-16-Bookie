@@ -25,5 +25,24 @@ Future<Position> determinePosition() async {
   }
 
   // Devuelve la posición actual
-  return await Geolocator.getCurrentPosition();
+  return await Geolocator.getCurrentPosition(
+    locationSettings: const LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 50, // Actualiza cada 100 metros
+    ),
+  );
+}
+
+double distanceFromGeolocator(
+  Position currentPosition,
+  Map<String, dynamic> story,
+) {
+  final distance = Geolocator.distanceBetween(
+    currentPosition.latitude,
+    currentPosition.longitude,
+    story['latitud'],
+    story['longitud'],
+  );
+
+  return distance;
 }

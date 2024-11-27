@@ -5,4 +5,5 @@ class Environment {
   static String theAuth0Domain = dotenv.env['AUTH0_DOMAIN'] ?? '';
   static String theAuth0ClientId = dotenv.env['AUTH0_CLIENT_ID'] ?? '';
   static String theUrlDeployBackend = dotenv.env['URL_DEPLOY_BACKEND'] ?? '';
+  static String theGoogleMapsApiKey = dotenv.env['GOOGLE_MAPS_API_KEY'] ?? '';
 }

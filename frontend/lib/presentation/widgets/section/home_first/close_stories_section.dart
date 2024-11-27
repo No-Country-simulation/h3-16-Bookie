@@ -11,9 +11,9 @@ class CloseStoriesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start, // Alineación a la izquierda
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Título "Más historias"
+        // Título "Historias cercanas"
         Container(
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -26,6 +26,7 @@ class CloseStoriesSection extends StatelessWidget {
           ),
         ),
 
+        // todo: esto cambiara, creo q no usar Future Builder sino como estaba antes no se hara de esta manera porque se traera de una api
         // Sección de "Más historias" con Scroll Horizontal
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -50,7 +51,7 @@ class CloseStoriesSection extends StatelessWidget {
                       // TODO: ESTO SE VA POSIBLEMENTE SE QUITE PORQUE SE TRAERA O SE REALIZARA DE OTRA MANERA PARA TRAERSE LOS FAVORITOS, POR AHORA ES SOLO PARA SIMULAR
                       isFavorite: story.isFavorite,
                       onCardPress: () {
-                        context.go('/history/${story.id}');
+                        context.push('/history/${story.id}');
                       },
                     ),
                   ),
