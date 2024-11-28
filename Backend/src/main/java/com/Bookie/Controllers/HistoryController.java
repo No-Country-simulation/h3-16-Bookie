@@ -40,7 +40,7 @@ public class HistoryController {
             @ApiResponse(responseCode = "201", description = "History created successfully",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = HistoryDtoRequest.class),
                             examples = @ExampleObject(name = "HistoryDtoRequest",
-                                    value = "{\"id\": 1,\"title\": \"new title\", \"synopsis\": \"description of history\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber\"}")))
+                                    value = "{\"id\": 1,\"title\": \"new title\", \"synopsis\": \"description of history\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber\",\"country\": \"ARGENTINA\",\"province\": \"BUENOS AIRES\"}")))
     })
     public ResponseEntity<?> crateHistory(@RequestBody @Valid HistoryDtoRequest historyDto) {
         try {
