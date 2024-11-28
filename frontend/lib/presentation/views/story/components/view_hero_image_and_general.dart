@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:bookie/config/helpers/capitalize.dart';
 import 'package:bookie/presentation/providers/favorites_provider.dart';
+import 'package:bookie/presentation/widgets/shared/image_3d.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,7 +28,25 @@ class StoryHeroImageAndGeneral extends ConsumerStatefulWidget {
 }
 
 class _StoryHeroImageAndGeneralState
-    extends ConsumerState<StoryHeroImageAndGeneral> {
+    extends ConsumerState<StoryHeroImageAndGeneral>
+    with TickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _rotationAnimation;
+  late PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    )..addListener(() {
+        setState(() {});
+      });
+    _rotationAnimation =
+        Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
@@ -35,39 +56,28 @@ class _StoryHeroImageAndGeneralState
     return Center(
       child: Column(children: [
         Stack(children: [
-          // Imagen con Hero
-          Hero(
-            tag: 'hero-image-${widget.storyId}',
-            child: ClipRRect(
-              child: Image.network(
-                widget.imageUrl,
-                width: MediaQuery.of(context).size.width * 0.6,
-                height: MediaQuery.of(context).size.height * 0.35,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          // Botón de favorito
+          My3DImage(
+              imageUrl: widget.imageUrl,
+              title: widget.title,
+              storyId: widget.storyId),
           Positioned(
             bottom: 16,
             left: 16,
             child: GestureDetector(
               onTap: () {
-                // Lógica de agregar/quitar de favoritos
                 ref
                     .read(favoriteProvider.notifier)
                     .toggleFavorite(widget.storyId);
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.black
-                      .withOpacity(0.6), // Fondo oscuro semitransparente
-                  shape: BoxShape.circle, // Forma circular
+                  color: Colors.black.withOpacity(0.6),
+                  shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.5),
                       blurRadius: 6,
-                      offset: const Offset(0, 2), // Sombras
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
@@ -90,50 +100,35 @@ class _StoryHeroImageAndGeneralState
         SizedBox(height: 8),
         Text("Autor: Ana Sofia"),
         SizedBox(height: 8),
-        // cambiar icon
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Ubicación e icono
             Row(
               children: [
                 const Icon(Icons.location_on, size: 18, color: Colors.grey),
                 const SizedBox(width: 4),
-                Text(
-                  "Bogota, a 2 km",
-                  style: const TextStyle(fontSize: 14, color: Colors.grey),
-                ),
+                Text("Bogota, a 2 km",
+                    style: const TextStyle(fontSize: 14, color: Colors.grey)),
               ],
             ),
-            // Capítulos e icono
             Row(
               children: [
                 const Icon(Icons.book, size: 18, color: Colors.grey),
                 const SizedBox(width: 4),
-                Text(
-                  "${widget.lenChapters} capítulos",
-                  style: const TextStyle(fontSize: 14, color: Colors.grey),
-                ),
+                Text("${widget.lenChapters} capítulos",
+                    style: const TextStyle(fontSize: 14, color: Colors.grey)),
               ],
             ),
-            // Tiempo e icono
             Row(
               children: [
                 const Icon(Icons.access_time, size: 18, color: Colors.grey),
                 const SizedBox(width: 4),
-                const Text(
-                  "30 min",
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
-                ),
+                const Text("30 min",
+                    style: TextStyle(fontSize: 14, color: Colors.grey)),
               ],
             ),
           ],
         ),
-        // Text(
-        //   "Lugar: Museo del Oro Bogotá\nCra. 6 #15-88, Bogotá, Colombia",
-        //   style: TextStyle(fontSize: 12),
-        // ),
       ]),
     );
   }

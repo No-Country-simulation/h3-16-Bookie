@@ -59,6 +59,7 @@ class _MapStoriesGoogleMapsState extends State<MapStoriesGoogleMaps> {
 
     // Obtener la ubicación actual
     final position = await Geolocator.getCurrentPosition();
+
     setState(() {
       _currentPosition = LatLng(position.latitude, position.longitude);
       _markers.add(
@@ -156,6 +157,12 @@ class _MapStoriesGoogleMapsState extends State<MapStoriesGoogleMaps> {
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.future.then((controller) => controller.dispose());
+    super.dispose();
   }
 
   @override

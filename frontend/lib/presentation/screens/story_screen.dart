@@ -18,6 +18,11 @@ class StoryScreen extends ConsumerStatefulWidget {
 
 class _StoryScreenState extends ConsumerState<StoryScreen> {
   late PageController _pageController;
+  // final _notifierScroll = ValueNotifier(0.0);
+
+  // void listener() {
+  //   _notifierScroll.value = _pageController.page!;
+  // }
 
   @override
   void initState() {
@@ -28,10 +33,12 @@ class _StoryScreenState extends ConsumerState<StoryScreen> {
         stories.indexWhere((story) => story.id == widget.storyId);
     _pageController =
         PageController(initialPage: initialIndex >= 0 ? initialIndex : 0);
+    // _pageController.addListener(listener);
   }
 
   @override
   void dispose() {
+    // _pageController.removeListener(listener);
     _pageController.dispose();
     super.dispose();
   }
@@ -41,39 +48,44 @@ class _StoryScreenState extends ConsumerState<StoryScreen> {
     final stories = ref.watch(getStoriesProvider);
 
     return Scaffold(
-      // appBar: !_pageController.hasClients
-      //     ? AppBar(
-      //         title: Text('Historias'),
-      //       )
-      //     : null,
       body: SafeArea(
-        child: PageView.builder(
-          controller:
-              _pageController, // Asegúrate de usar el PageController aquí
-          itemCount: stories.length,
-          itemBuilder: (context, index) {
-            final story = stories[index];
+          child:
+              // ValueListenableBuilder<double>(
+              // valueListenable: _notifierScroll,
+              // builder: (context, value, _) {
+              // return
+              PageView.builder(
+        controller: _pageController, // Asegúrate de usar el PageController aquí
+        itemCount: stories.length,
+        itemBuilder: (context, index) {
+          final story = stories[index];
+          // final percentage = index - value;
+          // final rotation = percentage.clamp(0.0, 1.0);
+          // final fixRotation = pow(rotation, 0.35);
 
-            return Consumer(
-              builder: (context, ref, child) {
-                final asyncStory = ref.watch(getStoryByIdProvider(story.id));
+          return Consumer(
+            builder: (context, ref, child) {
+              final asyncStory = ref.watch(getStoryByIdProvider(story.id));
 
-                return asyncStory.when(
-                  data: (story) => _StoryScreenDetail(
-                    pageController: _pageController,
-                    story: story,
-                  ),
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
-                  error: (error, stack) => Center(
-                    child: Text("Error cargando historia: $error"),
-                  ),
-                );
-              },
-            );
-          },
-        ),
-      ),
+              return asyncStory.when(
+                data: (story) => _StoryScreenDetail(
+                  pageController: _pageController,
+                  story: story,
+                  // rotation: rotation,
+                  // fixRotation: fixRotation,
+                ),
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stack) => Center(
+                  child: Text("Error cargando historia: $error"),
+                ),
+              );
+            },
+          );
+        },
+      )
+          // }
+          // ),
+          ),
     );
   }
 }
@@ -81,9 +93,13 @@ class _StoryScreenState extends ConsumerState<StoryScreen> {
 class _StoryScreenDetail extends StatelessWidget {
   final PageController _pageController;
   final Story story;
+  // final double rotation;
+  // final num fixRotation;
 
   const _StoryScreenDetail({
     required PageController pageController,
+    // required this.rotation,
+    // required this.fixRotation,
     required this.story,
   }) : _pageController = pageController;
 
@@ -96,13 +112,17 @@ class _StoryScreenDetail extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          const SizedBox(height: 32),
           // Hero Image (25% de la pantalla)
           StoryHeroImageAndGeneral(
-              storyId: story.id,
-              isFavorite: story.isFavorite,
-              imageUrl: story.imageUrl,
-              title: story.title,
-              lenChapters: story.chapters!.length),
+            storyId: story.id,
+            isFavorite: story.isFavorite,
+            imageUrl: story.imageUrl,
+            title: story.title,
+            lenChapters: story.chapters!.length,
+            // rotation: rotation,
+            // fixRotation: fixRotation,
+          ),
 
           const SizedBox(height: 16),
           // Mapa y botón de Google Maps
