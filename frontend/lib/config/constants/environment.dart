@@ -7,3 +7,4 @@ class Environment {
   static String theUrlDeployBackend = dotenv.env['URL_DEPLOY_BACKEND'] ?? '';
   static String theGoogleMapsApiKey = dotenv.env['GOOGLE_MAPS_API_KEY'] ?? '';
 }
+

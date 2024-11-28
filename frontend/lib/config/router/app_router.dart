@@ -1,8 +1,7 @@
+import 'package:bookie/presentation/screens/login_register_screen.dart';
 import 'package:bookie/presentation/screens/story_map_screen.dart';
 import 'package:bookie/presentation/screens/story_screen.dart';
 import 'package:bookie/presentation/screens/home_screen.dart';
-import 'package:bookie/presentation/screens/login_screen.dart';
-import 'package:bookie/presentation/screens/register_screen.dart';
 import 'package:bookie/presentation/screens/splash_screen.dart';
 import 'package:bookie/presentation/screens/writer_screen.dart';
 import 'package:bookie/presentation/views/settings/settings_profile_screen.dart';
@@ -10,11 +9,12 @@ import 'package:bookie/presentation/views/settings/settings_theme_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/home/0', // Ruta inicial
+  initialLocation: '/splash', // Ruta inicial
   routes: [
     GoRoute(path: "/splash", builder: (context, state) => const SplashScreen()),
-    GoRoute(path: "/login", builder: (context, state) => LoginScreen()),
-    GoRoute(path: "/register", builder: (context, state) => RegisterScreen()),
+    GoRoute(
+        path: "/login", builder: (context, state) => LoginOrRegisterScreen()),
+    // GoRoute(path: "/register", builder: (context, state) => RegisterScreen()),
     // Ruta principal de HomeScreen
     GoRoute(
       path: '/home/:page', // Ruta dinámica para cambiar de pantalla

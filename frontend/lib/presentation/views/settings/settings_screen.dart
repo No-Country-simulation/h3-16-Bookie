@@ -1,11 +1,13 @@
+import 'package:bookie/config/auth/auth0.dart';
 import 'package:bookie/config/menu/settings_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class SettingsScreen extends StatelessWidget {
   static const String name = 'settings';
+  final AuthService authService = AuthService();
 
-  const SettingsScreen({super.key});
+  SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,11 @@ class SettingsScreen extends StatelessWidget {
                   subtitle: e.subTitle != null ? Text(e.subTitle ?? '') : null,
                   leading: Icon(e.icon),
                   onTap: () {
-                    context.push(e.link ?? '');
+                    if (e.title == "Cerrar sesión") {
+                      authService.logout(context);
+                    } else {
+                      context.push(e.link ?? '');
+                    }
                   })),
             ],
           ),

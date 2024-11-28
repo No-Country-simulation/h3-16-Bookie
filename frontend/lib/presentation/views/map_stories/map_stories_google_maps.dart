@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
 
 class MapStoriesGoogleMaps extends StatefulWidget {
   const MapStoriesGoogleMaps({super.key});
@@ -16,6 +16,7 @@ class _MapStoriesGoogleMapsState extends State<MapStoriesGoogleMaps> {
       const LatLng(-8.110106, -79.025299); // Coordenadas iniciales
   final List<Marker> _markers = [];
   String _selectedPlace = ''; // Texto del lugar seleccionado
+  bool _isLoading = true; // Estado para controlar el loader
 
   @override
   void initState() {
@@ -25,56 +26,37 @@ class _MapStoriesGoogleMapsState extends State<MapStoriesGoogleMaps> {
   }
 
   Future<void> _getCurrentLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+    try {
+      // Obtener la ubicación actual
+      final position = await determinePosition();
 
-    // Verificar si el servicio de ubicación está habilitado
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Por favor, habilita los servicios de ubicación.'),
-      ));
-      return;
+      if (!mounted)
+        return; // Verificar si el widget está montado antes de llamar setState
+
+      setState(() {
+        _currentPosition = LatLng(position.latitude, position.longitude);
+        _isLoading = false; // Ocultar el loader
+        _markers.add(
+          Marker(
+            markerId: const MarkerId('currentLocation'),
+            position: _currentPosition,
+            infoWindow: const InfoWindow(title: 'Mi ubicación'),
+          ),
+        );
+      });
+
+      // Mover la cámara a la ubicación actual
+      final controller = await _controller.future;
+      if (!mounted)
+        return; // Verificar si el widget está montado antes de manipular el controller
+      controller
+          .animateCamera(CameraUpdate.newLatLngZoom(_currentPosition, 14.0));
+    } catch (e) {
+      setState(() {
+        _isLoading = false; // Ocultar el loader si ocurre un error
+      });
+      print('Error obteniendo la ubicación: $e');
     }
-
-    // Verificar permisos
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Los permisos de ubicación fueron denegados.'),
-        ));
-        return;
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content:
-            Text('Los permisos de ubicación están denegados permanentemente.'),
-      ));
-      return;
-    }
-
-    // Obtener la ubicación actual
-    final position = await Geolocator.getCurrentPosition();
-
-    setState(() {
-      _currentPosition = LatLng(position.latitude, position.longitude);
-      _markers.add(
-        Marker(
-          markerId: const MarkerId('currentLocation'),
-          position: _currentPosition,
-          infoWindow: const InfoWindow(title: 'Mi ubicación'),
-        ),
-      );
-    });
-
-    // Mover la cámara a la ubicación actual
-    final controller = await _controller.future;
-    controller
-        .animateCamera(CameraUpdate.newLatLngZoom(_currentPosition, 14.0));
   }
 
   void _addNearbyMarkers() {
@@ -169,16 +151,24 @@ class _MapStoriesGoogleMapsState extends State<MapStoriesGoogleMaps> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Google Maps - Ubicación y Marcadores")),
-      body: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: CameraPosition(
-          target: _currentPosition,
-          zoom: 14.0,
-        ),
-        markers: Set.from(_markers),
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
+      body: Stack(
+        children: [
+          GoogleMap(
+            mapType: MapType.normal,
+            initialCameraPosition: CameraPosition(
+              target: _currentPosition,
+              zoom: 14.0,
+            ),
+            markers: Set.from(_markers),
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+            },
+          ),
+          if (_isLoading) // Mostrar el loader si está cargando
+            Center(
+              child: CircularProgressIndicator(),
+            ),
+        ],
       ),
     );
   }

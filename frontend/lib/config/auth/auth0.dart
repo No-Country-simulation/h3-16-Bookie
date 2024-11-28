@@ -9,23 +9,38 @@ class AuthService {
   Future<void> login(BuildContext context) async {
     try {
       // Invoca el Universal Login
-      final credentials = await auth0.webAuthentication().login(useHTTPS: true);
+      final credentials = await auth0
+          .webAuthentication(
+            scheme: 'demo',
+          )
+          .login();
 
       // Redirige a la ruta '/home' con las credenciales
       if (context.mounted) {
-        print("Credenciales obtenidas: $credentials");
         context.go('/home/0', extra: credentials); // Usando go_router
       }
     } catch (e) {
-      print("Error de autenticación: $e");
+      print("ERORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR: $e");
     }
   }
-  
 
   Future<void> logout(BuildContext context) async {
-    await auth0.webAuthentication().logout();
-    if (context.mounted) {
-      context.go('/login'); // Redirige al login después de logout
+    try {
+      await auth0
+          .webAuthentication(
+            scheme: 'demo',
+          )
+          .logout();
+
+      // Limpiar cualquier dato de sesión persistente si estás usando almacenamiento local
+      // Ejemplo usando SecureStorage (si lo usas)
+      // await SecureStorage().delete(key: 'userToken');
+
+      if (context.mounted) {
+        context.go('/splash'); // Redirige a la pantalla de splash/login
+      }
+    } catch (e) {
+      print("ERROOOOOOOOOOOO LOGOUTTTTTTTTTTTTTTTTTTTTT: $e");
     }
   }
 }

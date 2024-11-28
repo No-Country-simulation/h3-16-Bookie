@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:bookie/config/helpers/capitalize.dart';
 import 'package:bookie/presentation/providers/favorites_provider.dart';
