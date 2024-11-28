@@ -63,7 +63,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                       distance: card.distance,
                       isFavorite: card.isFavorite,
                       onCardPress: () {
-                        context.go('/history/${card.id}');
+                        context.push('/story/${card.id}');
                       },
                     ),
                   ),

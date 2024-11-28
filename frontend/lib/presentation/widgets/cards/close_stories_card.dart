@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CloseStoriesCard extends ConsumerStatefulWidget {
-  final int id; // ID único
-  final String imageUrl; // URL de la imagen
+  final int id;
+  final String imageUrl;
   final String title;
   final String? synopsis;
   // final double? rating;
@@ -17,7 +17,7 @@ class CloseStoriesCard extends ConsumerStatefulWidget {
 
   const CloseStoriesCard({
     super.key,
-    required this.id, // Requiere un id único
+    required this.id,
     required this.imageUrl,
     required this.title,
     this.synopsis,

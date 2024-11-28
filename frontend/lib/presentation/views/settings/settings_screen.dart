@@ -23,7 +23,7 @@ class SettingsScreen extends StatelessWidget {
                   subtitle: e.subTitle != null ? Text(e.subTitle ?? '') : null,
                   leading: Icon(e.icon),
                   onTap: () {
-                    context.go(e.link ?? '');
+                    context.push(e.link ?? '');
                   })),
             ],
           ),

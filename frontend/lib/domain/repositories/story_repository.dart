@@ -1,5 +1,9 @@
 import 'package:bookie/domain/entities/story.dart';
 
-abstract class StoryRepository {
+abstract class StoriesRepository {
   Future<List<Story>> getStories();
+
+  Future<List<Story>> getStoriesByUser(int userId);
+
+  Future<Story> getStory(int storyId);
 }

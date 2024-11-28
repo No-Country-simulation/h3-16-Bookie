@@ -1,3 +1,4 @@
+import 'package:bookie/config/intl/i18n.dart';
 import 'package:bookie/domain/entities/story.dart';
 import 'package:bookie/presentation/widgets/cards/close_stories_card.dart';
 import 'package:flutter/material.dart';
@@ -5,8 +6,10 @@ import 'package:go_router/go_router.dart';
 
 class CloseStoriesSection extends StatelessWidget {
   final List<Story> stories;
+  final AppLocalizations? localizations;
 
-  const CloseStoriesSection({super.key, required this.stories});
+  const CloseStoriesSection(
+      {super.key, required this.stories, this.localizations});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +21,9 @@ class CloseStoriesSection extends StatelessWidget {
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Text(
-            "Historias cercanas",
+            localizations?.translate("homepage_close_stories") != null
+                ? "${localizations?.translate("homepage_close_stories")}"
+                : "",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
@@ -51,7 +56,7 @@ class CloseStoriesSection extends StatelessWidget {
                       // TODO: ESTO SE VA POSIBLEMENTE SE QUITE PORQUE SE TRAERA O SE REALIZARA DE OTRA MANERA PARA TRAERSE LOS FAVORITOS, POR AHORA ES SOLO PARA SIMULAR
                       isFavorite: story.isFavorite,
                       onCardPress: () {
-                        context.push('/history/${story.id}');
+                        context.push('/story/${story.id}');
                       },
                     ),
                   ),

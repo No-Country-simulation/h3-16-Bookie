@@ -2,13 +2,23 @@ import 'package:bookie/domain/datasources/story_datasource.dart';
 import 'package:bookie/domain/entities/story.dart';
 import 'package:bookie/domain/repositories/story_repository.dart';
 
-class StoryRepositoryImpl implements StoryRepository {
-  final StoryDatasource datasource;
+class StoriesRepositoryImpl implements StoriesRepository {
+  final StoriesDatasource datasource;
 
-  StoryRepositoryImpl(this.datasource);
+  StoriesRepositoryImpl(this.datasource);
 
   @override
   Future<List<Story>> getStories() {
     return datasource.getStories();
+  }
+
+  @override
+  Future<List<Story>> getStoriesByUser(int userId) {
+    return datasource.getStoriesByUser(userId);
+  }
+
+  @override
+  Future<Story> getStory(int storyId) {
+    return datasource.getStory(storyId);
   }
 }

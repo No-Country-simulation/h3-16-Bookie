@@ -1,4 +1,5 @@
-import 'package:bookie/presentation/screens/history_screen.dart';
+import 'package:bookie/presentation/screens/story_map_screen.dart';
+import 'package:bookie/presentation/screens/story_screen.dart';
 import 'package:bookie/presentation/screens/home_screen.dart';
 import 'package:bookie/presentation/screens/login_screen.dart';
 import 'package:bookie/presentation/screens/register_screen.dart';
@@ -37,12 +38,20 @@ final appRouter = GoRouter(
 
     // Ruta para ver la información de una historia específica
     GoRoute(
-      path: '/history/:id', // Ruta dinámica con el parámetro 'id'
-      name: HistoryScreen.name,
+      path: '/story/:id', // Ruta dinámica con el parámetro 'id'
+      name: StoryScreen.name,
       builder: (context, state) {
-        final cardId = state.pathParameters['id'] ?? '';
-        return HistoryScreen(historyId: cardId); // Pasa el id al HistoryScreen
+        final storyId = state.pathParameters['id'] ?? '';
+        return StoryScreen(
+            storyId: int.parse(storyId)); // Pasa el id al HistoryScreen
       },
+      routes: [
+        GoRoute(
+          path: 'map',
+          name: StoryMapScreen.name,
+          builder: (context, state) => const StoryMapScreen(),
+        ),
+      ],
     ),
 
     // Ruta para ver la información de un writer específico

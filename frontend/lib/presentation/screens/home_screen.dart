@@ -1,4 +1,4 @@
-import 'package:bookie/presentation/views/create_history/create_history_screen.dart';
+import 'package:bookie/presentation/views/story/create_story_screen.dart';
 import 'package:bookie/presentation/views/favorites/favorites_screen.dart';
 import 'package:bookie/presentation/views/home-first/home_first.dart';
 import 'package:bookie/presentation/views/map_stories/map_stories_google_maps.dart';

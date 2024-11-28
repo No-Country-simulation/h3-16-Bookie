@@ -1,19 +1,14 @@
-import 'package:bookie/config/constants/environment.dart';
+import 'package:bookie/config/fetch/fetch_api.dart';
 import 'package:bookie/config/helpers/sorted.dart';
 import 'package:bookie/domain/datasources/story_datasource.dart';
 import 'package:bookie/domain/entities/story.dart';
 import 'package:bookie/infrastructure/mappers/storydb_mapper.dart';
 import 'package:bookie/infrastructure/models/story_db.dart';
-import 'package:dio/dio.dart';
 
-class StoryDbDatasource extends StoryDatasource {
-  final dio = Dio(BaseOptions(
-    baseUrl: Environment.theUrlDeployBackend,
-  ));
-
+class StoriesDbDatasource extends StoriesDatasource {
   @override
   Future<List<Story>> getStories() async {
-    final response = await dio.get('/v1/history/all');
+    final response = await FetchApi.fetchDio().get('/v1/history/all');
     final storiesDBResponse = StoryDbResponse.fromJsonList(response.data);
 
     final List<Story> stories = storiesDBResponse
@@ -26,5 +21,32 @@ class StoryDbDatasource extends StoryDatasource {
         stories); // Ordenar las historias por la distancia
 
     return sortedStories;
+  }
+
+    @override
+  Future<List<Story>> getStoriesByUser(int userId) async {
+    final response = await FetchApi.fetchDio().get('/v1/history/user/$userId');
+    final storiesDBResponse = StoryDbResponse.fromJsonList(response.data);
+
+    final List<Story> stories = storiesDBResponse
+        // .where((story) => story.campoafiltrar)
+        .map((storydb) => StoryMapper.storyDBToEntity(storydb))
+        .toList();
+
+    // Ordenar las historias por la distancia
+    final List<Story> sortedStories = await getSortedStories(
+        stories); // Ordenar las historias por la distancia
+
+    return sortedStories;
+  }
+
+  @override
+  Future<Story> getStory(int storyId) async {
+    final response = await FetchApi.fetchDio().get('/v1/history/$storyId');
+    final storyDBResponse = StoryDbResponse.fromJson(response.data);
+
+    final Story story = StoryMapper.storyDBToEntity(storyDBResponse);
+
+    return story;
   }
 }

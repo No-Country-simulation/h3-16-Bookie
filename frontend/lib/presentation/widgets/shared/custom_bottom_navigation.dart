@@ -7,7 +7,7 @@ class CustomBottomNavigation extends StatelessWidget {
   const CustomBottomNavigation({super.key, required this.currentIndex});
 
   void _onItemTapped(BuildContext context, int index) {
-    context.go('/home/$index');
+    context.push('/home/$index');
   }
 
   @override

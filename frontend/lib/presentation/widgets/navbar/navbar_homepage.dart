@@ -21,28 +21,28 @@ class NavBarCustom extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Image.asset('assets/images/logo.webp', height: 50),
           Row(
             children: [
-              Text(
-                localizations?.translate("greeting") != null
-                    ? "${localizations?.translate("greeting")}, $userName"
-                    : "",
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(width: 12),
+              // Text(
+              //   localizations?.translate("greeting") != null
+              //       ? "${localizations?.translate("greeting")}, $userName"
+              //       : "",
+              //   style: const TextStyle(
+              //     fontSize: 16,
+              //     fontWeight: FontWeight.bold,
+              //   ),
+              // ),
+              // const SizedBox(width: 12),
               CircleAvatar(
                 backgroundImage: NetworkImage(avatarUrl),
                 radius: 20,
               ),
-              // const SizedBox(width: 6),
+              const SizedBox(width: 8),
               IconButton(
                 onPressed: onSearchTapped,
                 icon: const Icon(

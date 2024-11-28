@@ -82,7 +82,8 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
                     localizations: localizations,
                     changeLanguage: changeLanguage),
                 HeroSection(unreadStories: unreadStories),
-                CloseStoriesSection(stories: stories),
+                CloseStoriesSection(
+                    stories: stories, localizations: localizations),
                 StoriesReadSection(readStories: readStories),
                 WritersSection(writers: writers),
               ],

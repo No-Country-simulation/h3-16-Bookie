@@ -37,7 +37,7 @@ class WritersSection extends StatelessWidget {
                 imageUrl: writer['imageUrl'],
                 name: writer['name'],
                 onCardPress: () {
-                  context.go('/writer/${writer['id']}');
+                  context.push('/writer/${writer['id']}');
                 },
               );
             },

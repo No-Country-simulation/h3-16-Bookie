@@ -1,3 +1,0 @@
-// class FetchGeneral {
-//   static fetching
-// }

@@ -83,7 +83,7 @@ class _HomeFirstSearchState extends State<HomeFirstSearch> {
                 onTap: () {
                   // Acción al seleccionar una historia
                   // print("Seleccionaste: ${story['title']}");
-                  context.go('/history/${story['id']}');
+                  context.push('/story/${story['id']}');
                 },
               );
             },
