@@ -19,7 +19,6 @@ class ChapterCard extends StatelessWidget {
     // Color de fondo oscuro y ajustes para el diseño
     final lockIcon = isUnlocked ? Icons.lock_open : Icons.lock;
     final iconColor = isUnlocked ? Colors.green : Colors.red;
-    final isDarkmode = Theme.of(context).brightness == Brightness.dark;
 
     return Card(
       margin: const EdgeInsets.only(bottom: 16.0),
