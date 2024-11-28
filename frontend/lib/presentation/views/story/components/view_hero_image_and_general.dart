@@ -33,6 +33,7 @@ class _StoryHeroImageAndGeneralState
   late AnimationController _controller;
   late Animation<double> _rotationAnimation;
   late PageController _pageController;
+  double _opacity = 0.0;
 
   @override
   void initState() {
@@ -45,6 +46,11 @@ class _StoryHeroImageAndGeneralState
       });
     _rotationAnimation =
         Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
+    Future.delayed(const Duration(milliseconds: 100), () {
+      setState(() {
+        _opacity = 1.0;
+      });
+    });
   }
 
   @override
@@ -92,13 +98,24 @@ class _StoryHeroImageAndGeneralState
           ),
         ]),
         SizedBox(height: 8),
-        Text(
-          capitalize(widget.title),
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: colors.primary),
+        AnimatedOpacity(
+          opacity: _opacity,
+          duration: const Duration(milliseconds: 750),
+          curve: Curves.easeIn,
+          child: Column(
+            children: [
+              Text(
+                capitalize(widget.title),
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: colors.primary),
+              ),
+              SizedBox(height: 8),
+              Text("Autor: Ana Sofia"),
+            ],
+          ),
         ),
-        SizedBox(height: 8),
-        Text("Autor: Ana Sofia"),
         SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
