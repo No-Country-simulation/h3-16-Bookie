@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -56,5 +57,14 @@ public class UserService {
                     userRepository.save(newUser);
                 }
         );
+    }
+
+    // IMPORTANTE este metodo despues abria que borrarlo o hacerlo solo para admins
+    public List<UserEntity> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public UserEntity getUserByAuth0Id(String auth0UserId) {
+        return userRepository.findByAuth0UserId(auth0UserId).orElse(null);
     }
 }
