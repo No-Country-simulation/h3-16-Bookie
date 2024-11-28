@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity(name = "HistoryEntity")
 @Table(name = "history")
 @Data
@@ -37,4 +39,10 @@ public class HistoryEntity {
     @JoinColumn(name = "CountryEntity_id")
     @JsonIgnore
     private CountryEntity countries;
+
+    @OneToMany(mappedBy = "history", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<WishlistEntity> wishlishistory;
+
+
 }
