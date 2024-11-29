@@ -60,18 +60,18 @@ class HistoryControllerTest {
     @Test
     void crateHistory() throws JsonProcessingException {
 
-        HistoryDtoRequest HistoryDtoRequest = new HistoryDtoRequest("Historia del monte embrujado",
-                "Encuantro sercano con almas en pena", 1L, GenreLiterary.NOVELA, "http://portada.jpg","ARGENTINA","BUENOS AIRES");
+        HistoryDtoRequest HistoryDtoRequest = new HistoryDtoRequest("La leyenda del MAGO 2",
+                "Una aventura épica sobre un MAGO y su MAGIA divivna.", 3L, GenreLiterary.FANTASIA, "http://imagen-del-dragon.jpg/","ARGENTINA","BUENOS AIRES");
 
         String json = """
                 {
-                    "title": "Historia del monte embrujado",
-                    "synopsis": "Encuantro cercano con almas en pena",
-                    "creator_id": 1,
-                    "genre": "NOVELA",
-                    "img": "http://portada.jpg",
-                     "country" :"peru",
-                    "province": "lima"
+                  "title": "La leyenda del MAGO 2",
+                  "synopsis": "Una aventura épica sobre un MAGO y su MAGIA divivna.",
+                  "creator_id": 3,
+                  "genre": "FANTASIA",
+                  "img": "http://imagen-del-dragon.jpg/",
+                  "country": "Peru",
+                  "province": "Lima"
                 }
                             
                 """;
@@ -125,7 +125,7 @@ class HistoryControllerTest {
     void deleteHistory() {
 
         HttpEntity<String> request = new HttpEntity<>(headers);
-        ResponseEntity<String> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/4", HttpMethod.DELETE, request, String.class);
+        ResponseEntity<String> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/7", HttpMethod.DELETE, request, String.class);
         System.out.println("updateHistory = " + crateHistoryResult);
 
 
