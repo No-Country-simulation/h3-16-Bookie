@@ -27,9 +27,7 @@ public class CountryEntity {
     @JsonIgnore
     private List<ProvinceEntity> provinces = new ArrayList<>();
 
-    @OneToMany(mappedBy = "countries", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<HistoryEntity> histories = new ArrayList<>();
+
 
     public CountryEntity(String country) {
         this.name = country;

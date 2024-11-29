@@ -39,7 +39,7 @@ public class HistoryService {
 
     public HistoryDtoResponse createHistory(@Valid HistoryDtoRequest historyDto) {
 
-        CountryEntity country = getCountryEntityByProvinceEntity(historyDto);
+        ProvinceEntity country = getCountryEntityByProvinceEntity(historyDto);
 
 
         /** <p> Buscar el usuario y guardar todo en la bbdd </p> */
@@ -51,7 +51,7 @@ public class HistoryService {
                 .syopsis(historyDto.synopsis())
                 .img(historyDto.img())
                 .publish(false)
-                .countries(country)
+                .province(country)
                 .build();
         HistoryEntity history = historyRepository.save(historyEntity);
 
@@ -64,26 +64,24 @@ public class HistoryService {
     /**
      * <p>Obtener el country por la province, si no existe lo crea</p>
      */
-    private CountryEntity getCountryEntityByProvinceEntity(HistoryDtoRequest historyDto) {
+    private ProvinceEntity getCountryEntityByProvinceEntity(HistoryDtoRequest historyDto) {
 
         /**<p>Traer el county desde su probincia</p>*/
         ProvinceEntity province = provinceRepository.findByName(historyDto.province().toUpperCase());
-        if (province != null) return province.getCountry();
+        if (province != null) return province;
 
 
         /**<p>Si no existe entonces busco el pais </p>*/
         CountryEntity country = countryRepository.findByName(historyDto.country().toUpperCase());
-        if (country == null) {
-            country = CountryEntity.builder().name(historyDto.country()).build();
-            country = countryRepository.save(country);
-        }
+        if (country == null) country = countryRepository.save(new CountryEntity(historyDto.country()));
+
 
         /** <p>Guardo la ciudad</p> */
         province = ProvinceEntity.builder().name(historyDto.province().toUpperCase()).country(country).build();
         province = provinceRepository.save(province);
 
 
-        return province.getCountry();
+        return province;
     }
 
     public List<HistoryEntity> getAll() {
