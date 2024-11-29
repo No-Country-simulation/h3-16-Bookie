@@ -107,7 +107,7 @@ class HistoryControllerTest {
                             
                 """;
         HttpEntity<String> request = new HttpEntity<>(json, headers);
-        ResponseEntity<HistoryDtoResponse> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/2", HttpMethod.PUT, request, HistoryDtoResponse.class);
+        ResponseEntity<HistoryDtoResponse> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/28", HttpMethod.PUT, request, HistoryDtoResponse.class);
         System.out.println("updateHistory = " + crateHistoryResult);
         System.out.println("HistoryDtoRequest = " + json);
 
@@ -116,7 +116,7 @@ class HistoryControllerTest {
                 () -> assertEquals(200, crateHistoryResult.getStatusCode().value()),
                 () -> assertEquals(crateHistoryResult.getBody().title(), HistoryDtoRequest.title()),
                 () -> assertEquals(crateHistoryResult.getBody().genre(), HistoryDtoRequest.genre()),
-                () -> assertEquals(crateHistoryResult.getBody().id(), 2)
+                () -> assertEquals(crateHistoryResult.getBody().id(), 28)
         );
     }
 
@@ -125,7 +125,7 @@ class HistoryControllerTest {
     void deleteHistory() {
 
         HttpEntity<String> request = new HttpEntity<>(headers);
-        ResponseEntity<String> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/16", HttpMethod.DELETE, request, String.class);
+        ResponseEntity<String> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/4", HttpMethod.DELETE, request, String.class);
         System.out.println("updateHistory = " + crateHistoryResult);
 
 
@@ -142,14 +142,14 @@ class HistoryControllerTest {
     void gethHistoryByIdAndChapter() {
 
         HttpEntity<String> request = new HttpEntity<>(headers);
-        ResponseEntity<HistoryDtoResponse> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/3", HttpMethod.GET, request, HistoryDtoResponse.class);
+        ResponseEntity<HistoryDtoResponse> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/28", HttpMethod.GET, request, HistoryDtoResponse.class);
         System.out.println("updateHistory = " + crateHistoryResult);
 
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK, crateHistoryResult.getStatusCode()),
                 () -> assertEquals(200, crateHistoryResult.getStatusCode().value()),
-                () -> assertEquals(crateHistoryResult.getBody().id(),3)
+                () -> assertEquals(crateHistoryResult.getBody().id(),28)
 
         );
     }
