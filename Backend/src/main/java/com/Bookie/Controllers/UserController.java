@@ -1,6 +1,7 @@
 package com.Bookie.Controllers;
 
-import com.Bookie.dto.HistoryDtoRequest;
+
+import com.Bookie.dto.HistoryDtoResponse;
 import com.Bookie.entities.UserEntity;
 import com.Bookie.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,12 +11,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.List;
@@ -105,6 +106,29 @@ public class UserController {
             return ResponseEntity.ok(user);
         } else {
             return ResponseEntity.notFound().build();
+
+
+        }
+    }
+
+    @GetMapping("/wishlist/{id}")
+    @Operation(
+            summary = "Get wishlist",
+            description = "Get wishlist by ID",
+            tags = {"History"}
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Obtener historias de la lista de deseos",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = HistoryDtoResponse.class),
+                            examples = @ExampleObject(name = "HistoryDtoResponse",
+                                    value = "{\"id\": 1,\"title\": \"new title\", \"synopsis\": \"description of history\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber\"}")))
+    })
+    public ResponseEntity<?> gethHistory(@PathVariable  Long id) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(userService.getWishlist(id));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", ex.getMessage()));
+
         }
     }
 }
