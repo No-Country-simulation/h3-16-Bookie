@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:bookie/config/constants/general.dart';
 import 'package:flutter/material.dart';
 
 class My3DImage extends StatefulWidget {
@@ -48,6 +49,12 @@ class _My3DImageState extends State<My3DImage>
   Widget build(BuildContext context) {
     final isDarkmode = Theme.of(context).brightness == Brightness.dark;
 
+    final imageMod = widget.imageUrl != "sin-imagen"
+        ? widget.imageUrl
+        : isDarkmode
+            ? GeneralConstants.imageNotFoundDark
+            : GeneralConstants.imageNotFoundLight;
+
     return Hero(
       tag: 'hero-image-${widget.storyId}',
       child: AnimatedBuilder(
@@ -60,13 +67,15 @@ class _My3DImageState extends State<My3DImage>
                 width: 200,
                 height: 300,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Colors.white70,
                   boxShadow: [
                     BoxShadow(
-                      color: !isDarkmode ? Colors.black26 : Colors.white24,
+                      color: !isDarkmode
+                          ? Colors.black26
+                          : Colors.white10, // Sombra de fondo
                       blurRadius: 20,
-                      offset: const Offset(5.0, 5.0), // Sombra proyectada
-                      spreadRadius: 10,
+                      offset: const Offset(2.5, 2.5), // Sombra proyectada
+                      spreadRadius: 5,
                     ),
                   ],
                 ),
@@ -83,7 +92,7 @@ class _My3DImageState extends State<My3DImage>
           );
         },
         child: Image.network(
-          widget.imageUrl,
+          imageMod,
           width: 200, // Dimensiones tipo libro
           height: 300,
           fit: BoxFit.cover,

@@ -17,6 +17,8 @@ class Story {
 
   final List<ChapterLocal>?
       chapters; // TODO: ESTO TBM PUEDE CAMBIAR POSIBLEMENTE SE QUITE
+  final String? country;
+  final String? province;
 
   Story({
     required this.id,
@@ -26,8 +28,10 @@ class Story {
     required this.isFavorite, // TODO POSIBLEMENTE SE QUITE
     required this.imageUrl,
     required this.distance,
-    this.chapters, // TODO POSIBLEMENTE SE QUITE
     required this.genre,
+    this.chapters, // TODO POSIBLEMENTE SE QUITE
+    this.country,
+    this.province,
   });
 }
 
@@ -37,12 +41,16 @@ class StoryForm {
   final String genre;
   final int creatorId;
   final String? image;
+  final String country;
+  final String province;
 
   StoryForm({
     required this.title,
     required this.synopsis,
     required this.genre,
     required this.creatorId,
+    required this.country,
+    required this.province,
     this.image,
   });
 
@@ -53,6 +61,8 @@ class StoryForm {
       "creator_id": creatorId,
       "genre": genre,
       "img": image,
+      "country": country,
+      "province": province,
     };
   }
 }

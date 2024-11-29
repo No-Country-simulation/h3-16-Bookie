@@ -19,10 +19,12 @@ class StoryMapper {
         publish: storyDbResponse.publish,
         distance: 0,
         isFavorite: _random.nextBool(), // Genera true o false aleatoriamente
-        imageUrl: storyDbResponse.img ??
-            GeneralConstants
-                .imageNotFound, // Si no hay imagen, muestra un error
+        imageUrl: (storyDbResponse.img?.startsWith("http:") == true)
+            ? "sin-imagen"
+            : (storyDbResponse.img ?? "sin-imagen"),
         genre: GenreMapper.mapStringToEnum(storyDbResponse.genre),
+        country: storyDbResponse.country,
+        province: storyDbResponse.province,
         chapters: chapters.map((chapter) {
           return ChapterMapper.storyLocalToEntity(
               ChapterLocalModel.fromJson(chapter));

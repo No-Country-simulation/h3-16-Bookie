@@ -22,15 +22,15 @@ class AuthService {
       prefs.setString('idToken', credentials.idToken); // Guardar token
 
       // prueba para visualizar los datos guardados
-      final dio = Dio();
-      final response = await dio.get(
-        "http://deploy-bookie-production.up.railway.app/api/auth/user",
-        options: Options(headers: {
-          'Authorization': "Bearer ${credentials.idToken}",
-        }),
-      );
+      // final dio = Dio();
+      // final response = await dio.get(
+      //   "http://deploy-bookie-production.up.railway.app/api/auth/user",
+      //   options: Options(headers: {
+      //     'Authorization': "Bearer ${credentials.idToken}",
+      //   }),
+      // );
 
-      print("RESPONSE DE LA API DE TEST: ${response.data}");
+      // print("RESPONSE DE LA API DE TEST: ${response.data}");
 
       // Redirige a la ruta '/home' con las credenciales
       if (context.mounted) {

@@ -57,6 +57,8 @@ class StoriesDbDatasource extends StoriesDatasource {
 
   @override
   Future<Story> createStory(StoryForm storyForm) async {
+    // print("Datos de la historia a crear: ${storyForm.toJson()}");
+
     final response = await FetchApi.fetchDio().post(
       '/v1/history',
       data: storyForm.toJson(),

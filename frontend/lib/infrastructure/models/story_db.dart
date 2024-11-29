@@ -5,6 +5,8 @@ class StoryDbResponse {
   final bool publish;
   final String genre;
   final String? img;
+  final String? country;
+  final String? province;
 
   StoryDbResponse({
     required this.id,
@@ -13,6 +15,8 @@ class StoryDbResponse {
     required this.publish,
     required this.genre,
     this.img,
+    this.country,
+    this.province,
   });
 
   factory StoryDbResponse.fromJson(Map<String, dynamic> json) =>
@@ -23,6 +27,8 @@ class StoryDbResponse {
         publish: json["publish"],
         genre: json["genre"],
         img: json["img"],
+        country: json["country"],
+        province: json["province"],
       );
 
   static List<StoryDbResponse> fromJsonList(List<dynamic> jsonList) {
@@ -36,5 +42,7 @@ class StoryDbResponse {
         "publish": publish,
         "genre": genre,
         "img": img,
+        "country": country,
+        "province": province,
       };
 }

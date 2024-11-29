@@ -45,6 +45,8 @@ final getStoriesByUserProvider =
 // crear historia
 final createStoryProvider =
     FutureProvider.autoDispose.family<Story, StoryForm>((ref, storyForm) async {
+  // print("Datos de la historia a crear: ${storyForm.toJson()}");
+
   final repository =
       ref.watch(storyRepositoryProvider); // Obtener el repositorio
   return await repository

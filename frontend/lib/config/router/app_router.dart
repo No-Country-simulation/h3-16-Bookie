@@ -11,7 +11,7 @@ import 'package:bookie/presentation/views/story/create_form_story_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/home/2/form-chapter', // Ruta inicial
+  initialLocation: '/splash', // Ruta inicial
   routes: [
     GoRoute(path: "/splash", builder: (context, state) => const SplashScreen()),
     GoRoute(

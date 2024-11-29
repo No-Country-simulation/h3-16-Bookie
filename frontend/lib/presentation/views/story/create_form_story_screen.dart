@@ -9,6 +9,7 @@ import 'package:bookie/presentation/providers/story_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CreateFormStoryScreen extends ConsumerStatefulWidget {
@@ -64,6 +65,8 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
     final String? imagePath = _selectedImage?.path;
     final Dio dio = Dio();
     String? image;
+    String country = "PERU";
+    String province = "LIMA";
 
     // TODO REVISAR PARA VER SI SE PUEDE QUITAR ESTA PARTE O SOLO BASE64
     // generar url de imagen con cloudinary
@@ -84,7 +87,7 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
 
         // Obtener la URL de la imagen subida
         print("URL de la imagen subida: ${response.data}");
-        image = response.data['url'];
+        image = response.data['secure_url'];
       } catch (e) {
         print("Error al subir la imagen: $e");
         ScaffoldMessenger.of(context).showSnackBar(
@@ -116,8 +119,9 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
       genre: genreString,
       creatorId: 1,
       image: image,
+      country: country,
+      province: province,
     );
-
     // Crear el historia en el backend
     ref.read(createStoryProvider(storyForm).future).then(
       (story) {
@@ -125,6 +129,11 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
           SnackBar(
               content: Text('Historia creada'), backgroundColor: Colors.green),
         );
+
+        // Navegar a la ruta `/form-chapter` con GoRouter
+        if (context.mounted) {
+          context.go('/home/2/form-chapter');
+        }
       },
     ).catchError((e) {
       print("EROOOOOOOOOOOOOOOOOOOOO: $e");
@@ -293,8 +302,11 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
               const SizedBox(height: 16),
 
               // Géneros literarios
-              const Text("Género Literario",
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text("Género Literario",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: colors.primary)),
               const SizedBox(height: 8),
               SizedBox(
                 height: 40,

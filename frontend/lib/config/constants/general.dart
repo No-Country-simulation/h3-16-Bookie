@@ -1,7 +1,10 @@
 class GeneralConstants {
   static const String logo = 'assets/images/logo.webp';
-  static const String imageNotFound =
-      "https://www.shutterstock.com/shutterstock/photos/715380016/display_1500/stock-vector--error-page-not-found-emoticon-isolated-vector-illustration-715380016.jpg";
+  static const String imageNotFoundLight =
+      "https://res.cloudinary.com/dlixnwuhi/image/upload/v1732904180/z98tjuucmiybktxm1xxc.png";
+  static const String imageNotFoundDark =
+      "https://res.cloudinary.com/dlixnwuhi/image/upload/v1732904179/jy2lqsycdmwcv4gztuvy.png";
+  // "https://www.shutterstock.com/shutterstock/photos/715380016/display_1500/stock-vector--error-page-not-found-emoticon-isolated-vector-illustration-715380016.jpg";
 }
 
 
