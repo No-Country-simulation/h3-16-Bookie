@@ -1,4 +1,4 @@
-package com.Bookie.Controllers;
+package com.Bookie.deploy;
 
 import com.Bookie.dto.HistoryDtoRequest;
 import com.Bookie.dto.HistoryDtoRequestUpdate;
@@ -18,8 +18,8 @@ import org.springframework.http.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class HistoryControllerTest {
+@SpringBootTest
+class HistoryControllerDeployTest {
 
 
     private TestRestTemplate testRestTemplate;
@@ -30,12 +30,11 @@ class HistoryControllerTest {
     @Autowired
     private RestTemplateBuilder restTemplateBuilder;
 
-    @LocalServerPort
-    private int port;
+
 
     @BeforeEach
     void setUp() {
-        restTemplateBuilder = restTemplateBuilder.rootUri("http://localhost:" + port);
+        restTemplateBuilder = restTemplateBuilder.rootUri("https://deploy-bookie-production.up.railway.app:");
         testRestTemplate = new TestRestTemplate(restTemplateBuilder);
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -67,11 +66,13 @@ class HistoryControllerTest {
                 {
                     "title": "Historia del monte embrujado",
                     "synopsis": "Encuantro cercano con almas en pena",
-                    "creator_id": 1,
+                    "creator_id": 11,
                     "genre": "NOVELA",
                     "img": "http://portada.jpg",
-                     "country" :"peru",
-                    "province": "lima"
+                     "country" :"ARGENTINA",
+                    "province": "BUENOS AIRES"
+                
+                    
                 }
                             
                 """;

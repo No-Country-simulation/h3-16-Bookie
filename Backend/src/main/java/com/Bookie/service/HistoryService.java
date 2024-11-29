@@ -38,25 +38,8 @@ public class HistoryService {
     private CountryRepository countryRepository;
 
     public HistoryDtoResponse createHistory(@Valid HistoryDtoRequest historyDto) {
-        /**<p> buscar el pais con su perobincia </p>*/
-        CountryEntity country = countryRepository.findByName(historyDto.country().toUpperCase());
 
-        if(country== null){
-
-            /** <p> Crear el country </p> */
-            country = countryRepository.save(new CountryEntity(historyDto.country().toUpperCase()));
-
-
-            /** <p> buscar la probincia </p> */
-            ProvinceEntity province = provinceRepository.findByName(historyDto.province().toUpperCase());
-            if(province == null) {
-                province =ProvinceEntity.builder().name(historyDto.province().toUpperCase()).country(country).build();
-                province = provinceRepository.save(province);
-            }
-
-
-
-        }
+        CountryEntity country = getCountryEntityByProvinceEntity(historyDto);
 
 
         /** <p> Buscar el usuario y guardar todo en la bbdd </p> */
@@ -75,6 +58,29 @@ public class HistoryService {
 
         return new HistoryDtoResponse(history);
 
+    }
+
+
+    /**
+     * <p>Obtener el country por la province, si no existe lo crea</p>
+     */
+    private CountryEntity getCountryEntityByProvinceEntity(HistoryDtoRequest historyDto) {
+
+        /**<p>Traer el county desde su probincia</p>*/
+        ProvinceEntity province = provinceRepository.findByName(historyDto.province().toUpperCase());
+        if (province != null) return province.getCountry();
+
+
+        /**<p>Si no existe entonces busco el pais </p>*/
+        CountryEntity country = countryRepository.findByName(historyDto.country().toUpperCase());
+        if (country == null) country = CountryEntity.builder().name(historyDto.country()).build();//
+
+        /** <p>Guardo la ciudad</p> */
+        province = ProvinceEntity.builder().name(historyDto.province().toUpperCase()).country(country).build();
+        province = provinceRepository.save(province);
+
+
+        return province.getCountry();
     }
 
     public List<HistoryEntity> getAll() {
@@ -118,7 +124,7 @@ public class HistoryService {
 
     public List<HistoryDtoResponse> getHistoryByUserId(@NotNull Long userId) {
         var user = userRepository.findById(userId);
-       List<HistoryEntity>  history = historyRepository.findByCreator(user.get());
+        List<HistoryEntity> history = historyRepository.findByCreator(user.get());
         return history.stream().map(HistoryDtoResponse::new).toList();
     }
 }

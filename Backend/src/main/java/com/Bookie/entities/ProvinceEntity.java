@@ -24,4 +24,9 @@ ProvinceEntity {
     @JoinColumn(name = "CountryEntity_id")
     @JsonIgnore
     private CountryEntity country;
+
+    @Override
+    public String toString() {
+        return "ProvinceEntity{id=" + id + ", name='" + name + "', country=" + country.getName() + "}";
+    }
 }

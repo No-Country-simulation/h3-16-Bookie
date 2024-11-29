@@ -23,7 +23,7 @@ public class CountryEntity {
     private String name;
 
 
-    @OneToMany(mappedBy  = "country", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<ProvinceEntity> provinces = new ArrayList<>();
 
@@ -33,5 +33,10 @@ public class CountryEntity {
 
     public CountryEntity(String country) {
         this.name = country;
+    }
+
+    @Override
+    public String toString() {
+        return "CountryEntity{id=" + id + ", name='" + name + "'}";
     }
 }

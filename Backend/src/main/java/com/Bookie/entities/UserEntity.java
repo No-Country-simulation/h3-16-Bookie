@@ -32,11 +32,14 @@ public class UserEntity {
     private List<HistoryEntity> histories = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable( name = "wishlist",
-    joinColumns = @JoinColumn(name = "id_UserEntity"),
+    @JoinTable(name = "wishlist",
+            joinColumns = @JoinColumn(name = "id_UserEntity"),
             inverseJoinColumns = @JoinColumn(name = "id_history")
     )
     private List<HistoryEntity> wishlist;
 
-
+    @Override
+    public String toString() {
+        return "UserEntity{id=" + id + ", name='" + name + "', email='" + email + "', auth0UserId='" + auth0UserId + "'}";
+    }
 }
