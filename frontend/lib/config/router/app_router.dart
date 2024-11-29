@@ -46,8 +46,8 @@ final appRouter = GoRouter(
         // vista siguiente para formulario de creación de capítulo
         GoRoute(
           path: 'form-chapter',
-          name: CreateChapterForm.name,
-          builder: (context, state) => const CreateChapterForm(),
+          name: CreateChapterScreen.name,
+          builder: (context, state) => const CreateChapterScreen(),
         ),
       ],
     ),

@@ -8,19 +8,24 @@ import 'package:bookie/infrastructure/models/story_db.dart';
 class StoriesDbDatasource extends StoriesDatasource {
   @override
   Future<List<Story>> getStories() async {
-    final response = await FetchApi.fetchDio().get('/v1/history/all');
-    final storiesDBResponse = StoryDbResponse.fromJsonList(response.data);
+    try {
+      final response = await FetchApi.fetchDio().get('/v1/history/all');
+      final storiesDBResponse = StoryDbResponse.fromJsonList(response.data);
 
-    final List<Story> stories = storiesDBResponse
-        // .where((story) => story.campoafiltrar)
-        .map((storydb) => StoryMapper.storyDBToEntity(storydb))
-        .toList();
+      final List<Story> stories = storiesDBResponse
+          // .where((story) => story.campoafiltrar)
+          .map((storydb) => StoryMapper.storyDBToEntity(storydb))
+          .toList();
 
-    // Ordenar las historias por la distancia
-    final List<Story> sortedStories = await getSortedStories(
-        stories); // Ordenar las historias por la distancia
+      // Ordenar las historias por la distancia
+      final List<Story> sortedStories = await getSortedStories(
+          stories); // Ordenar las historias por la distancia
 
-    return sortedStories;
+      return sortedStories;
+    } catch (e) {
+      print("Error al obtener las historias: $e");
+      return [];
+    }
   }
 
   @override

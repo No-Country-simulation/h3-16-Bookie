@@ -1,9 +1,328 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-class CreateChapterForm extends StatelessWidget {
+import 'package:bookie/config/permissions/image.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+
+class CreateChapterScreen extends ConsumerStatefulWidget {
   static const String name = 'create-chapter';
 
-  const CreateChapterForm({super.key});
+  const CreateChapterScreen({super.key});
+
+  @override
+  ConsumerState<CreateChapterScreen> createState() =>
+      _CreateChapterScreenState();
+}
+
+class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
+  final ImagePicker _picker = ImagePicker();
+  XFile? _selectedImage;
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _contentController = TextEditingController();
+  FocusNode focusNode = FocusNode();
+  bool _isBold = false;
+  bool _isItalic = false;
+  bool _isUnderlined = false;
+  // final QuillController _controller = QuillController.basic();
+
+  void _toggleBold() {
+    setState(() {
+      _isBold = !_isBold;
+    });
+  }
+
+  void _toggleItalic() {
+    setState(() {
+      _isItalic = !_isItalic;
+    });
+  }
+
+  void _toggleUnderline() {
+    setState(() {
+      _isUnderlined = !_isUnderlined;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Monitorear el foco para actualizar el estado
+    focusNode.addListener(() {
+      setState(() {});
+    });
+  }
+
+  void _openAlignmentMenu() {
+    showMenu(
+      context: context,
+      position: RelativeRect.fromLTRB(0, 0, 0,
+          60), // Ajusta la posición para que se muestre encima del BottomAppBar
+      items: [
+        PopupMenuItem(
+          value: 'left',
+          child: Row(
+            children: [
+              Icon(Icons.format_align_left),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'center',
+          child: Row(
+            children: [
+              Icon(Icons.format_align_center),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'right',
+          child: Row(
+            children: [
+              Icon(Icons.format_align_right),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'bold',
+          child: Row(
+            children: [
+              Icon(Icons.format_bold),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'italic',
+          child: Row(
+            children: [
+              Icon(Icons.format_italic),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'underline',
+          child: Row(
+            children: [
+              Icon(Icons.format_underline),
+            ],
+          ),
+        ),
+      ],
+      elevation: 8.0,
+    ).then((value) {
+      if (value != null) {
+        switch (value) {
+          case 'left':
+            // Lógica para alinear a la izquierda
+            break;
+          case 'center':
+            // Lógica para alinear al centro
+            break;
+          case 'right':
+            // Lógica para alinear a la derecha
+            break;
+          case 'bold':
+            _toggleBold(); // Cambia el estado de negrita
+            break;
+          case 'italic':
+            _toggleItalic(); // Cambia el estado de cursiva
+            break;
+          case 'underline':
+            _toggleUnderline(); // Cambia el estado de subrayado
+            break;
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _contentController.dispose();
+    focusNode.dispose();
+    super.dispose();
+  }
+
+  void _pickImage(ImageSource source) async {
+    bool permissionsGranted = await requestPermissions();
+    if (permissionsGranted) {
+      final XFile? image = await _picker.pickImage(source: source);
+      if (image != null) {
+        setState(() {
+          _selectedImage = image;
+        });
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Permisos denegados.')),
+      );
+    }
+  }
+
+  void _removeImage() {
+    setState(() {
+      _selectedImage = null;
+    });
+  }
+
+  bool _isFormValid() {
+    return _titleController.text.isNotEmpty &&
+        _contentController.text.isNotEmpty;
+  }
+
+  void _submitForm() async {
+    final String title = _titleController.text;
+    final String content = _contentController.text;
+    final String? imagePath = _selectedImage?.path;
+    final Dio dio = Dio();
+    String? image;
+
+    // Subir imagen a Cloudinary
+    if (imagePath != null) {
+      try {
+        FormData formData = FormData.fromMap({
+          "file": await MultipartFile.fromFile(imagePath),
+          "upload_preset": "ml_default",
+          "cloud_name": "dlixnwuhi",
+        });
+
+        final response = await dio.post(
+            "https://api.cloudinary.com/v1_1/dlixnwuhi/image/upload",
+            data: formData);
+
+        image = response.data['url'];
+      } catch (e) {
+        print("Error al subir la imagen: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(
+                'Error al subir la imagen',
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              backgroundColor: Colors.red),
+        );
+        return;
+      }
+    }
+
+    // Crear el capítulo en el backend
+    // final ChapterForm chapterForm = ChapterForm(
+    //   title: title,
+    //   content: content,
+    //   creatorId: 1,
+    //   image: image,
+    // );
+
+    // ref.read(createChapterProvider(chapterForm).future).then(
+    //   (chapter) {
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //       SnackBar(
+    //           content: Text('Capítulo creado'), backgroundColor: Colors.green),
+    //     );
+    //   },
+    // ).catchError((e) {
+    //   print("Error: $e");
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(
+    //         content: Text('No se pudo crear el capítulo'),
+    //         backgroundColor: Colors.red),
+    //   );
+    // });
+  }
+
+  void _showImageSourceActionSheet() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.camera),
+                title: const Text("Tomar foto"),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.camera);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text("Seleccionar de la galería"),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.gallery);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Titulo con un X para cerrar
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () =>
+                          Navigator.pop(context), // Cerrar el BottomSheet
+                      child: const Icon(Icons.close),
+                    ),
+                    const Text(
+                      'Una cosa más',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    // Botón "Guardar"
+                    TextButton(
+                      onPressed: _isFormValid()
+                          ? _submitForm
+                          : null, // Muestra el BottomSheet
+                      child: Text(
+                        'Guardar',
+                      ),
+                    ),
+                  ],
+                ),
+                // Opciones
+                const SizedBox(height: 16),
+                ListTile(
+                  leading: const Icon(Icons.location_on),
+                  title: const Text("Agregar marcador"),
+                  onTap: () async {
+                    // Navigator.pop(context); // Cerrar el BottomSheet
+                    await _addMarker(); // Lógica de Geolocator para agregar marcador
+                  },
+                ),
+                // Puedes agregar más opciones aquí si es necesario
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _addMarker() async {
+    // Aquí va tu lógica de Geolocator para agregar un marcador.
+    print("Lógica de marcador ejecutada");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,113 +330,195 @@ class CreateChapterForm extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Crear Capítulo"),
+        title: const Text("Crear capítulo"),
         actions: [
           TextButton(
-            onPressed: () {
-              // Lógica de guardado del capítulo
-            },
+            onPressed: _isFormValid() ? _showBottomSheet : null,
             child: Text(
               "Guardar",
               style: TextStyle(
-                color: colors.primary,
+                color: _isFormValid()
+                    ? colors.primary
+                    : colors.onSurface.withOpacity(0.5),
               ),
             ),
+          ),
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            padding: EdgeInsets.zero,
+            onSelected: (value) {
+              if (value == 'preview') {
+                print("Vista previa seleccionada");
+              }
+            },
+            itemBuilder: (BuildContext context) => [
+              const PopupMenuItem<String>(
+                value: 'preview',
+                child: Text('Vista previa'),
+              ),
+            ],
           ),
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Selector de imagen
+                  GestureDetector(
+                    onTap: _showImageSourceActionSheet,
+                    child: Stack(
+                      children: [
+                        Container(
+                          height: 120,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color: colors.onSurface.withOpacity(0.5)),
+                            borderRadius: BorderRadius.circular(12),
+                            color: colors.surface,
+                          ),
+                          child: _selectedImage == null
+                              ? Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Icon(Icons.add_a_photo, size: 32),
+                                      SizedBox(height: 8),
+                                      Text("Agregar una imagen al capítulo"),
+                                    ],
+                                  ),
+                                )
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Image.file(
+                                    File(_selectedImage!.path),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                        ),
+                        if (_selectedImage != null)
+                          Positioned(
+                            top: 8,
+                            right: 8,
+                            child: GestureDetector(
+                              onTap: _removeImage,
+                              child: CircleAvatar(
+                                radius: 16,
+                                backgroundColor: Colors.red.withOpacity(0.8),
+                                child: const Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  // const SizedBox(height: 16),
+
+                  // Input de título
+                  TextFormField(
+                    controller: _titleController,
+                    decoration: InputDecoration(
+                      labelText: "Agregale un título",
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                      labelStyle: TextStyle(
+                        color: _titleController.text.isEmpty
+                            ? null
+                            : Colors.transparent,
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Campo obligatorio";
+                      }
+                      return null;
+                    },
+                    onChanged: (_) => setState(() {}),
+                  ),
+                  // const SizedBox(height: 16),
+
+                  // Input de contenido del capítulo (sin línea base)
+                  TextFormField(
+                    controller: _contentController,
+                    focusNode: focusNode,
+                    decoration: InputDecoration(
+                      labelText:
+                          "Pulsa aquí para empezar a escribir", // El texto del label cambiará dinámicamente
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                      floatingLabelAlignment: FloatingLabelAlignment.center,
+                      // Esto hace la etiqueta invisible si no se está usando
+                      // labelStyle: TextStyle(color: Colors.transparent),
+                      border:
+                          InputBorder.none, // Esto oculta la línea de la base
+                      labelStyle: TextStyle(
+                        color: focusNode.hasFocus ||
+                                _contentController.text.isNotEmpty
+                            ? Colors
+                                .transparent // Cuando está enfocado o tiene texto, ocultar el label
+                            : null, // Si no está enfocado y está vacío, mostrar el label
+                      ),
+                    ),
+                    maxLines:
+                        null, // Esto permite que el campo crezca hacia abajo
+                    // expands: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Campo obligatorio";
+                      }
+                      return null;
+                    },
+                    onChanged: (_) => setState(() {}),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              )),
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        elevation: 4, // Añade sombra si es necesario
+        height: 60,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Selector de imagen del capítulo
-            GestureDetector(
-              onTap: () {
-                // Lógica para seleccionar una imagen
+            // Botones de deshacer y rehacer
+            IconButton(
+              icon: Icon(Icons.undo),
+              onPressed: () {
+                // Lógica para deshacer
               },
-              child: Container(
-                height: 150,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  border: Border.all(color: colors.onSurface.withOpacity(0.5)),
-                  borderRadius: BorderRadius.circular(12),
-                  color: colors.surface,
-                ),
-                child: Center(
-                  child: const Text("Seleccionar imagen del capítulo"),
-                ),
-              ),
             ),
-            const SizedBox(height: 16),
-
-            // Input de título del capítulo
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: "Título del Capítulo",
-              ),
+            IconButton(
+              icon: Icon(Icons.redo),
+              onPressed: () {
+                // Lógica para rehacer
+              },
             ),
-            const SizedBox(height: 16),
-
-            // Área de texto del capítulo
-            TextFormField(
-              maxLines: null, // Permite texto con múltiples líneas
-              decoration: const InputDecoration(
-                labelText: "Escribir el capítulo",
-                alignLabelWithHint: true,
-              ),
+            // Botón de formato que abre el menú de formato
+            IconButton(
+              icon: Icon(Icons.text_format),
+              onPressed: _openAlignmentMenu,
             ),
-            const SizedBox(height: 16),
-
-            // Barra de herramientas de edición
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Deshacer
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.undo),
-                  tooltip: "Deshacer",
-                ),
-                // Rehacer
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.redo),
-                  tooltip: "Rehacer",
-                ),
-                // Alineación
-                PopupMenuButton<String>(
-                  onSelected: (value) {},
-                  itemBuilder: (context) => [
-                    const PopupMenuItem(
-                      value: 'left',
-                      child: Text('Alinear a la izquierda'),
-                    ),
-                    const PopupMenuItem(
-                      value: 'center',
-                      child: Text('Centrar'),
-                    ),
-                    const PopupMenuItem(
-                      value: 'right',
-                      child: Text('Alinear a la derecha'),
-                    ),
-                  ],
-                  icon: const Icon(Icons.format_align_left),
-                  tooltip: "Alineación",
-                ),
-                // Cambiar idioma
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.translate),
-                  tooltip: "Cambiar idioma",
-                ),
-                // Marcar ubicación
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.location_on),
-                  tooltip: "Marcar posición",
-                ),
-              ],
+            // Botón de traducir
+            IconButton(
+              icon: Icon(Icons.translate),
+              onPressed: () {
+                // Lógica para traducir
+              },
+            ),
+            // Botón de IA
+            IconButton(
+              icon: Icon(Icons.auto_awesome),
+              onPressed: () {
+                // Lógica para mejorar el texto con IA
+              },
             ),
           ],
         ),

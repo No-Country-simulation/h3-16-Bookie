@@ -185,7 +185,7 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
           TextButton(
             onPressed: _isFormValid() ? _submitForm : null,
             child: Text(
-              _isFormValid() ? "Siguiente" : "",
+              "Siguiente",
               style: TextStyle(
                 color: _isFormValid()
                     ? colors.primary
@@ -308,14 +308,31 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
 
                     return Padding(
                       padding: const EdgeInsets.only(right: 8.0),
-                      child: ChoiceChip(
-                        label: Text(genreName),
-                        selected: isSelected,
-                        onSelected: (selected) {
+                      child: InkWell(
+                        onTap: () {
                           setState(() {
-                            _selectedGenre = selected ? genre : null;
+                            _selectedGenre = isSelected ? null : genre;
                           });
                         },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: _selectedGenre == genre
+                                ? colors.primary
+                                : Colors.grey[200],
+                            borderRadius: BorderRadius.circular(
+                                8.0), // Bordes redondeados
+                          ),
+                          padding: const EdgeInsets.only(
+                              left: 12.0, right: 12.0, top: 9.0),
+                          child: Text(
+                            genreName,
+                            style: TextStyle(
+                              color: _selectedGenre == genre
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
+                          ),
+                        ),
                       ),
                     );
                   },
