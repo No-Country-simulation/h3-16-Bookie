@@ -123,7 +123,7 @@ public class UserController {
                             examples = @ExampleObject(name = "HistoryDtoResponse",
                                     value = "{\"id\": 1,\"title\": \"new title\", \"synopsis\": \"description of history\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber\"}")))
     })
-    public ResponseEntity<?> gethHistory(@PathVariable  Long id) {
+    public ResponseEntity<?> getWishlist(@PathVariable  Long id) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(userService.getWishlist(id));
         } catch (Exception ex) {
