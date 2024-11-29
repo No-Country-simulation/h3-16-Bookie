@@ -4,12 +4,14 @@ import 'package:bookie/presentation/screens/story_screen.dart';
 import 'package:bookie/presentation/screens/home_screen.dart';
 import 'package:bookie/presentation/screens/splash_screen.dart';
 import 'package:bookie/presentation/screens/writer_screen.dart';
+import 'package:bookie/presentation/views/chapter/chapter_form.dart';
 import 'package:bookie/presentation/views/settings/settings_profile_screen.dart';
 import 'package:bookie/presentation/views/settings/settings_theme_screen.dart';
+import 'package:bookie/presentation/views/story/create_form_story_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/splash', // Ruta inicial
+  initialLocation: '/home/2/form-chapter', // Ruta inicial
   routes: [
     GoRoute(path: "/splash", builder: (context, state) => const SplashScreen()),
     GoRoute(
@@ -32,6 +34,20 @@ final appRouter = GoRouter(
           path: 'theme',
           name: SettingsThemeScreen.name,
           builder: (context, state) => const SettingsThemeScreen(),
+        ),
+
+        // vista siguiente para formulario de creación de historia
+        GoRoute(
+          path: 'form-story',
+          name: CreateFormStoryScreen.name,
+          builder: (context, state) => const CreateFormStoryScreen(),
+        ),
+
+        // vista siguiente para formulario de creación de capítulo
+        GoRoute(
+          path: 'form-chapter',
+          name: CreateChapterForm.name,
+          builder: (context, state) => const CreateChapterForm(),
         ),
       ],
     ),

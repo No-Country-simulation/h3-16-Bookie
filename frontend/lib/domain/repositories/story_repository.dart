@@ -6,4 +6,6 @@ abstract class StoriesRepository {
   Future<List<Story>> getStoriesByUser(int userId);
 
   Future<Story> getStory(int storyId);
+
+  Future<Story> createStory(StoryForm storyForm);
 }

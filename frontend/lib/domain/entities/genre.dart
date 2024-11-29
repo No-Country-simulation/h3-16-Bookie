@@ -1,4 +1,4 @@
-enum GenreLiterary {
+enum Genre {
   novela,
   cuento,
   cienciaFiccion,

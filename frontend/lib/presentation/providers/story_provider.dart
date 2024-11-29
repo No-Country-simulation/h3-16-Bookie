@@ -14,10 +14,10 @@ final getStoriesProvider =
   return StoriesNotifier(fetchStories: fetchStories);
 });
 
-typedef MovieCallback = Future<List<Story>> Function();
+typedef StoryCallback = Future<List<Story>> Function();
 
 class StoriesNotifier extends StateNotifier<List<Story>> {
-  final MovieCallback fetchStories;
+  final StoryCallback fetchStories;
 
   StoriesNotifier({required this.fetchStories}) : super([]);
 
@@ -40,4 +40,13 @@ final getStoriesByUserProvider =
     FutureProvider.family<List<Story>, int>((ref, userId) async {
   final repository = ref.watch(storyRepositoryProvider);
   return repository.getStoriesByUser(userId);
+});
+
+// crear historia
+final createStoryProvider =
+    FutureProvider.autoDispose.family<Story, StoryForm>((ref, storyForm) async {
+  final repository =
+      ref.watch(storyRepositoryProvider); // Obtener el repositorio
+  return await repository
+      .createStory(storyForm); // Llamar al método de crear historia
 });

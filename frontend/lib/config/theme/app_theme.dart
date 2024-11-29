@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 const colorList = <Color>[
   Colors.yellow,
+  Colors.amber,
   Colors.blue,
   Colors.red,
   Colors.orange,

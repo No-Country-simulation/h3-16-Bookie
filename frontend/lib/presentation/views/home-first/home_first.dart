@@ -1,5 +1,6 @@
 import 'package:bookie/config/intl/get_location_for_intl.dart';
 import 'package:bookie/config/intl/i18n.dart';
+import 'package:bookie/presentation/providers/genres_provider.dart';
 import 'package:bookie/presentation/providers/story_provider.dart';
 import 'package:bookie/presentation/views/home-first/home_first_search.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,7 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
       changeLanguage(locale);
     });
     ref.read(getStoriesProvider.notifier).loadStories();
+    ref.read(getGenresProvider.notifier).loadGenres();
     allStories = [...readStories, ...unreadStories];
     filteredStories = allStories;
   }

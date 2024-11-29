@@ -23,7 +23,7 @@ class StoriesDbDatasource extends StoriesDatasource {
     return sortedStories;
   }
 
-    @override
+  @override
   Future<List<Story>> getStoriesByUser(int userId) async {
     final response = await FetchApi.fetchDio().get('/v1/history/user/$userId');
     final storiesDBResponse = StoryDbResponse.fromJsonList(response.data);
@@ -43,6 +43,20 @@ class StoriesDbDatasource extends StoriesDatasource {
   @override
   Future<Story> getStory(int storyId) async {
     final response = await FetchApi.fetchDio().get('/v1/history/$storyId');
+    final storyDBResponse = StoryDbResponse.fromJson(response.data);
+
+    final Story story = StoryMapper.storyDBToEntity(storyDBResponse);
+
+    return story;
+  }
+
+  @override
+  Future<Story> createStory(StoryForm storyForm) async {
+    final response = await FetchApi.fetchDio().post(
+      '/v1/history',
+      data: storyForm.toJson(),
+    );
+
     final storyDBResponse = StoryDbResponse.fromJson(response.data);
 
     final Story story = StoryMapper.storyDBToEntity(storyDBResponse);

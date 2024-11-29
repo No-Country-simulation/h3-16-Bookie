@@ -30,8 +30,9 @@ class _MapStoriesGoogleMapsState extends State<MapStoriesGoogleMaps> {
       // Obtener la ubicación actual
       final position = await determinePosition();
 
-      if (!mounted)
+      if (!mounted) {
         return; // Verificar si el widget está montado antes de llamar setState
+      }
 
       setState(() {
         _currentPosition = LatLng(position.latitude, position.longitude);
@@ -47,8 +48,9 @@ class _MapStoriesGoogleMapsState extends State<MapStoriesGoogleMaps> {
 
       // Mover la cámara a la ubicación actual
       final controller = await _controller.future;
-      if (!mounted)
+      if (!mounted) {
         return; // Verificar si el widget está montado antes de manipular el controller
+      }
       controller
           .animateCamera(CameraUpdate.newLatLngZoom(_currentPosition, 14.0));
     } catch (e) {

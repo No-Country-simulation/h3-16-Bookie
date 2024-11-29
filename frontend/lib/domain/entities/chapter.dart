@@ -1,4 +1,4 @@
-class Chapter {
+class ChapterLocal {
   final int id;
   final String title;
   final String description;
@@ -7,7 +7,7 @@ class Chapter {
   final String imageUrl;
   final bool publish;
 
-  Chapter({
+  ChapterLocal({
     required this.id,
     required this.title,
     required this.description,

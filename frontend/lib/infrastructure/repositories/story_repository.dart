@@ -21,4 +21,9 @@ class StoriesRepositoryImpl implements StoriesRepository {
   Future<Story> getStory(int storyId) {
     return datasource.getStory(storyId);
   }
+
+  @override
+  Future<Story> createStory(StoryForm storyForm) {
+    return datasource.createStory(storyForm);
+  }
 }
