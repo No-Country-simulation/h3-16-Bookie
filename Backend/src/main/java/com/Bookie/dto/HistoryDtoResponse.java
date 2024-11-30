@@ -27,6 +27,6 @@ public record HistoryDtoResponse(
         public HistoryDtoResponse(HistoryEntity historyEntity){
                 this(historyEntity.getId(),historyEntity.getTitle(),historyEntity.getSyopsis(),historyEntity.getCreator(),
                         historyEntity.getGenre(),historyEntity.getImg(),historyEntity.getPublish(),
-                        historyEntity.getCountries().getName(),historyEntity.getCountries().getProvinces().get(0).getName());
+                        historyEntity.getProvince().getCountry().getName(),historyEntity.getProvince().getName());
         }
 }

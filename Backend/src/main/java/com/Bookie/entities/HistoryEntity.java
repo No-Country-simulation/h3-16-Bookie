@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity(name = "HistoryEntity")
 @Table(name = "history")
 @Data
@@ -34,7 +36,13 @@ public class HistoryEntity {
     private String img;
 
     @ManyToOne
-    @JoinColumn(name = "CountryEntity_id")
+    @JoinColumn(name = "ProvinceEntity_id")
     @JsonIgnore
-    private CountryEntity countries;
+    private ProvinceEntity province;
+
+    @OneToMany(mappedBy = "history", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<WishlistEntity> wishlishistory;
+
+
 }
