@@ -1,3 +1,4 @@
+import 'package:bookie/config/helpers/get_image_final.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -30,7 +31,8 @@ class _StoriesReadCardState extends State<StoriesReadCard> {
 
   // Método para cargar la imagen y detectar cuando termina de cargar
   void _loadImage() {
-    final image = NetworkImage(widget.imageUrl);
+    final imageMod = getImageUrl(true, widget.imageUrl);
+    final image = NetworkImage(imageMod);
     image.resolve(ImageConfiguration()).addListener(
           ImageStreamListener(
             (info, _) {

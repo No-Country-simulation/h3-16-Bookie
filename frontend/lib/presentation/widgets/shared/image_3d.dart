@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:bookie/config/constants/general.dart';
+import 'package:bookie/config/helpers/get_image_final.dart';
 import 'package:flutter/material.dart';
 
 class My3DImage extends StatefulWidget {
@@ -49,11 +49,7 @@ class _My3DImageState extends State<My3DImage>
   Widget build(BuildContext context) {
     final isDarkmode = Theme.of(context).brightness == Brightness.dark;
 
-    final imageMod = widget.imageUrl != "sin-imagen"
-        ? widget.imageUrl
-        : isDarkmode
-            ? GeneralConstants.imageNotFoundDark
-            : GeneralConstants.imageNotFoundLight;
+    final imageMod = getImageUrl(isDarkmode, widget.imageUrl);
 
     return Hero(
       tag: 'hero-image-${widget.storyId}',

@@ -1,5 +1,5 @@
 // import 'package:bookie/presentation/providers/favorites_provider.dart';
-import 'package:bookie/config/constants/general.dart';
+import 'package:bookie/config/helpers/get_image_final.dart';
 import 'package:bookie/presentation/providers/favorites_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,7 +43,8 @@ class _CloseStoriesCardState extends ConsumerState<CloseStoriesCard> {
   }
 
   void _loadImage() {
-    final image = NetworkImage(widget.imageUrl);
+    final imageMod = getImageUrl(true, widget.imageUrl);
+    final image = NetworkImage(imageMod);
     image.resolve(ImageConfiguration()).addListener(
           ImageStreamListener(
             (info, _) {
@@ -76,11 +77,7 @@ class _CloseStoriesCardState extends ConsumerState<CloseStoriesCard> {
     final colors = Theme.of(context).colorScheme;
     final isFavorite =
         ref.watch(favoriteProvider)[widget.id] ?? widget.isFavorite;
-    final imageMod = widget.imageUrl != "sin-imagen"
-        ? widget.imageUrl
-        : isDarkmode
-            ? GeneralConstants.imageNotFoundDark
-            : GeneralConstants.imageNotFoundLight;
+    final imageMod = getImageUrl(isDarkmode, widget.imageUrl);
 
     return GestureDetector(
       onTap: widget.onCardPress,
@@ -155,7 +152,9 @@ class _CloseStoriesCardState extends ConsumerState<CloseStoriesCard> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          widget.title.substring(0, 10),
+                          widget.title.length >= 12
+                              ? widget.title.substring(0, 10)
+                              : widget.title,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,

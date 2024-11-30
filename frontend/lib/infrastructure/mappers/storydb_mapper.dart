@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:bookie/config/constants/general.dart';
 import 'package:bookie/domain/entities/story.dart';
 import 'package:bookie/infrastructure/mappers/chapterlocal_mapper.dart';
 import 'package:bookie/infrastructure/mappers/genredb_mapper.dart';

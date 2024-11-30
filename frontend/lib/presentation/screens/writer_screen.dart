@@ -1,3 +1,4 @@
+import 'package:bookie/config/helpers/get_image_final.dart';
 import 'package:bookie/presentation/providers/story_provider.dart';
 import 'package:bookie/shared/data/writers.dart';
 import 'package:flutter/material.dart';
@@ -122,6 +123,8 @@ class _WriterProfileScreenState extends ConsumerState<WriterProfileScreen> {
                     itemCount: stories.length,
                     itemBuilder: (context, index) {
                       final story = stories[index];
+                      final imageMod = getImageUrl(isDarkmode, story.imageUrl);
+
                       return Card(
                         elevation: 2,
                         margin: const EdgeInsets.symmetric(
@@ -130,7 +133,7 @@ class _WriterProfileScreenState extends ConsumerState<WriterProfileScreen> {
                           leading: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Image.network(
-                              story.imageUrl,
+                              imageMod,
                               width: 50,
                               height: 50,
                               fit: BoxFit.cover,

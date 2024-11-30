@@ -59,90 +59,90 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
   }
 
   void _submitForm() async {
-    // Recolectar los datos del formulario
-    final String title = _titleController.text;
-    final String synopsis = _synopsisController.text;
-    final String? imagePath = _selectedImage?.path;
-    final Dio dio = Dio();
-    String? image;
-    String country = "PERU";
-    String province = "LIMA";
+    try {
+      // Recolectar los datos del formulario
+      final String title = _titleController.text;
+      final String synopsis = _synopsisController.text;
+      final String? imagePath = _selectedImage?.path;
+      final Dio dio = Dio();
+      String? image;
+      String country = "PERU";
+      String province = "LIMA";
 
-    // TODO REVISAR PARA VER SI SE PUEDE QUITAR ESTA PARTE O SOLO BASE64
-    // generar url de imagen con cloudinary
-    final String url = "https://api.cloudinary.com/v1_1/dlixnwuhi/image/upload";
+      // TODO REVISAR PARA VER SI SE PUEDE QUITAR ESTA PARTE O SOLO BASE64
+      // generar url de imagen con cloudinary
+      final String url =
+          "https://api.cloudinary.com/v1_1/dlixnwuhi/image/upload";
 
-    // enviar peticion:
-    // Crear FormData
-    if (imagePath != null) {
-      try {
-        FormData formData = FormData.fromMap({
-          "file": await MultipartFile.fromFile(imagePath),
-          "upload_preset": "ml_default",
-          "cloud_name": "dlixnwuhi",
-        });
+      // enviar peticion:
+      // Crear FormData
+      if (imagePath != null) {
+        try {
+          FormData formData = FormData.fromMap({
+            "file": await MultipartFile.fromFile(imagePath),
+            "upload_preset": "ml_default",
+            "cloud_name": "dlixnwuhi",
+          });
 
-        // Enviar la solicitud de subida de la imagen
-        final response = await dio.post(url, data: formData);
+          // Enviar la solicitud de subida de la imagen
+          final response = await dio.post(url, data: formData);
 
-        // Obtener la URL de la imagen subida
-        print("URL de la imagen subida: ${response.data}");
-        image = response.data['secure_url'];
-      } catch (e) {
-        print("Error al subir la imagen: $e");
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(
-                'Error al subir la imagen',
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-              backgroundColor: Colors.red),
-        );
-        return;
-      }
-    }
-
-    // TODO DESCOMENTAR ESTA PARTE SI SE USA BASE64
-    // Convertir la imagen a base64
-    // image =
-    //     imagePath != null ? await convertImageToBase64(imagePath) : null;
-
-    // Obtener el nombre del género para enviarlo al backend
-    final String genreString =
-        GenreToStringExtension(_selectedGenre!).toBackendString;
-
-    // Crear un objeto con los datos a enviar y enviarlo
-    final StoryForm storyForm = StoryForm(
-      title: title,
-      synopsis: synopsis,
-      genre: genreString,
-      creatorId: 1,
-      image: image,
-      country: country,
-      province: province,
-    );
-    // Crear el historia en el backend
-    ref.read(createStoryProvider(storyForm).future).then(
-      (story) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text('Historia creada'), backgroundColor: Colors.green),
-        );
-
-        // Navegar a la ruta `/form-chapter` con GoRouter
-        if (context.mounted) {
-          context.go('/home/2/form-chapter');
+          // Obtener la URL de la imagen subida
+          print("URL de la imagen subida: ${response.data}");
+          image = response.data['secure_url'];
+        } catch (e) {
+          print("Error al subir la imagen: $e");
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(
+                  'Error al subir la imagen',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+                backgroundColor: Colors.red),
+          );
+          return;
         }
-      },
-    ).catchError((e) {
+      }
+
+      // TODO DESCOMENTAR ESTA PARTE SI SE USA BASE64
+      // Convertir la imagen a base64
+      // image =
+      //     imagePath != null ? await convertImageToBase64(imagePath) : null;
+
+      // Obtener el nombre del género para enviarlo al backend
+      final String genreString =
+          GenreToStringExtension(_selectedGenre!).toBackendString;
+
+      // Crear un objeto con los datos a enviar y enviarlo
+      final StoryForm storyForm = StoryForm(
+        title: title,
+        synopsis: synopsis,
+        genre: genreString,
+        creatorId: 1,
+        image: image,
+        country: country,
+        province: province,
+      );
+      // Crear el historia en el backend
+      final storyCreated =
+          await ref.read(createStoryProvider(storyForm).future);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('Historia creada'), backgroundColor: Colors.green),
+      );
+      // Navegar a la ruta `/form-chapter` con GoRouter
+      context.push('/home/2/form-chapter/${storyCreated.id}');
+    } catch (e) {
       print("EROOOOOOOOOOOOOOOOOOOOO: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text('No se pudo crear la historia'),
             backgroundColor: Colors.red),
       );
-    });
+    }
+
+    // Navegar a la ruta `/home/0` con GoRouter
   }
 
   void _showImageSourceActionSheet() {

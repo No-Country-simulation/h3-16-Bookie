@@ -8,9 +8,6 @@ Future<List<Story>> getSortedStories(List<Story> stories) async {
     // Obtener la posición actual
     final currentPosition = await determinePosition();
 
-    print(
-        "POSICION ACTUAL : ${currentPosition.latitude}, ${currentPosition.longitude}");
-
     final origin = "${currentPosition.latitude},${currentPosition.longitude}";
 
     final distancesCalculateFromGeolocator = stories

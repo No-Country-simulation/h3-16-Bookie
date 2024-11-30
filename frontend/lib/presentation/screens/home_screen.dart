@@ -22,11 +22,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           HomeFirstScreen(),
           MapStoriesGoogleMaps(),
-          // CreateHistoryScreen(),
-          // CreateHistoryScreen(),
           CreateHistoryScreen(),
-          // CreateHistoryScreen(),
-          // CreateHistoryScreen(),
           FavoritesScreen(),
           SettingsScreen(),
         ],

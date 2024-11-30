@@ -1,3 +1,4 @@
+import 'package:bookie/config/helpers/get_image_final.dart';
 import 'package:flutter/material.dart';
 
 class StoryCard extends StatelessWidget {
@@ -16,6 +17,8 @@ class StoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
+    final isDarkmode = Theme.of(context).brightness == Brightness.dark;
+    final imageMod = getImageUrl(isDarkmode, imageUrl);
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -29,7 +32,7 @@ class StoryCard extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
-                imageUrl,
+                imageMod,
                 height: 120,
                 width: 80,
                 fit: BoxFit.cover,

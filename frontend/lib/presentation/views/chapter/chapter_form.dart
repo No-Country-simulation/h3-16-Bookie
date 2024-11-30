@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:bookie/config/permissions/image.dart';
+import 'package:bookie/domain/entities/chapter.dart';
+import 'package:bookie/presentation/providers/chapter_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,8 +11,9 @@ import 'package:image_picker/image_picker.dart';
 
 class CreateChapterScreen extends ConsumerStatefulWidget {
   static const String name = 'create-chapter';
+  final int storyId;
 
-  const CreateChapterScreen({super.key});
+  const CreateChapterScreen({super.key, required this.storyId});
 
   @override
   ConsumerState<CreateChapterScreen> createState() =>
@@ -26,6 +30,9 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
   bool _isBold = false;
   bool _isItalic = false;
   bool _isUnderlined = false;
+  double? latitude;
+  double? longitude;
+  bool isSaveEnabled = false;
   // final QuillController _controller = QuillController.basic();
 
   void _toggleBold() {
@@ -173,6 +180,23 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
         _contentController.text.isNotEmpty;
   }
 
+  Future<void> addMarker() async {
+    try {
+      // Usa tu lógica de geolocalización aquí
+      // Ejemplo:
+      var position = await determinePosition();
+      setState(() {
+        latitude = position.latitude;
+        longitude = position.longitude;
+        isSaveEnabled =
+            true; // Habilitar el botón después de obtener la ubicación
+      });
+    } catch (e) {
+      // Maneja el error de geolocalización
+      print('Error al obtener la ubicación: $e');
+    }
+  }
+
   void _submitForm() async {
     final String title = _titleController.text;
     final String content = _contentController.text;
@@ -209,29 +233,42 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
       }
     }
 
-    // Crear el capítulo en el backend
-    // final ChapterForm chapterForm = ChapterForm(
-    //   title: title,
-    //   content: content,
-    //   creatorId: 1,
-    //   image: image,
-    // );
+    if (title.isNotEmpty &&
+        content.isNotEmpty &&
+        latitude != null &&
+        longitude != null) {
+      final chapterForm = ChapterForm(
+        title: title,
+        content: content,
+        image: image,
+        latitude: latitude!,
+        longitude: longitude!,
+        historyId: widget.storyId,
+      );
 
-    // ref.read(createChapterProvider(chapterForm).future).then(
-    //   (chapter) {
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       SnackBar(
-    //           content: Text('Capítulo creado'), backgroundColor: Colors.green),
-    //     );
-    //   },
-    // ).catchError((e) {
-    //   print("Error: $e");
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(
-    //         content: Text('No se pudo crear el capítulo'),
-    //         backgroundColor: Colors.red),
-    //   );
-    // });
+      ref.read(chapterProvider.notifier).addChapter(chapterForm).then(
+        (chapter) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text('Capítulo creado'),
+                backgroundColor: Colors.green),
+          );
+        },
+      ).catchError((e) {
+        print("Error: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('No se pudo crear el capítulo'),
+              backgroundColor: Colors.red),
+        );
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('Por favor, revisa los datos ingresados'),
+            backgroundColor: Colors.red),
+      );
+    }
   }
 
   void _showImageSourceActionSheet() {
@@ -290,10 +327,11 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     // Botón "Guardar"
+
                     TextButton(
-                      onPressed: _isFormValid()
+                      onPressed: isSaveEnabled
                           ? _submitForm
-                          : null, // Muestra el BottomSheet
+                          : null, // El botón se habilita solo si la latitud y longitud están definidas
                       child: Text(
                         'Guardar',
                       ),
@@ -307,7 +345,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
                   title: const Text("Agregar marcador"),
                   onTap: () async {
                     // Navigator.pop(context); // Cerrar el BottomSheet
-                    await _addMarker(); // Lógica de Geolocator para agregar marcador
+                    await addMarker(); // Lógica de Geolocator para agregar marcador
                   },
                 ),
                 // Puedes agregar más opciones aquí si es necesario
@@ -317,11 +355,6 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
         );
       },
     );
-  }
-
-  Future<void> _addMarker() async {
-    // Aquí va tu lógica de Geolocator para agregar un marcador.
-    print("Lógica de marcador ejecutada");
   }
 
   @override

@@ -11,7 +11,7 @@ import 'package:bookie/presentation/views/story/create_form_story_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/splash', // Ruta inicial
+  initialLocation: '/home/0', // Ruta inicial
   routes: [
     GoRoute(path: "/splash", builder: (context, state) => const SplashScreen()),
     GoRoute(
@@ -45,9 +45,13 @@ final appRouter = GoRouter(
 
         // vista siguiente para formulario de creación de capítulo
         GoRoute(
-          path: 'form-chapter',
+          path: '/form-chapter/:storyId',
           name: CreateChapterScreen.name,
-          builder: (context, state) => const CreateChapterScreen(),
+          builder: (context, state) {
+            final storyId = int.parse(state.pathParameters['storyId'] ?? '0');
+            return CreateChapterScreen(
+                storyId: storyId); // Lo pasamos al componente
+          },
         ),
       ],
     ),

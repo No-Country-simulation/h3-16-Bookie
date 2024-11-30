@@ -27,6 +27,8 @@ class HomeFirstScreen extends ConsumerStatefulWidget {
 class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
   final PageController _pageController = PageController();
   AppLocalizations? localizations; // Cambiar a nullable
+  bool isLoading = false;
+  bool isMounted = true;
 
   List<Map<String, dynamic>> allStories = [];
   List<Map<String, dynamic>> filteredStories = [];
@@ -55,6 +57,26 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
         duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
   }
 
+  Future<void> onRefresh() async {
+    isLoading = true;
+    setState(() {});
+
+    // simular carga de datos
+    await ref.read(getStoriesProvider.notifier).loadStories();
+
+    if (!isMounted) return;
+    isLoading = false;
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    isMounted = false;
+    _pageController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final stories = ref.watch(getStoriesProvider);
@@ -69,26 +91,30 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
     return SafeArea(
       child: PageView(
         controller: _pageController,
-        physics: const NeverScrollableScrollPhysics(),
         children: [
           // Página principal
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                NavBarCustom(
-                    userName: "Luis",
-                    avatarUrl:
-                        "https://i.pinimg.com/736x/61/c9/a3/61c9a321f61a2650790911e828ada56d.jpg",
-                    onSearchTapped: _showSearchSection, // Botón de búsqueda
-                    localizations: localizations,
-                    changeLanguage: changeLanguage),
-                HeroSection(unreadStories: unreadStories),
-                CloseStoriesSection(
-                    stories: stories, localizations: localizations),
-                StoriesReadSection(readStories: readStories),
-                WritersSection(writers: writers),
-              ],
+          RefreshIndicator(
+            onRefresh: onRefresh,
+            edgeOffset: 10,
+            strokeWidth: 2,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  NavBarCustom(
+                      userName: "Luis",
+                      avatarUrl:
+                          "https://i.pinimg.com/736x/61/c9/a3/61c9a321f61a2650790911e828ada56d.jpg",
+                      onSearchTapped: _showSearchSection, // Botón de búsqueda
+                      localizations: localizations,
+                      changeLanguage: changeLanguage),
+                  HeroSection(unreadStories: unreadStories),
+                  CloseStoriesSection(
+                      stories: stories, localizations: localizations),
+                  StoriesReadSection(readStories: readStories),
+                  WritersSection(writers: writers),
+                ],
+              ),
             ),
           ),
 

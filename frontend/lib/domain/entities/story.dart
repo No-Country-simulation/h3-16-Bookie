@@ -1,6 +1,6 @@
 // import 'package:bookie/domain/entities/genre.dart';
 
-import 'package:bookie/domain/entities/chapter.dart';
+import 'package:bookie/domain/entities/chapter_local.dart';
 import 'package:bookie/domain/entities/genre.dart';
 
 class Story {

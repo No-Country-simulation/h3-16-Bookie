@@ -1,3 +1,4 @@
+import 'package:bookie/config/helpers/get_image_final.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -30,7 +31,8 @@ class _WriterCardState extends State<WriterCard> {
 
   // Método para cargar la imagen y detectar cuando termina de cargar
   void _loadImage() {
-    final image = NetworkImage(widget.imageUrl);
+    final imageMod = getImageUrl(true, widget.imageUrl);
+    final image = NetworkImage(imageMod);
     image.resolve(ImageConfiguration()).addListener(
           ImageStreamListener(
             (info, _) {
@@ -62,6 +64,7 @@ class _WriterCardState extends State<WriterCard> {
     final shimmerHighlightColor =
         isDarkmode ? Colors.grey[800]! : Colors.grey[100]!;
     final containerShimmer = isDarkmode ? Colors.black : Colors.white;
+    final imageMod = getImageUrl(isDarkmode, widget.imageUrl);
 
     return GestureDetector(
       onTap: widget.onCardPress, // Acción al presionar el card
@@ -90,7 +93,7 @@ class _WriterCardState extends State<WriterCard> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(40)),
                       image: DecorationImage(
-                        image: NetworkImage(widget.imageUrl),
+                        image: NetworkImage(imageMod),
                         fit: BoxFit.cover,
                       ),
                     ),
