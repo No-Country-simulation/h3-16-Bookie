@@ -72,8 +72,10 @@ public class HistoryService {
 
 
         /**<p>Si no existe entonces busco el pais </p>*/
-        CountryEntity country = countryRepository.findByName(historyDto.country().toUpperCase());
-        if (country == null) country = countryRepository.save(new CountryEntity(historyDto.country()));
+        String countryName = historyDto.country().toUpperCase();
+        CountryEntity country = countryRepository.findByName(countryName);
+
+            if (country == null) country = countryRepository.save(new CountryEntity(countryName));
 
 
         /** <p>Guardo la ciudad</p> */

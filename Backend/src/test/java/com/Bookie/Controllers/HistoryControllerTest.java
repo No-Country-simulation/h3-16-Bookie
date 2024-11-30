@@ -70,8 +70,8 @@ class HistoryControllerTest {
                   "creator_id": 3,
                   "genre": "FANTASIA",
                   "img": "http://imagen-del-dragon.jpg/",
-                  "country": "Peru",
-                  "province": "Arequipa"
+                  "country": "san andres",
+                  "province": "isla"
                 }
                             
                 """;
