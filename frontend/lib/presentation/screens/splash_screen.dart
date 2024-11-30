@@ -12,7 +12,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   // Variables para controlar el fade-in y fade-out
   double _opacity = 0.0; // Inicia con opacidad 0 (invisible)
-  bool _showLoader = false; // Controla si se muestra el loader
+  // bool _showLoader = false; // Controla si se muestra el loader
 
   @override
   void initState() {
@@ -31,15 +31,15 @@ class _SplashScreenState extends State<SplashScreen> {
     });
 
     // Esperar 2 segundos antes de mostrar el loader
-    await Future.delayed(const Duration(seconds: 2));
+    // await Future.delayed(const Duration(seconds: 2));
 
     // Mostrar el loader
-    setState(() {
-      _showLoader = true;
-    });
+    // setState(() {
+    //   _showLoader = true;
+    // });
 
     // Esperar 2 segundos antes de iniciar el fade-out
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 3));
 
     // Cambiar la opacidad para el fade-out
     setState(() {
@@ -118,17 +118,17 @@ class _SplashScreenState extends State<SplashScreen> {
               //     fontStyle: FontStyle.italic,
               //   ),
               // ),
-              const SizedBox(height: 40),
-              // Espacio reservado para el loader, sin causar movimiento
-              SizedBox(
-                height: 40, // Reservamos un espacio fijo para el loader
-                child: _showLoader
-                    ? CircularProgressIndicator(
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(colors.primary),
-                      )
-                    : null,
-              ),
+              // const SizedBox(height: 40),
+              // // Espacio reservado para el loader, sin causar movimiento
+              // SizedBox(
+              //   height: 40, // Reservamos un espacio fijo para el loader
+              //   child: _showLoader
+              //       ? CircularProgressIndicator(
+              //           valueColor:
+              //               AlwaysStoppedAnimation<Color>(colors.primary),
+              //         )
+              //       : null,
+              // ),
             ],
           ),
         ),
