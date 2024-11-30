@@ -30,11 +30,12 @@ class AuthService {
         ),
       );
 
+      print("Datos guardados en SharedPreferences: ${response.data}");
+
       final prefs = await SharedPreferences.getInstance();
-      prefs.setString('token', credentials.idToken); 
-      prefs.setString('idUser', response.data.id); 
-      prefs.setString('name', response.data.name); 
-      prefs.setString('email', response.data.email); 
+      prefs.setString('id', response.data['id'].toString());
+      prefs.setString('name', response.data['name']);
+      prefs.setString('email', response.data['email']);
       context.go('/home/0'); // Usando go_route
     } catch (e) {
       print("ERORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR: $e");
@@ -51,11 +52,11 @@ class AuthService {
 
       // Limpiar datos de sesión persistente
       final prefs = await SharedPreferences.getInstance();
-      prefs.remove('idToken');
+      prefs.remove('id');
+      prefs.remove('name');
+      prefs.remove('email');
 
-      if (context.mounted) {
-        context.go('/splash'); // Redirige a la pantalla de splash/login
-      }
+      context.go('/splash'); // Redirige a la pantalla de splash/login
     } catch (e) {
       print("ERROOOOOOOOOOOO LOGOUTTTTTTTTTTTTTTTTTTTTT: $e");
     }
