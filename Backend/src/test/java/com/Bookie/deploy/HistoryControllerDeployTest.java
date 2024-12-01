@@ -1,4 +1,4 @@
-package com.Bookie.Controllers;
+package com.Bookie.deploy;
 
 import com.Bookie.dto.HistoryDtoRequest;
 import com.Bookie.dto.HistoryDtoRequestUpdate;
@@ -18,8 +18,8 @@ import org.springframework.http.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class HistoryControllerTest {
+@SpringBootTest
+class HistoryControllerDeployTest {
 
 
     private TestRestTemplate testRestTemplate;
@@ -30,12 +30,11 @@ class HistoryControllerTest {
     @Autowired
     private RestTemplateBuilder restTemplateBuilder;
 
-    @LocalServerPort
-    private int port;
+
 
     @BeforeEach
     void setUp() {
-        restTemplateBuilder = restTemplateBuilder.rootUri("http://localhost:" + port);
+        restTemplateBuilder = restTemplateBuilder.rootUri("https://deploy-bookie-production.up.railway.app:");
         testRestTemplate = new TestRestTemplate(restTemplateBuilder);
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -60,18 +59,20 @@ class HistoryControllerTest {
     @Test
     void crateHistory() throws JsonProcessingException {
 
-        HistoryDtoRequest HistoryDtoRequest = new HistoryDtoRequest("La leyenda del MAGO 2",
-                "Una aventura épica sobre un MAGO y su MAGIA divivna.", 3L, GenreLiterary.FANTASIA, "http://imagen-del-dragon.jpg/","ARGENTINA","BUENOS AIRES");
+        HistoryDtoRequest HistoryDtoRequest = new HistoryDtoRequest("Historia del monte embrujado",
+                "Encuantro sercano con almas en pena", 1L, GenreLiterary.NOVELA, "http://portada.jpg","ARGENTINA","BUENOS AIRES");
 
         String json = """
                 {
-                  "title": "La leyenda del MAGO 2",
-                  "synopsis": "Una aventura épica sobre un MAGO y su MAGIA divivna.",
-                  "creator_id": 3,
-                  "genre": "FANTASIA",
-                  "img": "http://imagen-del-dragon.jpg/",
-                  "country": "san andres",
-                  "province": "isla"
+                    "title": "Historia del monte embrujado",
+                    "synopsis": "Encuantro cercano con almas en pena",
+                    "creator_id": 11,
+                    "genre": "NOVELA",
+                    "img": "http://portada.jpg",
+                     "country" :"ARGENTINA",
+                    "province": "BUENOS AIRES"
+                
+                    
                 }
                             
                 """;
@@ -125,7 +126,7 @@ class HistoryControllerTest {
     void deleteHistory() {
 
         HttpEntity<String> request = new HttpEntity<>(headers);
-        ResponseEntity<String> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/7", HttpMethod.DELETE, request, String.class);
+        ResponseEntity<String> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/4", HttpMethod.DELETE, request, String.class);
         System.out.println("updateHistory = " + crateHistoryResult);
 
 

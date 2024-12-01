@@ -30,4 +30,16 @@ public class UserEntity {
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<HistoryEntity> histories = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "wishlist",
+            joinColumns = @JoinColumn(name = "id_UserEntity"),
+            inverseJoinColumns = @JoinColumn(name = "id_history")
+    )
+    private List<HistoryEntity> wishlist;
+
+    @Override
+    public String toString() {
+        return "UserEntity{id=" + id + ", name='" + name + "', email='" + email + "', auth0UserId='" + auth0UserId + "'}";
+    }
 }
