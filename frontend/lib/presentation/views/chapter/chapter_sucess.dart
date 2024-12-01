@@ -6,8 +6,9 @@ import 'package:lottie/lottie.dart';
 
 class ChapterSuccess extends StatefulWidget {
   static const String name = 'chapter-success';
+  final int storyId;
 
-  const ChapterSuccess({super.key});
+  const ChapterSuccess({super.key, required this.storyId});
 
   @override
   State<ChapterSuccess> createState() => _ChapterSuccessState();
@@ -109,7 +110,7 @@ class _ChapterSuccessState extends State<ChapterSuccess> {
                 ),
                 const SizedBox(height: 40),
                 // Botones mágicos
-                ButtonColumn(context),
+                ButtonColumn(context, storyId: widget.storyId),
               ],
             ),
           ),
@@ -170,12 +171,13 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
 }
 
 // Botones mágicos
-Widget ButtonColumn(BuildContext context) {
+Widget ButtonColumn(BuildContext context, {required int storyId}) {
   return Column(
     children: [
       ElevatedButton(
         onPressed: () {
           // Acción para vista previa
+          context.go('/chapters/view/$storyId');
         },
         child: const Text('Vista Previa'),
       ),

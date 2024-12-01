@@ -277,7 +277,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
             //       content: Text('Capítulo creado con éxito.'),
             //       backgroundColor: Colors.green),
             // );
-            context.push("/chapter/success");
+            context.push("/chapter/success/${widget.storyId}");
           },
         ).catchError((e) {
           print("Error: $e");
@@ -359,7 +359,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: colors.primary,
               ),
-              onPressed: () => _generateStory(context),
+              onPressed: () => _generateAndModifyStory(context),
               child: Text('Generar historia',
                   style: TextStyle(color: Colors.black)),
             ),
@@ -367,7 +367,9 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: colors.primary,
               ),
-              onPressed: () => _modifyStory(context),
+              onPressed: () {
+                _modifyStory(context);
+              },
               child: Text('Mejorar y corregir',
                   style: TextStyle(color: Colors.black)),
             ),
@@ -375,6 +377,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
               onPressed: () {
                 setState(() {
                   isLoading = false;
+                  isEnabled = true;
                   _isGeneratingText = true;
                 });
                 Navigator.of(context).pop(); // Cerrar el modal sin eliminar
@@ -387,7 +390,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
     );
   }
 
-  void _generateStory(BuildContext context) async {
+  void _generateAndModifyStory(BuildContext context) async {
     if (_contentController.text.trim().isNotEmpty && _isGeneratingText) {
       setState(() {
         _isGeneratingText = false;
@@ -397,6 +400,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
     }
 
     setState(() {
+      isEnabled = false;
       isLoading = true;
       _generatedText = "";
       _contentController.clear();
@@ -409,7 +413,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
         contextStory:
             // Este título es importante a considerar en la generación de la historia:
             // TODO: REVISAR ESTO SI CONSIDERAR CIUDAD O PROVINCIA
-            "${_titleController.text.trim().isEmpty ? "" : _titleController.text}. ${_prompt.trim().isEmpty ? "" : _prompt}.",
+            "${_titleController.text.trim().isEmpty ? "" : _titleController.text}. ${_prompt.trim().isEmpty ? "" : _prompt}. Perú, Trujillo",
       );
 
       if (!_isGeneratingText) {
@@ -431,6 +435,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
       }, onDone: () {
         setState(() {
           isLoading = false; // Finaliza el estado de carga.
+          isEnabled = true;
         });
       });
     } catch (e) {
@@ -444,6 +449,10 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
           backgroundColor: Colors.red,
         ),
       );
+      setState(() {
+        isLoading = false;
+        isEnabled = true;
+      });
     } finally {
       setState(() {
         // isLoading = false;
@@ -459,6 +468,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
 
     setState(() {
       isLoading = true;
+      isEnabled = false;
       _generatedText = "";
     });
 
@@ -484,6 +494,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
       }, onDone: () {
         setState(() {
           isLoading = false; // Finaliza el estado de carga.
+          isEnabled = true;
         });
       });
     } catch (e) {
@@ -497,6 +508,10 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
           backgroundColor: Colors.red,
         ),
       );
+      setState(() {
+        isLoading = false;
+        isEnabled = true;
+      });
     } finally {
       setState(() {
         // isLoading = false;
@@ -580,6 +595,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
 
   void _translateStory(String language, BuildContext context) async {
     setState(() {
+      isEnabled = false;
       isLoading = true;
     });
 
@@ -610,6 +626,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
       );
     } finally {
       setState(() {
+        isEnabled = true;
         isLoading = false;
       });
     }
@@ -919,7 +936,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
               IconButton(
                 icon: Icon(Icons.auto_awesome),
                 onPressed: () {
-                  _generateStory(context);
+                  _generateAndModifyStory(context);
                 },
               ),
             ],
