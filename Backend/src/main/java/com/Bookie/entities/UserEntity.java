@@ -31,6 +31,11 @@ public class UserEntity {
     @JsonIgnore
     private List<HistoryEntity> histories = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<WishlistEntity> wishlishistory;
+
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "wishlist",
             joinColumns = @JoinColumn(name = "id_UserEntity"),

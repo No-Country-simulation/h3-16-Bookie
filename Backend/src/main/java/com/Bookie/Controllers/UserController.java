@@ -111,25 +111,6 @@ public class UserController {
         }
     }
 
-    @GetMapping("/wishlist/{id}")
-    @Operation(
-            summary = "Get wishlist",
-            description = "Get wishlist by ID",
-            tags = {"History"}
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Obtener historias de la lista de deseos",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = HistoryDtoResponse.class),
-                            examples = @ExampleObject(name = "HistoryDtoResponse",
-                                    value = "{\"id\": 1,\"title\": \"new title\", \"synopsis\": \"description of history\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber\"}")))
-    })
-    public ResponseEntity<?> getWishlist(@PathVariable  Long id) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(userService.getWishlist(id));
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", ex.getMessage()));
 
-        }
-    }
 }
 
