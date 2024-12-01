@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bookie/config/geolocator/geolocator.dart';
+import 'package:bookie/config/openai/openai_config.dart';
 import 'package:bookie/config/permissions/image.dart';
 import 'package:bookie/domain/entities/chapter.dart';
 import 'package:bookie/presentation/providers/chapter_provider.dart';
@@ -38,6 +39,9 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
   bool isEnabled = true;
   bool isLoading = false;
   String loadingMessage = "";
+  String _generatedText = ""; // Texto acumulado.
+  String _prompt = "";
+  bool _isGeneratingText = true;
   // final QuillController _controller = QuillController.basic();
 
   void _toggleBold() {
@@ -61,7 +65,6 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
   @override
   void initState() {
     super.initState();
-
     // Monitorear el foco para actualizar el estado
     focusNode.addListener(() {
       setState(() {});
@@ -181,8 +184,8 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
   }
 
   bool _isFormValid() {
-    return _titleController.text.isNotEmpty &&
-        _contentController.text.isNotEmpty;
+    return _titleController.text.trim().isNotEmpty &&
+        _contentController.text.trim().isNotEmpty;
   }
 
   Future<Position> getCurrentPosition() async {
@@ -249,8 +252,8 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
       latitude = position.latitude;
       longitude = position.longitude;
 
-      if (title.isNotEmpty &&
-          content.isNotEmpty &&
+      if (title.trim().isNotEmpty &&
+          content.trim().isNotEmpty &&
           latitude != null &&
           longitude != null) {
         final chapterForm = ChapterForm(
@@ -337,6 +340,166 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
         );
       },
     );
+  }
+
+  void showGenerateTextDialogConfirm(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false, // No se puede cerrar al hacer clic afuera
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Generar texto'),
+          content: Text(
+              'Se generará una historia basado en el contenido actual con inteligencia artificial, también puedes mejorar y corregir la historia que escribistes.'),
+          actions: <Widget>[
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: colors.primary,
+              ),
+              onPressed: () => _generateText(context),
+              child: Text('Generar historia',
+                  style: TextStyle(color: Colors.black)),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: colors.primary,
+              ),
+              onPressed: () => _modifyText(context),
+              child: Text('Mejorar y corregir',
+                  style: TextStyle(color: Colors.black)),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  isLoading = false;
+                  _isGeneratingText = true;
+                });
+                Navigator.of(context).pop(); // Cerrar el modal sin eliminar
+              },
+              child: Text('Cancelar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _generateText(BuildContext context) async {
+    if (_contentController.text.trim().isNotEmpty && _isGeneratingText) {
+      setState(() {
+        _isGeneratingText = false;
+      });
+      showGenerateTextDialogConfirm(context);
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+      _generatedText = "";
+      _contentController.clear();
+    });
+
+    _contentController.text = "Generando historia..."; // Actualiza el TextField
+
+    try {
+      final chatStream = await generateStory(
+        contextStory:
+            "Este título es importante a considerar en la generación de la historia: ${_titleController.text.trim().isEmpty ? "" : _titleController.text}. ${_prompt.trim().isEmpty ? "" : _prompt}. Perú, Trujillo",
+      );
+
+      if (!_isGeneratingText) {
+        Navigator.of(context).pop(); // Cerrar el modal
+      }
+
+      chatStream.listen((streamChatCompletion) {
+        final newText =
+            streamChatCompletion.choices.first.delta.content?[0]?.text ?? "";
+        _generatedText += newText; // Acumula el texto progresivamente.
+        _contentController.text =
+            _generatedText; // Actualiza el TextField dinámicamente.
+
+        // Asegúrate de que el cursor esté al final del texto
+        focusNode.requestFocus(); // Solicita el enfoque
+        _contentController.selection = TextSelection.fromPosition(
+          TextPosition(offset: _contentController.text.length),
+        );
+      }, onDone: () {
+        setState(() {
+          isLoading = false; // Finaliza el estado de carga.
+        });
+      });
+    } catch (e) {
+      if (!_isGeneratingText) {
+        Navigator.of(context).pop(); // Cerrar el modal
+      }
+      print("Error al generar texto: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error al generar texto'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        // isLoading = false;
+        _isGeneratingText = true;
+      });
+    }
+  }
+
+  void _modifyText(BuildContext context) async {
+    if (_contentController.text.trim().isEmpty) {
+      Navigator.of(context).pop(); // Cerrar el modal
+    }
+
+    setState(() {
+      isLoading = true;
+      _generatedText = "";
+    });
+
+    try {
+      final chatStream = await modifyStory(
+        storyToModify: _contentController.text.trim(),
+      );
+
+      // para cerrar el modal
+      Navigator.of(context).pop(); // Cerrar el modal
+
+      chatStream.listen((streamChatCompletion) {
+        final newText =
+            streamChatCompletion.choices.first.delta.content?[0]?.text ?? "";
+        _generatedText += newText;
+        _contentController.text = _generatedText;
+
+        // Asegúrate de que el cursor esté al final del texto
+        focusNode.requestFocus(); // Solicita el enfoque
+        _contentController.selection = TextSelection.fromPosition(
+          TextPosition(offset: _contentController.text.length),
+        );
+      }, onDone: () {
+        setState(() {
+          isLoading = false; // Finaliza el estado de carga.
+        });
+      });
+    } catch (e) {
+      if (!_isGeneratingText) {
+        Navigator.of(context).pop(); // Cerrar el modal
+      }
+      print("Error al modificar texto: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error al modificar texto'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        // isLoading = false;
+        _isGeneratingText = true;
+      });
+    }
   }
 
   @override
@@ -475,38 +638,68 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
                         // const SizedBox(height: 16),
 
                         // Input de contenido del capítulo (sin línea base)
-                        TextFormField(
-                          controller: _contentController,
-                          focusNode: focusNode,
-                          decoration: InputDecoration(
-                            labelText:
-                                "Pulsa aquí para empezar a escribir", // El texto del label cambiará dinámicamente
-                            floatingLabelBehavior: FloatingLabelBehavior.auto,
-                            floatingLabelAlignment:
-                                FloatingLabelAlignment.center,
-                            // Esto hace la etiqueta invisible si no se está usando
-                            // labelStyle: TextStyle(color: Colors.transparent),
-                            border: InputBorder
-                                .none, // Esto oculta la línea de la base
-                            labelStyle: TextStyle(
-                              color: focusNode.hasFocus ||
-                                      _contentController.text.isNotEmpty
-                                  ? Colors
-                                      .transparent // Cuando está enfocado o tiene texto, ocultar el label
-                                  : null, // Si no está enfocado y está vacío, mostrar el label
+                        Stack(children: [
+                          TextFormField(
+                            controller: _contentController,
+                            focusNode: focusNode,
+                            decoration: InputDecoration(
+                              labelText:
+                                  "Pulsa aquí para empezar a escribir", // El texto del label cambiará dinámicamente
+                              floatingLabelBehavior: FloatingLabelBehavior.auto,
+                              floatingLabelAlignment:
+                                  FloatingLabelAlignment.center,
+                              // Esto hace la etiqueta invisible si no se está usando
+                              // labelStyle: TextStyle(color: Colors.transparent),
+                              border: InputBorder
+                                  .none, // Esto oculta la línea de la base
+                              labelStyle: TextStyle(
+                                color: focusNode.hasFocus ||
+                                        _contentController.text.isNotEmpty
+                                    ? Colors
+                                        .transparent // Cuando está enfocado o tiene texto, ocultar el label
+                                    : null, // Si no está enfocado y está vacío, mostrar el label
+                              ),
                             ),
+                            maxLines:
+                                null, // Esto permite que el campo crezca hacia abajo
+                            // expands: true,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Campo obligatorio";
+                              }
+                              return null;
+                            },
+                            onChanged: (value) => setState(() {
+                              _prompt = value.trim();
+                            }),
                           ),
-                          maxLines:
-                              null, // Esto permite que el campo crezca hacia abajo
-                          // expands: true,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Campo obligatorio";
-                            }
-                            return null;
-                          },
-                          onChanged: (_) => setState(() {}),
-                        ),
+
+                          // Botón de limpiar
+                          if (_contentController.text.trim().isNotEmpty)
+                            Positioned(
+                              top: 4,
+                              right: 6, // Ajusta la posición a la derecha
+                              child: GestureDetector(
+                                onTap: () {
+                                  _contentController
+                                      .clear(); // Limpiar el campo
+                                  setState(() {}); // Actualizar la UI
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.withOpacity(0.8),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.delete,
+                                    size: 16,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            )
+                        ]),
                         const SizedBox(height: 16),
                       ],
                     )),
@@ -578,7 +771,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
               IconButton(
                 icon: Icon(Icons.auto_awesome),
                 onPressed: () {
-                  // Lógica para mejorar el texto con IA
+                  _generateText(context);
                 },
               ),
             ],

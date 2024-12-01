@@ -13,8 +13,9 @@ import 'package:bookie/presentation/views/story/edit_story_view_chapters.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/home/2', // Ruta inicial
+  initialLocation: '/chapter/create/128', // Ruta inicial
   routes: [
+    
     GoRoute(path: "/splash", builder: (context, state) => const SplashScreen()),
     GoRoute(
         path: "/login", builder: (context, state) => LoginOrRegisterScreen()),

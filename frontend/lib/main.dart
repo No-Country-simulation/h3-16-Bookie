@@ -1,12 +1,15 @@
+import 'package:bookie/config/constants/environment.dart';
 import 'package:bookie/config/router/app_router.dart';
 import 'package:bookie/config/theme/app_theme.dart';
 import 'package:bookie/presentation/providers/theme_provider.dart';
+import 'package:dart_openai/dart_openai.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: '.env');
+  OpenAI.apiKey = Environment.theOpenAIKey;
 
   runApp(
     const ProviderScope(
