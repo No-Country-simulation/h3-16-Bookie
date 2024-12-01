@@ -5,6 +5,7 @@ import 'package:bookie/presentation/screens/home_screen.dart';
 import 'package:bookie/presentation/screens/splash_screen.dart';
 import 'package:bookie/presentation/screens/writer_screen.dart';
 import 'package:bookie/presentation/views/chapter/chapter_form.dart';
+import 'package:bookie/presentation/views/chapter/chapter_sucess.dart';
 import 'package:bookie/presentation/views/settings/settings_profile_screen.dart';
 import 'package:bookie/presentation/views/settings/settings_theme_screen.dart';
 import 'package:bookie/presentation/views/story/create_form_story_screen.dart';
@@ -65,6 +66,14 @@ final appRouter = GoRouter(
         final storyId = int.parse(state.pathParameters['storyId'] ?? '0');
         return CreateChapterScreen(
             storyId: storyId); // Lo pasamos al componente
+      },
+    ),
+    // sucess page create chapter
+    GoRoute(
+      path: '/chapter/success',
+      name: ChapterSuccess.name,
+      builder: (context, state) {
+        return ChapterSuccess();
       },
     ),
 

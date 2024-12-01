@@ -7,7 +7,9 @@ import 'package:bookie/presentation/providers/chapter_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CreateChapterScreen extends ConsumerStatefulWidget {
@@ -266,12 +268,12 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
 
         ref.read(chapterProvider.notifier).addChapter(chapterForm).then(
           (chapter) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: Text('Capítulo creado con éxito.'),
-                  backgroundColor: Colors.green),
-            );
-            // context.go("/success");
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   SnackBar(
+            //       content: Text('Capítulo creado con éxito.'),
+            //       backgroundColor: Colors.green),
+            // );
+            context.push("/chapter/success");
           },
         ).catchError((e) {
           print("Error: $e");
@@ -521,7 +523,10 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircularProgressIndicator(),
+                  SpinKitFadingCircle(
+                    color: Colors.white,
+                    size: 50.0,
+                  ),
                   const SizedBox(height: 16),
                   Text(
                     loadingMessage,
