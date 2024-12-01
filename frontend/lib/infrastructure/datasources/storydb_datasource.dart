@@ -74,4 +74,20 @@ class StoriesDbDatasource extends StoriesDatasource {
 
     return story;
   }
+
+  @override
+  Future<void> deleteStory(int storyId) async {
+    try {
+      print("Eliminando historia con id: $storyId");
+
+      final response = await FetchApi.fetchDio().delete(
+        '/v1/history/$storyId',
+      );
+
+      print("Respuesta de la API: ${response.data}");
+    } catch (e) {
+      print("Error al eliminar historia: $e");
+      throw Exception("Error al eliminar historia");
+    }
+  }
 }

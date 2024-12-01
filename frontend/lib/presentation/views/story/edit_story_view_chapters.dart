@@ -4,6 +4,7 @@ import 'package:bookie/presentation/providers/chapter_provider.dart';
 import 'package:bookie/presentation/providers/story_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class StoryEditDetailChaptersPage extends ConsumerStatefulWidget {
   static const String name = 'story-edit-detail-chapters';
@@ -19,6 +20,8 @@ class StoryEditDetailChaptersPage extends ConsumerStatefulWidget {
 class _StoryEditDetailChaptersPageState
     extends ConsumerState<StoryEditDetailChaptersPage> {
   bool isLoading = true;
+  bool isDeleting = false;
+
   @override
   void initState() {
     super.initState();
@@ -42,6 +45,75 @@ class _StoryEditDetailChaptersPageState
             false; // Establecer la carga en false cuando termine la solicitud
       });
     }
+  }
+
+  Future<void> _deleteStory(BuildContext context) async {
+    setState(() {
+      isDeleting = true; // Mostrar el loader
+    });
+
+    try {
+      // Ejecutar la eliminación de la historia
+      await ref.read(deleteStoryProvider(widget.storyId).future);
+
+      // Mostrar mensaje de éxito
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content:
+              Text("Historia eliminada", style: TextStyle(color: Colors.white)),
+          backgroundColor: Colors.red,
+        ),
+      );
+
+      await Future.delayed(const Duration(seconds: 2));
+      Navigator.of(context).pop(); // Cerrar el modal
+      context.go('/home/2'); // Redirigir al home/2
+    } catch (e) {
+      // Mostrar mensaje de error en caso de fallo
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Error al eliminar historia",
+              style: TextStyle(color: Colors.white)),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        isDeleting = false; // Ocultar el loader
+      });
+    }
+  }
+
+  void showDeleteConfirmationDialog(BuildContext context) {
+    showDialog(
+      barrierDismissible: false, // No se puede cerrar al hacer clic afuera
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirmar eliminación'),
+          content: Text('¿Estás seguro de que deseas eliminar esta historia?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cerrar el modal sin eliminar
+              },
+              child: Text('Cancelar'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              onPressed: isDeleting
+                  ? null // Deshabilitar el botón durante la eliminación
+                  : () => _deleteStory(context),
+              child: isDeleting
+                  ? CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ) // Mostrar el loader cuando se está eliminando
+                  : Text('Eliminar', style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -70,6 +142,7 @@ class _StoryEditDetailChaptersPageState
                   break;
                 case 'delete':
                   print('Eliminar seleccionado');
+                  showDeleteConfirmationDialog(context);
                   break;
               }
             },
@@ -196,7 +269,7 @@ class _StoryEditDetailChaptersPageState
                       InkWell(
                         onTap: () {
                           // Acción al presionar el botón
-                          print('Añadir capítulo presionado');
+                          context.push('/chapter/create/${widget.storyId}');
                         },
                         borderRadius: BorderRadius.circular(
                             8), // Opcional, para un efecto visual más elegante
@@ -232,6 +305,8 @@ class _StoryEditDetailChaptersPageState
                               shrinkWrap: true,
                               itemCount: chapters.length,
                               itemBuilder: (context, index) {
+                                final chapter = chapters[index];
+
                                 return Card(
                                   color: Colors.grey
                                       .shade800, // Fondo notable para el capítulo
@@ -248,18 +323,19 @@ class _StoryEditDetailChaptersPageState
                                         borderRadius: BorderRadius.circular(8),
                                         image: DecorationImage(
                                           image: NetworkImage(
+                                              // TODO: FALTA LA IMAGEN DEL CAPÍTULO DESDE LA BASE DE DATOS
                                               'https://picsum.photos/seed/chapter${index + 1}/100'),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
                                     ),
                                     title: Text(
-                                      'Capítulo ${index + 1}',
+                                      chapter.title,
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 14),
                                     ),
                                     subtitle: Text(
-                                      'Descripción breve del capítulo.',
+                                      'Capítulo ${index + 1}',
                                       style: TextStyle(
                                           color: Colors.grey.shade300,
                                           fontSize: 12),

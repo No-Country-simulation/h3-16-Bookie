@@ -8,4 +8,6 @@ abstract class StoriesRepository {
   Future<Story> getStory(int storyId);
 
   Future<Story> createStory(StoryForm storyForm);
+
+  Future<void> deleteStory(int storyId);
 }

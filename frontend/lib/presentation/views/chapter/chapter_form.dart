@@ -7,6 +7,7 @@ import 'package:bookie/presentation/providers/chapter_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CreateChapterScreen extends ConsumerStatefulWidget {
@@ -32,7 +33,9 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
   bool _isUnderlined = false;
   double? latitude;
   double? longitude;
-  bool isSaveEnabled = false;
+  bool isEnabled = true;
+  bool isLoading = false;
+  String loadingMessage = "";
   // final QuillController _controller = QuillController.basic();
 
   void _toggleBold() {
@@ -147,10 +150,10 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
 
   @override
   void dispose() {
+    super.dispose();
     _titleController.dispose();
     _contentController.dispose();
     focusNode.dispose();
-    super.dispose();
   }
 
   void _pickImage(ImageSource source) async {
@@ -180,94 +183,126 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
         _contentController.text.isNotEmpty;
   }
 
-  Future<void> addMarker() async {
+  Future<Position> getCurrentPosition() async {
     try {
       // Usa tu lógica de geolocalización aquí
       // Ejemplo:
       var position = await determinePosition();
-      setState(() {
-        latitude = position.latitude;
-        longitude = position.longitude;
-        isSaveEnabled =
-            true; // Habilitar el botón después de obtener la ubicación
-      });
+      return position;
     } catch (e) {
       // Maneja el error de geolocalización
       print('Error al obtener la ubicación: $e');
+      rethrow;
     }
   }
 
   void _submitForm() async {
+    setState(() {
+      isEnabled = false;
+      isLoading = true;
+      loadingMessage = "Espera, estamos guardando la historia...";
+    });
+
     final String title = _titleController.text;
     final String content = _contentController.text;
     final String? imagePath = _selectedImage?.path;
     final Dio dio = Dio();
     String? image;
 
-    // Subir imagen a Cloudinary
-    if (imagePath != null) {
-      try {
-        FormData formData = FormData.fromMap({
-          "file": await MultipartFile.fromFile(imagePath),
-          "upload_preset": "ml_default",
-          "cloud_name": "dlixnwuhi",
-        });
+    try {
+      // Subir imagen a Cloudinary
+      if (imagePath != null) {
+        try {
+          FormData formData = FormData.fromMap({
+            "file": await MultipartFile.fromFile(imagePath),
+            "upload_preset": "ml_default",
+            "cloud_name": "dlixnwuhi",
+          });
 
-        final response = await dio.post(
-            "https://api.cloudinary.com/v1_1/dlixnwuhi/image/upload",
-            data: formData);
+          final response = await dio.post(
+              "https://api.cloudinary.com/v1_1/dlixnwuhi/image/upload",
+              data: formData);
 
-        image = response.data['url'];
-      } catch (e) {
-        print("Error al subir la imagen: $e");
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(
-                'Error al subir la imagen',
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-              backgroundColor: Colors.red),
-        );
-        return;
-      }
-    }
-
-    if (title.isNotEmpty &&
-        content.isNotEmpty &&
-        latitude != null &&
-        longitude != null) {
-      final chapterForm = ChapterForm(
-        title: title,
-        content: content,
-        image: image,
-        latitude: latitude!,
-        longitude: longitude!,
-        historyId: widget.storyId,
-      );
-
-      ref.read(chapterProvider.notifier).addChapter(chapterForm).then(
-        (chapter) {
+          image = response.data['url'];
+        } catch (e) {
+          print("Error al subir la imagen: $e");
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-                content: Text('Capítulo creado'),
-                backgroundColor: Colors.green),
+                content: Text(
+                  'Error al subir la imagen',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+                backgroundColor: Colors.red),
           );
-        },
-      ).catchError((e) {
-        print("Error: $e");
+          return;
+        }
+      }
+
+      setState(() {
+        loadingMessage = "Determinando ubicación...";
+      });
+
+      final position = await determinePosition();
+      latitude = position.latitude;
+      longitude = position.longitude;
+
+      if (title.isNotEmpty &&
+          content.isNotEmpty &&
+          latitude != null &&
+          longitude != null) {
+        final chapterForm = ChapterForm(
+          title: title,
+          content: content,
+          image: image,
+          latitude: latitude!,
+          longitude: longitude!,
+          historyId: widget.storyId,
+        );
+
+        setState(() {
+          loadingMessage = "Ya falta poco...";
+        });
+
+        ref.read(chapterProvider.notifier).addChapter(chapterForm).then(
+          (chapter) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: Text('Capítulo creado con éxito.'),
+                  backgroundColor: Colors.green),
+            );
+            // context.go("/success");
+          },
+        ).catchError((e) {
+          print("Error: $e");
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text('No se pudo crear el capítulo'),
+                backgroundColor: Colors.red),
+          );
+        });
+
+        await Future.delayed(const Duration(seconds: 1));
+        isLoading = false;
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text('No se pudo crear el capítulo'),
+              content: Text('Por favor, revisa los datos ingresados'),
               backgroundColor: Colors.red),
         );
-      });
-    } else {
+        isLoading = false;
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text('Por favor, revisa los datos ingresados'),
+            content: Text('Error al subir la imagen'),
             backgroundColor: Colors.red),
       );
+      isLoading = false;
+    } finally {
+      setState(() {
+        isEnabled = true; // Habilitar el botón después de enviar el formulario
+      });
     }
   }
 
@@ -302,61 +337,6 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
     );
   }
 
-  void _showBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Titulo con un X para cerrar
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: () =>
-                          Navigator.pop(context), // Cerrar el BottomSheet
-                      child: const Icon(Icons.close),
-                    ),
-                    const Text(
-                      'Una cosa más',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    // Botón "Guardar"
-
-                    TextButton(
-                      onPressed: isSaveEnabled
-                          ? _submitForm
-                          : null, // El botón se habilita solo si la latitud y longitud están definidas
-                      child: Text(
-                        'Guardar',
-                      ),
-                    ),
-                  ],
-                ),
-                // Opciones
-                const SizedBox(height: 16),
-                ListTile(
-                  leading: const Icon(Icons.location_on),
-                  title: const Text("Agregar marcador"),
-                  onTap: () async {
-                    // Navigator.pop(context); // Cerrar el BottomSheet
-                    await addMarker(); // Lógica de Geolocator para agregar marcador
-                  },
-                ),
-                // Puedes agregar más opciones aquí si es necesario
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
@@ -365,195 +345,239 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
       appBar: AppBar(
         title: const Text("Crear capítulo"),
         actions: [
-          TextButton(
-            onPressed: _isFormValid() ? _showBottomSheet : null,
-            child: Text(
-              "Guardar",
-              style: TextStyle(
-                color: _isFormValid()
-                    ? colors.primary
-                    : colors.onSurface.withOpacity(0.5),
+          AbsorbPointer(
+            absorbing: !isEnabled,
+            child: TextButton(
+              onPressed: (_isFormValid() && isEnabled) ? _submitForm : null,
+              child: Text(
+                "Guardar",
+                style: TextStyle(
+                  color: (_isFormValid() && isEnabled)
+                      ? colors.primary
+                      : colors.onSurface.withOpacity(0.5),
+                ),
               ),
             ),
           ),
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert),
-            padding: EdgeInsets.zero,
-            onSelected: (value) {
-              if (value == 'preview') {
-                print("Vista previa seleccionada");
-              }
-            },
-            itemBuilder: (BuildContext context) => [
-              const PopupMenuItem<String>(
-                value: 'preview',
-                child: Text('Vista previa'),
-              ),
-            ],
+          AbsorbPointer(
+            absorbing: !isEnabled,
+            child: PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert),
+              padding: EdgeInsets.zero,
+              onSelected: (value) {
+                if (value == 'preview') {
+                  print("Vista previa seleccionada");
+                }
+              },
+              itemBuilder: (BuildContext context) => [
+                const PopupMenuItem<String>(
+                  value: 'preview',
+                  child: Text('Vista previa'),
+                ),
+              ],
+            ),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Selector de imagen
-                  GestureDetector(
-                    onTap: _showImageSourceActionSheet,
-                    child: Stack(
+      body: Stack(
+        children: [
+          AbsorbPointer(
+            absorbing: !isEnabled,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          height: 120,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                                color: colors.onSurface.withOpacity(0.5)),
-                            borderRadius: BorderRadius.circular(12),
-                            color: colors.surface,
-                          ),
-                          child: _selectedImage == null
-                              ? Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Icon(Icons.add_a_photo, size: 32),
-                                      SizedBox(height: 8),
-                                      Text("Agregar una imagen al capítulo"),
-                                    ],
-                                  ),
-                                )
-                              : ClipRRect(
+                        // Selector de imagen
+                        GestureDetector(
+                          onTap: _showImageSourceActionSheet,
+                          child: Stack(
+                            children: [
+                              Container(
+                                height: 120,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: colors.onSurface.withOpacity(0.5)),
                                   borderRadius: BorderRadius.circular(12),
-                                  child: Image.file(
-                                    File(_selectedImage!.path),
-                                    fit: BoxFit.cover,
+                                  color: colors.surface,
+                                ),
+                                child: _selectedImage == null
+                                    ? Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: const [
+                                            Icon(Icons.add_a_photo, size: 32),
+                                            SizedBox(height: 8),
+                                            Text(
+                                                "Agregar una imagen al capítulo"),
+                                          ],
+                                        ),
+                                      )
+                                    : ClipRRect(
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: Image.file(
+                                          File(_selectedImage!.path),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                              ),
+                              if (_selectedImage != null)
+                                Positioned(
+                                  top: 8,
+                                  right: 8,
+                                  child: GestureDetector(
+                                    onTap: _removeImage,
+                                    child: CircleAvatar(
+                                      radius: 16,
+                                      backgroundColor:
+                                          Colors.red.withOpacity(0.8),
+                                      child: const Icon(
+                                        Icons.close,
+                                        color: Colors.white,
+                                        size: 16,
+                                      ),
+                                    ),
                                   ),
                                 ),
+                            ],
+                          ),
                         ),
-                        if (_selectedImage != null)
-                          Positioned(
-                            top: 8,
-                            right: 8,
-                            child: GestureDetector(
-                              onTap: _removeImage,
-                              child: CircleAvatar(
-                                radius: 16,
-                                backgroundColor: Colors.red.withOpacity(0.8),
-                                child: const Icon(
-                                  Icons.close,
-                                  color: Colors.white,
-                                  size: 16,
-                                ),
-                              ),
+                        // const SizedBox(height: 16),
+
+                        // Input de título
+                        TextFormField(
+                          controller: _titleController,
+                          textAlign: TextAlign.center,
+                          decoration: InputDecoration(
+                            labelText: "Agregale un título",
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
+                            labelStyle: TextStyle(
+                              color: _titleController.text.isEmpty
+                                  ? null
+                                  : Colors.transparent,
                             ),
                           ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Campo obligatorio";
+                            }
+                            return null;
+                          },
+                          onChanged: (_) => setState(() {}),
+                        ),
+                        // const SizedBox(height: 16),
+
+                        // Input de contenido del capítulo (sin línea base)
+                        TextFormField(
+                          controller: _contentController,
+                          focusNode: focusNode,
+                          decoration: InputDecoration(
+                            labelText:
+                                "Pulsa aquí para empezar a escribir", // El texto del label cambiará dinámicamente
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
+                            floatingLabelAlignment:
+                                FloatingLabelAlignment.center,
+                            // Esto hace la etiqueta invisible si no se está usando
+                            // labelStyle: TextStyle(color: Colors.transparent),
+                            border: InputBorder
+                                .none, // Esto oculta la línea de la base
+                            labelStyle: TextStyle(
+                              color: focusNode.hasFocus ||
+                                      _contentController.text.isNotEmpty
+                                  ? Colors
+                                      .transparent // Cuando está enfocado o tiene texto, ocultar el label
+                                  : null, // Si no está enfocado y está vacío, mostrar el label
+                            ),
+                          ),
+                          maxLines:
+                              null, // Esto permite que el campo crezca hacia abajo
+                          // expands: true,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Campo obligatorio";
+                            }
+                            return null;
+                          },
+                          onChanged: (_) => setState(() {}),
+                        ),
+                        const SizedBox(height: 16),
                       ],
-                    ),
-                  ),
-                  // const SizedBox(height: 16),
-
-                  // Input de título
-                  TextFormField(
-                    controller: _titleController,
-                    decoration: InputDecoration(
-                      labelText: "Agregale un título",
-                      floatingLabelBehavior: FloatingLabelBehavior.auto,
-                      labelStyle: TextStyle(
-                        color: _titleController.text.isEmpty
-                            ? null
-                            : Colors.transparent,
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Campo obligatorio";
-                      }
-                      return null;
-                    },
-                    onChanged: (_) => setState(() {}),
-                  ),
-                  // const SizedBox(height: 16),
-
-                  // Input de contenido del capítulo (sin línea base)
-                  TextFormField(
-                    controller: _contentController,
-                    focusNode: focusNode,
-                    decoration: InputDecoration(
-                      labelText:
-                          "Pulsa aquí para empezar a escribir", // El texto del label cambiará dinámicamente
-                      floatingLabelBehavior: FloatingLabelBehavior.auto,
-                      floatingLabelAlignment: FloatingLabelAlignment.center,
-                      // Esto hace la etiqueta invisible si no se está usando
-                      // labelStyle: TextStyle(color: Colors.transparent),
-                      border:
-                          InputBorder.none, // Esto oculta la línea de la base
-                      labelStyle: TextStyle(
-                        color: focusNode.hasFocus ||
-                                _contentController.text.isNotEmpty
-                            ? Colors
-                                .transparent // Cuando está enfocado o tiene texto, ocultar el label
-                            : null, // Si no está enfocado y está vacío, mostrar el label
-                      ),
-                    ),
-                    maxLines:
-                        null, // Esto permite que el campo crezca hacia abajo
-                    // expands: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Campo obligatorio";
-                      }
-                      return null;
-                    },
-                    onChanged: (_) => setState(() {}),
-                  ),
+                    )),
+              ),
+            ),
+          ),
+          if (isLoading)
+            ModalBarrier(
+              color: Colors.black.withOpacity(0.5),
+              dismissible: false,
+            ),
+          if (isLoading)
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(),
                   const SizedBox(height: 16),
+                  Text(
+                    loadingMessage,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
-              )),
-        ),
+              ),
+            ),
+        ],
       ),
-      bottomNavigationBar: BottomAppBar(
-        elevation: 4, // Añade sombra si es necesario
-        height: 60,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // Botones de deshacer y rehacer
-            IconButton(
-              icon: Icon(Icons.undo),
-              onPressed: () {
-                // Lógica para deshacer
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.redo),
-              onPressed: () {
-                // Lógica para rehacer
-              },
-            ),
-            // Botón de formato que abre el menú de formato
-            IconButton(
-              icon: Icon(Icons.text_format),
-              onPressed: _openAlignmentMenu,
-            ),
-            // Botón de traducir
-            IconButton(
-              icon: Icon(Icons.translate),
-              onPressed: () {
-                // Lógica para traducir
-              },
-            ),
-            // Botón de IA
-            IconButton(
-              icon: Icon(Icons.auto_awesome),
-              onPressed: () {
-                // Lógica para mejorar el texto con IA
-              },
-            ),
-          ],
+      bottomNavigationBar: AbsorbPointer(
+        absorbing: !isEnabled,
+        child: BottomAppBar(
+          elevation: 4, // Añade sombra si es necesario
+          height: 60,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Botones de deshacer y rehacer
+              IconButton(
+                icon: Icon(Icons.undo),
+                onPressed: () {
+                  // Lógica para deshacer
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.redo),
+                onPressed: () {
+                  // Lógica para rehacer
+                },
+              ),
+              // Botón de formato que abre el menú de formato
+              IconButton(
+                icon: Icon(Icons.text_format),
+                onPressed: _openAlignmentMenu,
+              ),
+              // Botón de traducir
+              IconButton(
+                icon: Icon(Icons.translate),
+                onPressed: () {
+                  // Lógica para traducir
+                },
+              ),
+              // Botón de IA
+              IconButton(
+                icon: Icon(Icons.auto_awesome),
+                onPressed: () {
+                  // Lógica para mejorar el texto con IA
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

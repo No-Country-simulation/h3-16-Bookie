@@ -26,4 +26,9 @@ class StoriesRepositoryImpl implements StoriesRepository {
   Future<Story> createStory(StoryForm storyForm) {
     return datasource.createStory(storyForm);
   }
+
+  @override
+  Future<void> deleteStory(int storyId) {
+    return datasource.deleteStory(storyId);
+  }
 }

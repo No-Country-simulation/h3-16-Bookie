@@ -52,3 +52,10 @@ final createStoryProvider =
   return await repository
       .createStory(storyForm); // Llamar al método de crear historia
 });
+
+// eliminar historia
+final deleteStoryProvider =
+    FutureProvider.autoDispose.family<void, int>((ref, storyId) async {
+  final repository = ref.watch(storyRepositoryProvider);
+  return await repository.deleteStory(storyId);
+});

@@ -13,11 +13,38 @@ class CreateHistoryScreen extends ConsumerStatefulWidget {
 }
 
 class _CreateHistoryScreenState extends ConsumerState<CreateHistoryScreen> {
+  bool isLoading = false;
+  bool isMounted = true;
+
+  Future<void> onRefresh() async {
+    isLoading = true;
+    setState(() {});
+
+    // simular carga de datos
+    // Al hacer el refresh, el provider se vuelve a ejecutar y actualiza la UI.
+    ref.invalidate(
+        getStoriesByUserProvider(1)); // Esto fuerza a que se recargue la data
+
+    // Si necesitas esperar que termine la carga, puedes usar `await`:
+    await ref.read(getStoriesByUserProvider(1).future);
+
+    if (!isMounted) return;
+    isLoading = false;
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
     // Cargar historias del usuario
     ref.read(getStoriesByUserProvider(1));
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    isMounted = false;
   }
 
   @override
@@ -44,72 +71,77 @@ class _CreateHistoryScreenState extends ConsumerState<CreateHistoryScreen> {
         label: const Text("Crear historia"),
         icon: const Icon(Icons.add),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Continuar escribiendo",
-              style: TextStyle(
-                fontSize: 16,
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Mostrar historias del usuario usando el FutureProvider
-            Expanded(
-              child: storiesAsync.when(
-                data: (stories) {
-                  return ListView.builder(
-                    itemCount: stories.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index < stories.length) {
-                        final story = stories[index];
-
-                        return GestureDetector(
-                          onTap: () {
-                            // Navegar a la vista de detalles de la historia
-                            context.push('/story/edit/${story.id}');
-                          },
-                          child: StoryCard(
-                            imageUrl: story.imageUrl,
-                            title: story.title,
-                            synopsis: story.synopsis,
-                            lenChapters: story.chapters!.length,
-                          ),
-                        );
-                      } else {
-                        // Mostrar la imagen al final de las historias
-                        return Column(
-                          children: [
-                            const SizedBox(height: 16),
-                            Center(
-                              child: Image.asset(
-                                'assets/images/sapiens_story_create.png',
-                                height: 200,
-                                width: 200,
-                              ),
-                            ),
-                          ],
-                        );
-                      }
-                    },
-                  );
-                },
-                loading: () => const Center(
-                  child: CircularProgressIndicator(),
+      body: RefreshIndicator(
+        onRefresh: onRefresh,
+        edgeOffset: 10,
+        strokeWidth: 2,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Continuar escribiendo",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontStyle: FontStyle.italic,
                 ),
-                error: (error, stackTrace) => Center(
-                  child: Text(
-                    "Error al cargar historias: $error",
-                    style: TextStyle(color: colors.error),
+              ),
+              const SizedBox(height: 16),
+
+              // Mostrar historias del usuario usando el FutureProvider
+              Expanded(
+                child: storiesAsync.when(
+                  data: (stories) {
+                    return ListView.builder(
+                      itemCount: stories.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index < stories.length) {
+                          final story = stories[index];
+
+                          return GestureDetector(
+                            onTap: () {
+                              // Navegar a la vista de detalles de la historia
+                              context.push('/story/edit/${story.id}');
+                            },
+                            child: StoryCard(
+                              imageUrl: story.imageUrl,
+                              title: story.title,
+                              synopsis: story.synopsis,
+                              lenChapters: story.chapters!.length,
+                            ),
+                          );
+                        } else {
+                          // Mostrar la imagen al final de las historias
+                          return Column(
+                            children: [
+                              const SizedBox(height: 16),
+                              Center(
+                                child: Image.asset(
+                                  'assets/images/sapiens_story_create.png',
+                                  height: 200,
+                                  width: 200,
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                      },
+                    );
+                  },
+                  loading: () => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  error: (error, stackTrace) => Center(
+                    child: Text(
+                      "Error al cargar historias: $error",
+                      style: TextStyle(color: colors.error),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
