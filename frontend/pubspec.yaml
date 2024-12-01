@@ -8,9 +8,11 @@ environment:
 
 dependencies:
   animate_do: ^3.3.4
+  animated_text_kit: ^4.2.2
   auth0_flutter: ^1.7.2
   card_swiper: ^3.0.1
   change_app_package_name: ^1.4.0
+  confetti: ^0.8.0
   dio: ^5.7.0
   flutter:
     sdk: flutter
@@ -48,7 +50,6 @@ flutter:
     - assets/i18n/
     - assets/images/playstore.png
     - assets/lottie/
-    - assets/rive/
 
 flutter_launcher_icons:
   android: true

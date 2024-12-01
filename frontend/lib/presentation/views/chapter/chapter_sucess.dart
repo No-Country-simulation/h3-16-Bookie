@@ -1,11 +1,42 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
-class ChapterSuccess extends StatelessWidget {
+class ChapterSuccess extends StatefulWidget {
   static const String name = 'chapter-success';
 
   const ChapterSuccess({super.key});
+
+  @override
+  State<ChapterSuccess> createState() => _ChapterSuccessState();
+}
+
+class _ChapterSuccessState extends State<ChapterSuccess> {
+  final ConfettiController _confettiController =
+      ConfettiController(duration: const Duration(seconds: 2));
+
+  @override
+  void initState() {
+    super.initState();
+    // Dispara el confetti automáticamente al inicio
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _confettiController.play();
+    });
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
+  }
+
+  void _triggerConfetti() {
+    setState(() {
+      _confettiController.play();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,30 +44,70 @@ class ChapterSuccess extends StatelessWidget {
       body: Stack(
         children: [
           // Fondo animado
-          AnimatedBackground(),
+          const AnimatedBackground(),
+          // Confetti explosivo
+          Align(
+            alignment: Alignment.topCenter,
+            child: ConfettiWidget(
+              confettiController: _confettiController,
+              blastDirectionality:
+                  BlastDirectionality.explosive, // Solo explosión
+              emissionFrequency: 0.05,
+              numberOfParticles: 10,
+              gravity: 0.2,
+              colors: [
+                Colors.yellow,
+                Colors.red,
+                Colors.blue,
+                Colors.green,
+                Colors.orange,
+              ],
+            ),
+          ),
           // Contenido principal
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Animación épica
-                SizedBox(
-                  height: 200,
-                  width: 200,
-                  child: Lottie.asset(
-                      'assets/lottie/success.json'), // Ruta al archivo Lottie
-                ),
-                SizedBox(height: 20),
-                // Título legendario
-                Text(
-                  '¡Capítulo Creado!',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                GestureDetector(
+                  onTap: () => _triggerConfetti(),
+                  child: SizedBox(
+                    height: 200,
+                    width: 200,
+                    child: Lottie.asset('assets/lottie/success.json'),
                   ),
                 ),
-                SizedBox(height: 40),
+                const SizedBox(height: 20),
+                // Texto animado 3D
+                SizedBox(
+                  height: 50,
+                  child: AnimatedTextKit(
+                    animatedTexts: [
+                      ScaleAnimatedText(
+                        '¡Capítulo Creado!',
+                        textStyle: const TextStyle(
+                          fontSize: 36,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 10,
+                              color: Colors.black45,
+                              offset: Offset(2, 2),
+                            ),
+                          ],
+                        ),
+                        scalingFactor: 0.8, // Escala más suave
+                        duration: const Duration(milliseconds: 1500),
+                      ),
+                    ],
+                    repeatForever: true,
+                    pause: const Duration(milliseconds: 300),
+                    onTap: () => _triggerConfetti(),
+                  ),
+                ),
+                const SizedBox(height: 40),
                 // Botones mágicos
                 ButtonColumn(context),
               ],
@@ -106,23 +177,23 @@ Widget ButtonColumn(BuildContext context) {
         onPressed: () {
           // Acción para vista previa
         },
-        child: Text('Vista Previa'),
+        child: const Text('Vista Previa'),
       ),
-      SizedBox(height: 10),
+      const SizedBox(height: 10),
       ElevatedButton(
         onPressed: () {
           // Acción para añadir capítulo
           context.pop();
         },
-        child: Text('Añadir Otro Capítulo'),
+        child: const Text('Añadir Otro Capítulo'),
       ),
-      SizedBox(height: 10),
+      const SizedBox(height: 10),
       ElevatedButton(
         onPressed: () {
           // Acción para ir al home
           context.go('/home/0');
         },
-        child: Text('Ir a Home'),
+        child: const Text('Ir a Home'),
       ),
     ],
   );
