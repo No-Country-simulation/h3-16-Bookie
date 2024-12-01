@@ -8,10 +8,11 @@ import 'package:bookie/presentation/views/chapter/chapter_form.dart';
 import 'package:bookie/presentation/views/settings/settings_profile_screen.dart';
 import 'package:bookie/presentation/views/settings/settings_theme_screen.dart';
 import 'package:bookie/presentation/views/story/create_form_story_screen.dart';
+import 'package:bookie/presentation/views/story/edit_story_view_chapters.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/splash', // Ruta inicial
+  initialLocation: '/home/2', // Ruta inicial
   routes: [
     GoRoute(path: "/splash", builder: (context, state) => const SplashScreen()),
     GoRoute(
@@ -35,25 +36,36 @@ final appRouter = GoRouter(
           name: SettingsThemeScreen.name,
           builder: (context, state) => const SettingsThemeScreen(),
         ),
-
         // vista siguiente para formulario de creación de historia
-        GoRoute(
-          path: 'form-story',
-          name: CreateFormStoryScreen.name,
-          builder: (context, state) => const CreateFormStoryScreen(),
-        ),
-
-        // vista siguiente para formulario de creación de capítulo
-        GoRoute(
-          path: '/form-chapter/:storyId',
-          name: CreateChapterScreen.name,
-          builder: (context, state) {
-            final storyId = int.parse(state.pathParameters['storyId'] ?? '0');
-            return CreateChapterScreen(
-                storyId: storyId); // Lo pasamos al componente
-          },
-        ),
       ],
+    ),
+
+    GoRoute(
+      // path: 'form-story',
+      path: '/story/create',
+      name: CreateFormStoryScreen.name,
+      builder: (context, state) => const CreateFormStoryScreen(),
+    ),
+    // Ruta para modificar historia, detalles y capítulos
+    GoRoute(
+      path: '/story/edit/:storyId', // Ruta dinámica con el parámetro 'id'
+      name: StoryEditDetailChaptersPage.name,
+      builder: (context, state) {
+        final storyId = int.parse(state.pathParameters['storyId'] ?? '0');
+        return StoryEditDetailChaptersPage(
+            storyId: storyId); // Lo pasamos al componente
+      },
+    ),
+    // vista siguiente para formulario de creación de capítulo
+    GoRoute(
+      // path: '/form-chapter/:storyId',
+      path: '/chapter/create/:storyId',
+      name: CreateChapterScreen.name,
+      builder: (context, state) {
+        final storyId = int.parse(state.pathParameters['storyId'] ?? '0');
+        return CreateChapterScreen(
+            storyId: storyId); // Lo pasamos al componente
+      },
     ),
 
     // Ruta para ver la información de una historia específica

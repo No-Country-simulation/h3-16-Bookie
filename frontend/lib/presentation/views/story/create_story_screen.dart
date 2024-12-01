@@ -39,7 +39,7 @@ class _CreateHistoryScreenState extends ConsumerState<CreateHistoryScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           // Navegar a la pantalla de creación de historias
-          context.push('/home/2/form-story');
+          context.push('/story/create');
         },
         label: const Text("Crear historia"),
         icon: const Icon(Icons.add),
@@ -67,11 +67,18 @@ class _CreateHistoryScreenState extends ConsumerState<CreateHistoryScreen> {
                     itemBuilder: (context, index) {
                       if (index < stories.length) {
                         final story = stories[index];
-                        return StoryCard(
-                          imageUrl: story.imageUrl,
-                          title: story.title,
-                          synopsis: story.synopsis,
-                          lenChapters: story.chapters!.length,
+
+                        return GestureDetector(
+                          onTap: () {
+                            // Navegar a la vista de detalles de la historia
+                            context.push('/story/edit/${story.id}');
+                          },
+                          child: StoryCard(
+                            imageUrl: story.imageUrl,
+                            title: story.title,
+                            synopsis: story.synopsis,
+                            lenChapters: story.chapters!.length,
+                          ),
                         );
                       } else {
                         // Mostrar la imagen al final de las historias

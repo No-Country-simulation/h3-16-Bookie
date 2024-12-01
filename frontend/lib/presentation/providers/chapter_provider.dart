@@ -24,7 +24,7 @@ class ChapterNotifier extends StateNotifier<List<Chapter>> {
   ChapterNotifier({required this.fetchChapter, required this.createChapter})
       : super([]);
 
-  Future<void> loadChapter(int storyId) async {
+  Future<void> getChapters(int storyId) async {
     try {
       final List<Chapter> chapters =
           await fetchChapter(storyId); // Obtén los capítulos por `storyId`

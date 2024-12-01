@@ -132,7 +132,7 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
             content: Text('Historia creada'), backgroundColor: Colors.green),
       );
       // Navegar a la ruta `/form-chapter` con GoRouter
-      context.push('/home/2/form-chapter/${storyCreated.id}');
+      context.push('/chapter/create/${storyCreated.id}');
     } catch (e) {
       print("EROOOOOOOOOOOOOOOOOOOOO: $e");
       ScaffoldMessenger.of(context).showSnackBar(

@@ -47,7 +47,11 @@ class StoriesDbDatasource extends StoriesDatasource {
 
   @override
   Future<Story> getStory(int storyId) async {
+    print("Obteniendo historia con id: $storyId");
+
     final response = await FetchApi.fetchDio().get('/v1/history/$storyId');
+    print("Respuesta de la API: ${response.data}");
+
     final storyDBResponse = StoryDbResponse.fromJson(response.data);
 
     final Story story = StoryMapper.storyDBToEntity(storyDBResponse);

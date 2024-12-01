@@ -1,0 +1,292 @@
+import 'package:bookie/config/helpers/get_image_final.dart';
+import 'package:bookie/infrastructure/mappers/genredb_mapper.dart';
+import 'package:bookie/presentation/providers/chapter_provider.dart';
+import 'package:bookie/presentation/providers/story_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class StoryEditDetailChaptersPage extends ConsumerStatefulWidget {
+  static const String name = 'story-edit-detail-chapters';
+  final int storyId;
+
+  const StoryEditDetailChaptersPage({super.key, required this.storyId});
+
+  @override
+  ConsumerState<StoryEditDetailChaptersPage> createState() =>
+      _StoryEditDetailChaptersPageState();
+}
+
+class _StoryEditDetailChaptersPageState
+    extends ConsumerState<StoryEditDetailChaptersPage> {
+  bool isLoading = true;
+  @override
+  void initState() {
+    super.initState();
+    // Cargar capítulos del historia por id
+    ref.read(getStoryByIdProvider(widget.storyId));
+    _loadChapters();
+    // Cargar capítulos del historia por id
+  }
+
+  Future<void> _loadChapters() async {
+    try {
+      // Obtener los capítulos usando el provider
+      // TODO: REVISAR SI SE PUEDE QUITAR ESTA PARTE TAL VEZ SE CAMBIE EN EL BACKEND PARA TRAERSE LOS CAPÍTULOS
+      await ref.read(chapterProvider.notifier).getChapters(widget.storyId);
+    } catch (e) {
+      // Manejo de errores
+      print("Error al cargar los capítulos: $e");
+    } finally {
+      setState(() {
+        isLoading =
+            false; // Establecer la carga en false cuando termine la solicitud
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final storyAsync = ref.watch(getStoryByIdProvider(widget.storyId));
+    final chapters = ref.watch(chapterProvider);
+    final isDarkmode = Theme.of(context).brightness == Brightness.dark;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Detalles de la Historia'),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              switch (value) {
+                case 'preview':
+                  print('Vista previa seleccionada');
+                  break;
+                case 'share':
+                  print('Compartir seleccionado');
+                  break;
+                case 'delete':
+                  print('Eliminar seleccionado');
+                  break;
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                PopupMenuItem(
+                  value: 'preview',
+                  child: Text('Vista previa'),
+                ),
+                PopupMenuItem(
+                  value: 'share',
+                  child: Text('Compartir'),
+                ),
+                PopupMenuItem(
+                  value: 'delete',
+                  child: Text('Eliminar'),
+                ),
+              ];
+            },
+          ),
+        ],
+      ),
+      body: storyAsync.when(
+        data: (story) {
+          final imageMod = getImageUrl(isDarkmode, story.imageUrl);
+
+          return SingleChildScrollView(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Tarjeta de la historia
+                  Card(
+                    color: Colors.transparent,
+                    elevation: 0,
+                    child: Row(
+                      children: [
+                        // Imagen de la historia
+                        Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            image: DecorationImage(
+                              image: NetworkImage(imageMod),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 16),
+                        // Título de la historia
+                        Expanded(
+                          child: Text(
+                            story.title,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  // Información de la historia
+                  ListTile(
+                    dense: true,
+                    title: Text(
+                      'Descripción',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    ),
+                    subtitle: Text(
+                      story.synopsis,
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ),
+                  Divider(color: Colors.grey, height: 1),
+                  ListTile(
+                    dense: true,
+                    title: Text(
+                      'Categoría',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    ),
+                    subtitle: Text(
+                      GenreExtension(story.genre).displayName,
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ),
+                  Divider(color: Colors.grey, height: 1),
+                  ListTile(
+                    dense: true,
+                    title: Text(
+                      'Ubicación',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    ),
+                    subtitle: Text(
+                      '${story.country}, ${story.province}',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ),
+                  Divider(color: Colors.grey, height: 1),
+
+                  // Lista de capítulos
+                  SizedBox(height: 16),
+
+                  // Lista de capítulos
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Capítulos (${isLoading ? '0' : chapters.length})',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          // Acción al presionar el botón
+                          print('Añadir capítulo presionado');
+                        },
+                        borderRadius: BorderRadius.circular(
+                            8), // Opcional, para un efecto visual más elegante
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Icon(Icons.add, color: Colors.white),
+                              SizedBox(
+                                  width:
+                                      8), // Separación entre el icono y el texto
+                              Text(
+                                'Añadir capítulo',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(height: 8),
+
+                  // Lista de capítulos
+                  isLoading
+                      ? Center(
+                          child:
+                              CircularProgressIndicator()) // Muestra cargando
+                      : chapters.isEmpty
+                          ? Center(child: Text("No hay capítulos disponibles"))
+                          : ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: chapters.length,
+                              itemBuilder: (context, index) {
+                                return Card(
+                                  color: Colors.grey
+                                      .shade800, // Fondo notable para el capítulo
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: ListTile(
+                                    dense: true,
+                                    contentPadding: EdgeInsets.all(8.0),
+                                    leading: Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        image: DecorationImage(
+                                          image: NetworkImage(
+                                              'https://picsum.photos/seed/chapter${index + 1}/100'),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    title: Text(
+                                      'Capítulo ${index + 1}',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 14),
+                                    ),
+                                    subtitle: Text(
+                                      'Descripción breve del capítulo.',
+                                      style: TextStyle(
+                                          color: Colors.grey.shade300,
+                                          fontSize: 12),
+                                    ),
+                                    onTap: () {
+                                      // Navegar a la vista del capítulo
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                ],
+              ),
+            ),
+          );
+        },
+        loading: () {
+          // Si las historias están cargando, mostramos un indicador de carga.
+          return const Center(child: CircularProgressIndicator());
+        },
+        error: (error, stack) {
+          // Si ocurre un error, mostramos el mensaje de error.
+          return Center(
+            child: Text("Error cargando historias: $error"),
+          );
+        },
+      ),
+    );
+  }
+}
