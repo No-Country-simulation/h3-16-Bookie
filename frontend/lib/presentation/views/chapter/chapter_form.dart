@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:bookie/config/openai/openai_config.dart';
 import 'package:bookie/config/permissions/image.dart';
+import 'package:bookie/config/translator/translator.dart';
 import 'package:bookie/domain/entities/chapter.dart';
 import 'package:bookie/presentation/providers/chapter_provider.dart';
 import 'package:dio/dio.dart';
@@ -342,7 +343,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
     );
   }
 
-  void showGenerateTextDialogConfirm(BuildContext context) {
+  void _showGenerateStoryDialogConfirm(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
 
     showDialog(
@@ -358,7 +359,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: colors.primary,
               ),
-              onPressed: () => _generateText(context),
+              onPressed: () => _generateStory(context),
               child: Text('Generar historia',
                   style: TextStyle(color: Colors.black)),
             ),
@@ -366,7 +367,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: colors.primary,
               ),
-              onPressed: () => _modifyText(context),
+              onPressed: () => _modifyStory(context),
               child: Text('Mejorar y corregir',
                   style: TextStyle(color: Colors.black)),
             ),
@@ -386,12 +387,12 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
     );
   }
 
-  void _generateText(BuildContext context) async {
+  void _generateStory(BuildContext context) async {
     if (_contentController.text.trim().isNotEmpty && _isGeneratingText) {
       setState(() {
         _isGeneratingText = false;
       });
-      showGenerateTextDialogConfirm(context);
+      _showGenerateStoryDialogConfirm(context);
       return;
     }
 
@@ -406,7 +407,9 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
     try {
       final chatStream = await generateStory(
         contextStory:
-            "Este título es importante a considerar en la generación de la historia: ${_titleController.text.trim().isEmpty ? "" : _titleController.text}. ${_prompt.trim().isEmpty ? "" : _prompt}. Perú, Trujillo",
+            // Este título es importante a considerar en la generación de la historia:
+            // TODO: REVISAR ESTO SI CONSIDERAR CIUDAD O PROVINCIA
+            "${_titleController.text.trim().isEmpty ? "" : _titleController.text}. ${_prompt.trim().isEmpty ? "" : _prompt}.",
       );
 
       if (!_isGeneratingText) {
@@ -449,7 +452,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
     }
   }
 
-  void _modifyText(BuildContext context) async {
+  void _modifyStory(BuildContext context) async {
     if (_contentController.text.trim().isEmpty) {
       Navigator.of(context).pop(); // Cerrar el modal
     }
@@ -498,6 +501,116 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
       setState(() {
         // isLoading = false;
         _isGeneratingText = true;
+      });
+    }
+  }
+
+  void _showTranslateStoryDialogConfirm(BuildContext context) {
+    if (_contentController.text.trim().isEmpty) {
+      return;
+    }
+
+    final colors = Theme.of(context).colorScheme;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          alignment: Alignment.center,
+          content: Column(
+            mainAxisSize:
+                MainAxisSize.min, // Ajustar el tamaño del modal al contenido
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colors.primary,
+                ),
+                onPressed: () {
+                  _translateStory("es", context);
+                },
+                child: Text('Español', style: TextStyle(color: Colors.black)),
+              ),
+              const SizedBox(height: 10), // Separador entre botones
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colors.primary,
+                ),
+                onPressed: () {
+                  _translateStory("en", context);
+                },
+                child: Text('Inglés', style: TextStyle(color: Colors.black)),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colors.primary,
+                ),
+                onPressed: () {
+                  _translateStory("pt", context);
+                },
+                child: Text('Portugués', style: TextStyle(color: Colors.black)),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colors.primary,
+                ),
+                onPressed: () {
+                  _translateStory("it", context);
+                },
+                child: Text('Italiano', style: TextStyle(color: Colors.black)),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colors.primary,
+                ),
+                onPressed: () {
+                  _translateStory("fr", context);
+                },
+                child: Text('Francés', style: TextStyle(color: Colors.black)),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _translateStory(String language, BuildContext context) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    Navigator.of(context).pop(); // Cerrar el modal
+
+    try {
+      final translateStory = await translateGoogle(
+        language: language,
+        text: _contentController.text.trim(),
+      );
+
+      if (translateStory.text.isNotEmpty) {
+        setState(() {
+          _contentController.text = translateStory.text;
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("No se pudo traducir el texto.")),
+        );
+      }
+    } catch (e) {
+      print("Error al traducir texto: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error al traducir texto'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
       });
     }
   }
@@ -681,6 +794,40 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
                               right: 6, // Ajusta la posición a la derecha
                               child: GestureDetector(
                                 onTap: () {
+                                  if (_contentController.text.trim().length >
+                                      500) {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text('Borrar historia'),
+                                            content: Text(
+                                                '¿Estás seguro de que quieres hacerlo?'),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () {
+                                                  _contentController
+                                                      .clear(); // Limpiar el campo
+                                                  setState(
+                                                      () {}); // Actualizar la UI
+                                                  Navigator.of(context)
+                                                      .pop(); // Cerrar el modal
+                                                },
+                                                child: Text('Sí'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context)
+                                                      .pop(); // Cerrar el modal
+                                                },
+                                                child: Text('No'),
+                                              ),
+                                            ],
+                                          );
+                                        });
+                                    return;
+                                  }
+
                                   _contentController
                                       .clear(); // Limpiar el campo
                                   setState(() {}); // Actualizar la UI
@@ -765,13 +912,14 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
                 icon: Icon(Icons.translate),
                 onPressed: () {
                   // Lógica para traducir
+                  _showTranslateStoryDialogConfirm(context);
                 },
               ),
               // Botón de IA
               IconButton(
                 icon: Icon(Icons.auto_awesome),
                 onPressed: () {
-                  _generateText(context);
+                  _generateStory(context);
                 },
               ),
             ],
