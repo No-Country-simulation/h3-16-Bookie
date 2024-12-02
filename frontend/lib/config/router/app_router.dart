@@ -8,7 +8,6 @@ import 'package:bookie/presentation/views/chapter/chapter_form.dart';
 import 'package:bookie/presentation/views/chapter/chapter_sucess.dart';
 import 'package:bookie/presentation/views/chapter/view/chapters_view_story.dart';
 import 'package:bookie/presentation/views/map/chapter/map_chapter.dart';
-import 'package:bookie/presentation/views/map/chapter/map_chapter_view.dart';
 import 'package:bookie/presentation/views/settings/settings_profile_screen.dart';
 import 'package:bookie/presentation/views/settings/settings_theme_screen.dart';
 import 'package:bookie/presentation/views/story/create_form_story_screen.dart';
