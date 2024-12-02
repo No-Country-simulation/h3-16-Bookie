@@ -47,7 +47,7 @@ class WishlistControllerTest {
     @Test
     void crateWishlist() throws JsonProcessingException {
         Long userId = 1L;
-        Long historyID = 28L;
+        Long historyID = 68L;
 
         String json = " { \"userID\" : "+ userId +" ,  \"historyID\" : "+ historyID +" } ";
 

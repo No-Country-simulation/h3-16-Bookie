@@ -1,12 +1,8 @@
 package com.Bookie.entities;
 
-import com.Bookie.config.repository.UserRepository;
-import com.Bookie.config.repository.WishlistRepositoty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
 
 @Entity(name ="Wishlist")
 @Table(name = "wishlist")
