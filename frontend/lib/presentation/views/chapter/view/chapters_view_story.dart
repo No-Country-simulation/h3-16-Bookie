@@ -1,5 +1,5 @@
 import 'package:bookie/presentation/providers/chapter_provider.dart';
-import 'package:bookie/presentation/views/chapter/view/demo_page_borrar.dart';
+import 'package:bookie/presentation/views/chapter/view/chapters_view_story_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -82,16 +82,6 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
     return pages;
   }
 
-  // void goToNextChapter(chapters) {
-  //   if (currentChapterIndex < chapters.length - 1) {
-  //     setState(() {
-  //       currentChapterIndex++;
-  //       isEndOfChapter =
-  //           false; // Resetea el estado al pasar al siguiente capítulo
-  //     });
-  //   }
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -142,72 +132,32 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                         screenSize,
                       ));
 
-                      // // Recorrer todos los capítulos y paginarlos
-                      // for (final chapter in chapters) {
-                      //   pages.addAll(paginateContent(
-                      //     chapter.content,
-                      //     textStyle,
-                      //     screenSize,
-                      //   ));
-                      // }
-
-                      // var currentChapter = chapters[currentChapterIndex];
-                      // pages.addAll(paginateContent(
-                      //   currentChapter.content,
-                      //   textStyle,
-                      //   screenSize,
-                      // ));
-
-                      // return Column(
-                      //   children: [
-                      //     // El widget de PageFlipWidget
-                      //     Expanded(
-                      //       child: PageFlipWidget(
-                      //         key: _controller,
-                      //         backgroundColor: backgroundColor,
-                      //         initialIndex: 0,
-                      //         lastPage: DemoPage(
-                      //           pageContent:
-                      //               '¡Fin de la historia! Esperamos que la hayas disfrutado.',
-                      //           textStyle: textStyle,
-                      //         ),
-                      //         children: pages.map((pageContent) {
-                      //           return DemoPage(
-                      //             pageContent: pageContent,
-                      //             textStyle: textStyle,
-                      //           );
-                      //         }).toList(),
-                      //       ),
-                      //     ),
-
-                      //     // Mostrar botón para ir al siguiente capítulo
-                      //     // if (isEndOfChapter)
-                      //     Padding(
-                      //       padding: const EdgeInsets.all(16.0),
-                      //       child: ElevatedButton(
-                      //         onPressed: () => goToNextChapter(chapters),
-                      //         child: Text('Ir al siguiente capítulo'),
-                      //       ),
-                      //     ),
-                      //   ],
-                      // );
-
                       return PageFlipWidget(
                         key: _controller,
                         backgroundColor: backgroundColor,
                         initialIndex: 0,
-                        lastPage: DemoPage(
+                        lastPage: ChaptersViewStoryWithPage(
                           pageContent:
                               '¡Fin de la historia! Esperamos que la hayas disfrutado.',
                           textStyle: textStyle,
-                          isEndOfChapter:
+                          isEndOfStory:
                               chapters.length - 1 == widget.chapterIndex,
                           isCurrentChapter: widget.chapterIndex,
                         ),
                         children: pages.map((pageContent) {
-                          return DemoPage(
+                          return ChaptersViewStoryWithPage(
                             pageContent: pageContent,
-                            textStyle: textStyle,
+                            textStyle: TextStyle(
+                              fontSize:
+                                  pages.indexOf(pageContent) == 0 ? 16 : 18,
+                              color: isDarkmode ? Colors.white : Colors.black,
+                              height: 1.75,
+                              // pages.indexOf(pageContent) == 0 ? 1.5 : 1.75,
+                            ),
+                            // si es la primera pagina
+                            isFirstPage: pages.indexOf(pageContent) == 0,
+                            chapterIndex: widget.chapterIndex,
+                            titleChapter: chapters[widget.chapterIndex].title,
                           );
                         }).toList(),
                       );
@@ -217,38 +167,3 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
     );
   }
 }
-
-
-
-//                   child: Builder(
-//                     builder: (context) {
-//                       final screenSize = MediaQuery.of(context).size;
-//                       final pages = paginateContent(
-//                         chapters[0].content,
-//                         textStyle,
-//                         screenSize,
-//                       );
-
-//                       return PageFlipWidget(
-//                         key: _controller,
-//                         backgroundColor: backgroundColor,
-//                         initialIndex: 0,
-//                         lastPage: DemoPage(
-//                           pageContent:
-//                               '¡Fin de la historia! Esperamos que la hayas disfrutado.',
-//                           textStyle: textStyle,
-//                         ),
-//                         children: pages.map((pageContent) {
-//                           return DemoPage(
-//                             pageContent: pageContent,
-//                             textStyle: textStyle,
-//                           );
-//                         }).toList(),
-//                       );
-//                     },
-//                   ),
-//                 ),
-//     );
-//   }
-// }
-//
