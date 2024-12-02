@@ -6,7 +6,7 @@ import 'package:bookie/presentation/screens/splash_screen.dart';
 import 'package:bookie/presentation/screens/writer_screen.dart';
 import 'package:bookie/presentation/views/chapter/chapter_form.dart';
 import 'package:bookie/presentation/views/chapter/chapter_sucess.dart';
-import 'package:bookie/presentation/views/chapter/chapters_view_story.dart';
+import 'package:bookie/presentation/views/chapter/view/chapters_view_story.dart';
 import 'package:bookie/presentation/views/settings/settings_profile_screen.dart';
 import 'package:bookie/presentation/views/settings/settings_theme_screen.dart';
 import 'package:bookie/presentation/views/story/create_form_story_screen.dart';
@@ -14,7 +14,7 @@ import 'package:bookie/presentation/views/story/edit_story_view_chapters.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/chapter/success/128', // Ruta inicial
+  initialLocation: '/chapters/view/128/0', // Ruta inicial
   routes: [
     GoRoute(path: "/splash", builder: (context, state) => const SplashScreen()),
     GoRoute(
@@ -61,11 +61,15 @@ final appRouter = GoRouter(
     ),
     // vista siguiente para formulario de creación de capítulo
     GoRoute(
-      path: '/chapters/view/:storyId',
+      path: '/chapters/view/:storyId/:chapterIndex',
       name: ChaptersViewStory.name,
       builder: (context, state) {
         final storyId = int.parse(state.pathParameters['storyId'] ?? '0');
-        return ChaptersViewStory(storyId: storyId); // Lo pasamos al componente
+        final chapterIndex =
+            int.parse(state.pathParameters['chapterIndex'] ?? '0');
+        return ChaptersViewStory(
+            storyId: storyId,
+            chapterIndex: chapterIndex); // Lo pasamos al componente
       },
     ),
     GoRoute(

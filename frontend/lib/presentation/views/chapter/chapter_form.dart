@@ -881,7 +881,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SpinKitFadingCircle(
-                    color: Colors.white,
+                    color: colors.primary,
                     size: 50.0,
                   ),
                   const SizedBox(height: 16),
