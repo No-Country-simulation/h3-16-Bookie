@@ -27,18 +27,28 @@ class DemoPage extends StatelessWidget {
               pageContent,
               style: textStyle,
             ),
+            if (isCurrentChapter != null &&
+                isEndOfChapter == false &&
+                isCurrentChapter! > 0)
+              ElevatedButton(
+                onPressed: () {
+                  // Acción para ir al capítulo anterior
+                  context.push('/chapters/view/128/${isCurrentChapter! - 1}');
+                },
+                child: Text('Ir al capítulo ${isCurrentChapter!}'),
+              ),
             if (isCurrentChapter != null && isEndOfChapter == false)
               ElevatedButton(
                 onPressed: () {
                   // Acción para ir al siguiente capítulo
                   context.push('/chapters/view/128/${isCurrentChapter! + 1}');
                 },
-                child:
-                    Text('Ir al siguiente capítulo ${isCurrentChapter! + 2}'),
+                child: Text('Ir al capítulo ${isCurrentChapter! + 2}'),
               ),
             if (isEndOfChapter == true)
               ElevatedButton(
                 onPressed: () {
+                  // TODO CAMBIAR ESTO POR EL HOME XD
                   context.push('/chapter/success/128');
                 },
                 child: Text('Ir a home'),
