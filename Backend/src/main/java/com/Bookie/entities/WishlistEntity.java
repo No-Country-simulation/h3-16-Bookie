@@ -25,8 +25,5 @@ public class WishlistEntity {
     @JsonIgnore
     private HistoryEntity history;
 
-    public WishlistEntity(UserEntity userRepository, HistoryEntity history) {
-        this.user = userRepository;
-        this.history = history;
-    }
+
 }

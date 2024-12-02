@@ -39,7 +39,6 @@ public class WishlistService {
         wishlistDB.setHistory(history);
         wishlistDB.setUser(user);
 
-       // WishlistEntity wishlistDB = wishlistRepositoty.save(new WishlistEntity(user,history));
          wishlistDB = wishlistRepositoty.save(wishlistDB);
         return new WishlistResponseCreate(wishlistDB);
     }
