@@ -53,7 +53,7 @@ public class WishlistController {
 
 
 
-    @GetMapping("/All/{id}")
+    @GetMapping("/{id}")
     @Operation(
             summary = "Get wishlist",
             description = "Get wishlist by ID",

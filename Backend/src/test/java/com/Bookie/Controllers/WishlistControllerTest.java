@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 
 import java.util.List;
@@ -71,12 +72,12 @@ class WishlistControllerTest {
 
 
         HttpEntity<String> request = new HttpEntity<>( headers);
-        ResponseEntity<List> result = testRestTemplate.exchange("/api/v1/wishlist/all", HttpMethod.GET, request, List.class);
+        ResponseEntity<List<HistoryEntity>> result = testRestTemplate.exchange("/api/v1/wishlist/1", HttpMethod.GET, request, new ParameterizedTypeReference<List<HistoryEntity>>() {});
         JsonUtil.toJsonPrint("List<HistotyEntity> = " , result);
 
         assertAll(
-                () -> assertEquals(HttpStatus.CREATED, result.getStatusCode()),
-                () -> assertEquals(201, result.getStatusCode().value()),
+                () -> assertEquals(HttpStatus.OK, result.getStatusCode()),
+                () -> assertEquals(200, result.getStatusCode().value()),
                 () -> assertTrue(!result.getBody().isEmpty())
 
         );

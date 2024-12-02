@@ -73,7 +73,7 @@ public class UserService {
 
     public List<HistoryEntity> getWishlist(@NotNull Long id) {
         Optional<UserEntity> userDB = userRepository.findById(id);
-         // return userDB.get().getWishlist();
-        return null;
+          return userDB.get().getWishlist();
+
     }
 }
