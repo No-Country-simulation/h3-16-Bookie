@@ -177,7 +177,8 @@ Widget ButtonColumn(BuildContext context, {required int storyId}) {
       ElevatedButton(
         onPressed: () {
           // Acción para vista previa
-          context.go('/chapters/view/$storyId');
+          // TODO: REVISAR ESTO, AQUI SE PASA EL CAPITULO NO OLVIDAR
+          context.go('/chapters/view/$storyId/0');
         },
         child: const Text('Vista Previa'),
       ),

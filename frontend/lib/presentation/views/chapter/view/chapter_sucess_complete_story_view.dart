@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
 class ChapterSuccessCompleteStoryView extends StatefulWidget {
-  static const String name = 'chapter-success-view';
+  static const String name = 'chapter-success-story-view';
   final String pageContent;
 
   const ChapterSuccessCompleteStoryView({super.key, required this.pageContent});

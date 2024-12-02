@@ -138,11 +138,15 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                         initialIndex: 0,
                         lastPage: ChaptersViewStoryWithPage(
                           pageContent:
-                              '¡Fin de la historia! Esperamos que la hayas disfrutado.',
+                              'Esperamos que la hayas disfrutado. Para continuar al siguiente capítulo tienes que estar cerca.',
                           textStyle: textStyle,
                           isEndOfStory:
                               chapters.length - 1 == widget.chapterIndex,
                           isCurrentChapter: widget.chapterIndex,
+                          // es mas 1 porque necestiamos saber la posicion del capitulo siguiente
+                          latitude: chapters[widget.chapterIndex + 1].latitude,
+                          longitude:
+                              chapters[widget.chapterIndex + 1].longitude,
                         ),
                         children: pages.map((pageContent) {
                           return ChaptersViewStoryWithPage(
@@ -158,6 +162,11 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                             isFirstPage: pages.indexOf(pageContent) == 0,
                             chapterIndex: widget.chapterIndex,
                             titleChapter: chapters[widget.chapterIndex].title,
+                            // es mas 1 porque necestiamos saber la posicion del capitulo siguiente
+                            latitude:
+                                chapters[widget.chapterIndex + 1].latitude,
+                            longitude:
+                                chapters[widget.chapterIndex + 1].longitude,
                           );
                         }).toList(),
                       );

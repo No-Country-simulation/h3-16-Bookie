@@ -1,6 +1,6 @@
-import 'package:bookie/presentation/views/chapter/chapter_sucess_complete_story_view.dart';
+import 'package:bookie/presentation/views/chapter/view/chapter_sucess_complete_chapter_view.dart';
+import 'package:bookie/presentation/views/chapter/view/chapter_sucess_complete_story_view.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class ChaptersViewStoryWithPage extends StatelessWidget {
   final String pageContent;
@@ -10,11 +10,15 @@ class ChaptersViewStoryWithPage extends StatelessWidget {
   final bool? isFirstPage;
   final int? chapterIndex;
   final String? titleChapter;
+  final double latitude;
+  final double longitude;
 
   const ChaptersViewStoryWithPage({
     super.key,
     required this.pageContent,
     required this.textStyle,
+    required this.longitude,
+    required this.latitude,
     this.isCurrentChapter,
     this.isEndOfStory,
     this.isFirstPage,
@@ -83,32 +87,21 @@ class ChaptersViewStoryWithPage extends StatelessWidget {
             : isEndOfStory == true
                 ? ChapterSuccessCompleteStoryView(
                     pageContent: "Fin de la historia")
-                : Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16.0, horizontal: 24.0),
-                    child: Text(
-                      pageContent,
-                      style: textStyle,
-                    ),
-                  ),
-        if (isCurrentChapter != null &&
-            isEndOfStory == false &&
-            isCurrentChapter! > 0)
-          ElevatedButton(
-            onPressed: () {
-              // Acción para ir al capítulo anterior
-              context.push('/chapters/view/128/${isCurrentChapter! - 1}');
-            },
-            child: Text('Ir al capítulo ${isCurrentChapter!}'),
-          ),
-        if (isCurrentChapter != null && isEndOfStory == false)
-          ElevatedButton(
-            onPressed: () {
-              // Acción para ir al siguiente capítulo
-              context.push('/chapters/view/128/${isCurrentChapter! + 1}');
-            },
-            child: Text('Ir al capítulo ${isCurrentChapter! + 2}'),
-          ),
+                : (isCurrentChapter != null && isEndOfStory == false)
+                    ? ChapterSuccessCompleteChapterView(
+                        pageContent: pageContent,
+                        isCurrentChapter: isCurrentChapter!,
+                        latitude: latitude,
+                        longitude: longitude,
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 16.0, horizontal: 24.0),
+                        child: Text(
+                          pageContent,
+                          style: textStyle,
+                        ),
+                      ),
       ]),
     );
   }

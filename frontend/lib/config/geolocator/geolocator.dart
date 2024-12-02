@@ -1,4 +1,3 @@
-import 'package:bookie/domain/entities/story.dart';
 import 'package:geolocator/geolocator.dart';
 
 Future<Position> determinePosition() async {
@@ -37,14 +36,26 @@ Future<Position> determinePosition() async {
 
 double distanceFromGeolocator(
   Position currentPosition,
-  Story story,
+  double latitude,
+  double longitude,
 ) {
   final distance = Geolocator.distanceBetween(
     currentPosition.latitude,
     currentPosition.longitude,
-    story.chapters![0].latitude,
-    story.chapters![0].longitude,
+    latitude,
+    longitude,
   );
 
   return distance;
+}
+
+bool isWithinRadius(
+    Position userPosition, double targetLat, double targetLon, double radius) {
+  final distance = distanceFromGeolocator(
+    userPosition,
+    targetLat,
+    targetLon,
+  );
+
+  return distance <= radius;
 }

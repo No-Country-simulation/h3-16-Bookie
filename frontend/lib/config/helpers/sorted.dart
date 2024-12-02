@@ -14,7 +14,8 @@ Future<List<Story>> getSortedStories(List<Story> stories) async {
         .map(
           (story) => distanceFromGeolocator(
             currentPosition,
-            story,
+            story.chapters![0].latitude,
+            story.chapters![0].longitude,
           ),
         )
         .toList();

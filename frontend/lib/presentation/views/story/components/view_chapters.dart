@@ -1,8 +1,8 @@
+import 'package:bookie/config/constants/general.dart';
 import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:bookie/presentation/widgets/cards/story/chapter_card.dart';
 import 'package:bookie/shared/data/histories.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 
 class StoryChapters extends StatelessWidget {
   const StoryChapters({super.key});
@@ -10,23 +10,11 @@ class StoryChapters extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    // Función para obtener capítulos desbloqueados basados en la ubicación
-    bool isWithinRadius(Position userPosition, double targetLat,
-        double targetLon, double radius) {
-      final distance = Geolocator.distanceBetween(
-        userPosition.latitude,
-        userPosition.longitude,
-        targetLat,
-        targetLon,
-      );
-
-      return distance <= radius;
-    }
 
     Future<List<Map<String, dynamic>>> getUnlockedChapters() async {
       try {
         final userPosition = await determinePosition();
-        const double radius = 15; // Radio de 20 metros
+        final double radius = GeneralConstants.radius; // Radio de 20 metros
         final chaptersMod = chapters.map((chapter) {
           final isUnlocked = isWithinRadius(
             userPosition,
