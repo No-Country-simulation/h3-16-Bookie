@@ -70,9 +70,10 @@ public class UserService {
     public UserEntity getUserByAuth0Id(String auth0UserId) {
         return userRepository.findByAuth0UserId(auth0UserId).orElse(null);
     }
-    public List<HistoryEntity> getWishlist (@NotNull Long id) {
+
+    public List<HistoryEntity> getWishlist(@NotNull Long id) {
         Optional<UserEntity> userDB = userRepository.findById(id);
-        return userDB.get().getWishlist();
+          return userDB.get().getWishlist();
 
     }
 }

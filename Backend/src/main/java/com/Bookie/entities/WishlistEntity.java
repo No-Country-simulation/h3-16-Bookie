@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Entity(name ="Wishlist")
 @Table(name = "wishlist")
 @Builder
@@ -19,11 +17,13 @@ public class WishlistEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "UserEntity_id")
+    @JoinColumn(name = "id_user_entity",  referencedColumnName = "id")
     @JsonIgnore
     private UserEntity user;
     @ManyToOne
-    @JoinColumn(name = "HistoryEntity_id")
+    @JoinColumn(name = "id_history",  referencedColumnName = "id")
     @JsonIgnore
     private HistoryEntity history;
+
+
 }

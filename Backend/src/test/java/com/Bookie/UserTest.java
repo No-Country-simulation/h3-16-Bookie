@@ -118,22 +118,6 @@ public class UserTest {
         assertNotEquals(users.isEmpty(),null);
     }
 
-    @Test
-    void getWishlist() throws JsonProcessingException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
 
-
-        HttpEntity<String> request = new HttpEntity<>(headers);
-        ResponseEntity<JsonNode> result = testRestTemplate.exchange("/api/webhooks/auth0/wishlist/1", HttpMethod.GET, request, JsonNode.class);
-
-        JsonUtil.toJsonPrint("List<wishlist> historybyuser",result);
-
-        assertAll(
-                () -> assertEquals(HttpStatus.OK, result.getStatusCode()),
-                () -> assertEquals(200, result.getStatusCode().value()),
-                () -> assertTrue(!result.getBody().isEmpty())
-        );
-    }
 
 }

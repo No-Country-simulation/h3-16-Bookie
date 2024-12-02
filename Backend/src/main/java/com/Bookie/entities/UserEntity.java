@@ -31,12 +31,17 @@ public class UserEntity {
     @JsonIgnore
     private List<HistoryEntity> histories = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<WishlistEntity> wishlishistory = new ArrayList<>();
+
+
+   @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "wishlist",
-            joinColumns = @JoinColumn(name = "id_UserEntity"),
+            joinColumns = @JoinColumn(name = "id_user_entity"),
             inverseJoinColumns = @JoinColumn(name = "id_history")
     )
-    private List<HistoryEntity> wishlist;
+    private List<HistoryEntity> wishlist = new ArrayList<>();
 
     @Override
     public String toString() {
