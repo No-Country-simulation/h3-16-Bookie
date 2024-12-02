@@ -4,11 +4,8 @@ import com.Bookie.dto.WishlistResponseCreate;
 import com.Bookie.entities.HistoryEntity;
 import com.Bookie.util.JsonUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -79,6 +76,23 @@ class WishlistControllerTest {
                 () -> assertEquals(HttpStatus.OK, result.getStatusCode()),
                 () -> assertEquals(200, result.getStatusCode().value()),
                 () -> assertTrue(!result.getBody().isEmpty())
+
+        );
+    }
+
+
+    @Test
+    void deleteHistoryWishlist() throws JsonProcessingException {
+
+
+        HttpEntity<String> request = new HttpEntity<>( headers);
+        ResponseEntity<JsonNode> result = testRestTemplate.exchange("/api/v1/wishlist/22", HttpMethod.DELETE, request, JsonNode.class);
+        JsonUtil.toJsonPrint("List<HistotyEntity> = " , result);
+
+        assertAll(
+                () -> assertEquals(HttpStatus.ACCEPTED, result.getStatusCode()),
+                () -> assertEquals(202, result.getStatusCode().value())
+
 
         );
     }

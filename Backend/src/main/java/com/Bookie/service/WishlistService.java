@@ -42,4 +42,9 @@ public class WishlistService {
          wishlistDB = wishlistRepositoty.save(wishlistDB);
         return new WishlistResponseCreate(wishlistDB);
     }
+
+    public void deleteWishlist(Long id) {
+        var whislint = wishlistRepositoty.findById(id).orElseThrow(()-> new EntityNotFoundException("whislist not found"));
+        wishlistRepositoty.delete(whislint);
+    }
 }

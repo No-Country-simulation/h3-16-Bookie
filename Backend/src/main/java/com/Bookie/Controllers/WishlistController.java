@@ -61,13 +61,37 @@ public class WishlistController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Obtener historias de la lista de deseos",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = HistoryDtoResponse.class),
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(),
                             examples = @ExampleObject(name = "HistoryDtoResponse",
                                     value = "List<History>: { { \"id\": 1,\"title\": \"new title\", \"synopsis\": \"description of history\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber\",\"country\": \"ARGENTINA\",\"province\": \"BUENOS AIRES\"}, { \"id\": 2,\"title\": \"new title2\", \"synopsis\": \"description of history 2\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber 2\",\"country\": \"ARGENTINA\",\"province\": \"BUENOS AIRES\"} }")))
     })
     public ResponseEntity<?> getWishlist(@PathVariable Long id) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(wishlistService.getWishlist(id));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", ex.getMessage()));
+
+        }
+    }
+
+
+
+    @DeleteMapping("/{id}")
+    @Operation(
+            summary = "delete a history from wishlist",
+            description = "remove stories from the wishlist by id",
+            tags = {"Wishlist"}
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "ACCEPTED",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(),
+                            examples = @ExampleObject(name = "HistoryDtoResponse",
+                                    value = "List<History>: { { \"id\": 1,\"title\": \"new title\", \"synopsis\": \"description of history\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber\",\"country\": \"ARGENTINA\",\"province\": \"BUENOS AIRES\"}, { \"id\": 2,\"title\": \"new title2\", \"synopsis\": \"description of history 2\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber 2\",\"country\": \"ARGENTINA\",\"province\": \"BUENOS AIRES\"} }")))
+    })
+    public ResponseEntity<?> deleteHistoryWishlist(@PathVariable Long id) {
+        try {
+            wishlistService.deleteWishlist(id);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", ex.getMessage()));
 
