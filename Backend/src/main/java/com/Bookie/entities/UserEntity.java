@@ -33,15 +33,15 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<WishlistEntity> wishlishistory;
+    private List<WishlistEntity> wishlishistory = new ArrayList<>();
 
 
-    @ManyToMany(fetch = FetchType.LAZY)
+  /*  @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "wishlist",
-            joinColumns = @JoinColumn(name = "id_UserEntity"),
-            inverseJoinColumns = @JoinColumn(name = "id_history")
+            joinColumns = @JoinColumn(name = "user_entity_id"),
+            inverseJoinColumns = @JoinColumn(name = "history_id")
     )
-    private List<HistoryEntity> wishlist;
+    private List<HistoryEntity> wishlist = new ArrayList<>();*/
 
     @Override
     public String toString() {

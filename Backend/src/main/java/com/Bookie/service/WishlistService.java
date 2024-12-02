@@ -35,7 +35,12 @@ public class WishlistService {
 
         var history =historyRepository.findById(wishlist.historyID()).orElseThrow( ()-> new EntityNotFoundException("History not found"));
 
-        WishlistEntity wishlistDB = wishlistRepositoty.save(new WishlistEntity(user,history));
+        WishlistEntity wishlistDB = new WishlistEntity();
+        wishlistDB.setHistory(history);
+        wishlistDB.setUser(user);
+
+       // WishlistEntity wishlistDB = wishlistRepositoty.save(new WishlistEntity(user,history));
+         wishlistDB = wishlistRepositoty.save(wishlistDB);
         return new WishlistResponseCreate(wishlistDB);
     }
 }

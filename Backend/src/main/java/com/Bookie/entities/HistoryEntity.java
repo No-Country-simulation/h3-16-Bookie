@@ -26,7 +26,7 @@ public class HistoryEntity {
     @Column(name = "publish")
     private Boolean publish = false;
     @ManyToOne
-    @JoinColumn(name = "UserEntity_id")
+    @JoinColumn(name = "user_entity_id")
     @JsonIgnore
     private UserEntity creator;
     @Enumerated(EnumType.STRING)
@@ -36,7 +36,7 @@ public class HistoryEntity {
     private String img;
 
     @ManyToOne
-    @JoinColumn(name = "ProvinceEntity_id")
+    @JoinColumn(name = "province_entity", referencedColumnName = "id")
     @JsonIgnore
     private ProvinceEntity province;
 
