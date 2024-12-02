@@ -47,7 +47,7 @@ class WishlistControllerTest {
     @Test
     void crateWishlist() throws JsonProcessingException {
         Long userId = 1L;
-        Long historyID = 68L;
+        Long historyID = 74L;
 
         String json = " { \"userID\" : "+ userId +" ,  \"historyID\" : "+ historyID +" } ";
 
@@ -61,7 +61,7 @@ class WishlistControllerTest {
         assertAll(
                 () -> assertEquals(HttpStatus.CREATED, result.getStatusCode()),
                 () -> assertEquals(201, result.getStatusCode().value()),
-                () -> assertEquals(result.getBody().historyID().getId(), userId),
+                () -> assertEquals(result.getBody().userID().getId(), userId),
                 () -> assertEquals(result.getBody().historyID().getId(), historyID)
         );
     }
