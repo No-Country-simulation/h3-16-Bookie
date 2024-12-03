@@ -44,7 +44,7 @@ class ChapterControllerTest {
     @Test
     void createChapter() throws JsonProcessingException {
         var chapter = new ChapterDtoRequest("capitulo ", "En un bosque se encontraron dos personas ",
-                35.6037, 56.3816, 28L);
+                35.6037, 56.3816, 34L);
 
         String json = " { \"title\" : \"" + chapter.title() + "\" ,  \"content\" : \"" + chapter.content() + "\" ,  \"latitude\" : "
                 + chapter.latitude() + " ,  \"longitude\" : " + chapter.longitude() + " ,  \"historyId\" : " + chapter.historyId() + " } ";
