@@ -14,6 +14,7 @@ class ChaptersViewStoryWithPage extends StatelessWidget {
   final double longitude;
   final int? randomNumber;
   final int currentChapter;
+  final int storyId;
 
   const ChaptersViewStoryWithPage({
     super.key,
@@ -28,6 +29,7 @@ class ChaptersViewStoryWithPage extends StatelessWidget {
     this.isFirstPage,
     this.chapterIndex,
     this.randomNumber,
+    required this.storyId,
   });
 
   @override
@@ -100,6 +102,7 @@ class ChaptersViewStoryWithPage extends StatelessWidget {
                         randomNumber: randomNumber!,
                         currentChapter: currentChapter,
                         title: titleChapter,
+                        storyId: storyId,
                       )
                     : Padding(
                         padding: const EdgeInsets.symmetric(

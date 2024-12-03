@@ -14,6 +14,7 @@ class ChapterSuccessCompleteChapterView extends StatefulWidget {
   final int randomNumber;
   final int currentChapter;
   final String title;
+  final int storyId;
 
   const ChapterSuccessCompleteChapterView(
       {super.key,
@@ -23,7 +24,8 @@ class ChapterSuccessCompleteChapterView extends StatefulWidget {
       required this.longitude,
       required this.randomNumber,
       required this.currentChapter,
-      required this.title});
+      required this.title,
+      required this.storyId});
 
   @override
   State<ChapterSuccessCompleteChapterView> createState() =>
@@ -186,7 +188,8 @@ class _ChapterSuccessCompleteChapterViewState
                                         'latitude': widget.latitude,
                                         'longitude': widget.longitude,
                                         'currentChapter': widget.currentChapter,
-                                        'title': widget.title
+                                        'title': widget.title,
+                                        'storyId': widget.storyId
                                       },
                                     );
                             },

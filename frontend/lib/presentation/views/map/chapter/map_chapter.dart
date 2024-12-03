@@ -16,12 +16,14 @@ class MapChapter extends StatelessWidget {
     final double longitude = extra?['longitude'] ?? 0.0;
     final int currentChapter = extra?['currentChapter'] ?? 0;
     final String title = extra?['title'] ?? '';
+    final int storyId = extra?['storyId'] ?? 0;
 
     return Scaffold(
         body: MapChapterView(
-            latitude: latitude,
-            longitude: longitude,
+            latitudeFromRouter: latitude,
+            longitudeFromRouter: longitude,
             currentChapter: currentChapter,
-            title: title));
+            titleFromRouter: title,
+            storyId: storyId));
   }
 }

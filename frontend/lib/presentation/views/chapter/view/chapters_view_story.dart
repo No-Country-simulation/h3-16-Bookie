@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:bookie/presentation/providers/chapter_provider.dart';
 import 'package:bookie/presentation/views/chapter/view/chapters_view_story_page.dart';
+import 'package:bookie/presentation/widgets/shared/message_empty_chapter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -127,7 +128,7 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
               ),
             )
           : chapters.isEmpty
-              ? Center(child: Text("No hay capítulos disponibles"))
+              ? MessageEmptyChapter()
               : SafeArea(
                   child: Builder(
                     builder: (context) {
@@ -158,6 +159,7 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                               chapters[widget.chapterIndex + 1].longitude,
                           randomNumber: initRandomNumber(),
                           currentChapter: widget.chapterIndex + 2,
+                          storyId: widget.storyId,
                         ),
                         children: pages.map((pageContent) {
                           return ChaptersViewStoryWithPage(
@@ -179,6 +181,7 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                             longitude:
                                 chapters[widget.chapterIndex + 1].longitude,
                             currentChapter: widget.chapterIndex + 2,
+                            storyId: widget.storyId,
                           );
                         }).toList(),
                       );

@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class CardChapterMap extends StatelessWidget {
   final String title;
   final int index;
+  final Future<bool> isBlocked;
 
-  const CardChapterMap({super.key, required this.title, required this.index});
+  const CardChapterMap(
+      {super.key,
+      required this.title,
+      required this.index,
+      required this.isBlocked});
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     final isDarkmode = Theme.of(context).brightness == Brightness.dark;
-    final isBlocked = false;
 
     return Card(
       color: isDarkmode ? Colors.black54 : Colors.white,
@@ -70,15 +75,32 @@ class CardChapterMap extends StatelessWidget {
                   ],
                 ),
                 // Icono de bloqueo o desbloqueo en la esquina superior derecha
+
                 Positioned(
-                  top: 0,
-                  right: 0,
-                  child: Icon(
-                    isBlocked ? Icons.lock : Icons.lock_open,
-                    color: isBlocked ? Colors.red : Colors.green,
-                    size: 24,
-                  ),
-                ),
+                    top: 0,
+                    right: 0,
+                    child: FutureBuilder<bool>(
+                      future: isBlocked,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return SpinKitFadingCircle(
+                            color: Colors.grey,
+                            size: 25.0,
+                          );
+                        } else if (snapshot.hasError) {
+                          return const SizedBox(); // Devolvemos un widget vacío en caso de error
+                        } else {
+                          final isBlockedValue = snapshot.data ?? false;
+
+                          return Icon(
+                            isBlockedValue ? Icons.lock : Icons.lock_open,
+                            color: isBlockedValue ? Colors.red : Colors.green,
+                            size: 24,
+                          );
+                        }
+                      },
+                    )),
               ],
             ),
           )),
