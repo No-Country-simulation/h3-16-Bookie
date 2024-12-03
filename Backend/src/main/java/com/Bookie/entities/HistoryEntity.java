@@ -36,7 +36,7 @@ public class HistoryEntity {
     private String img;
 
     @ManyToOne
-    @JoinColumn(name = "province_entity", referencedColumnName = "id")
+    @JoinColumn(name = "province_entity_id", referencedColumnName = "id")
     @JsonIgnore
     private ProvinceEntity province;
 

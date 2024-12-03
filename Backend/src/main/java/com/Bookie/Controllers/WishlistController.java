@@ -33,7 +33,7 @@ public class WishlistController {
     @Operation(
             summary = "Create a wishlist",
             description = "Create a new WishlistEntity",
-            tags = {"WishlistEntity"}
+            tags = {"Wishlist"}
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Wishlist created successfully",

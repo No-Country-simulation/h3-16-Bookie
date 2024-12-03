@@ -61,7 +61,7 @@ class HistoryControllerTest {
     void crateHistory() throws JsonProcessingException {
 
         HistoryDtoRequest HistoryDtoRequest = new HistoryDtoRequest("La leyenda del MAGO 2",
-                "Una aventura épica sobre un MAGO y su MAGIA divivna.", 3L, GenreLiterary.FANTASIA, "http://imagen-del-dragon.jpg/","ARGENTINA","BUENOS AIRES");
+                "Una aventura épica sobre un MAGO y su MAGIA divivna.", 2L, GenreLiterary.FANTASIA, "http://imagen-del-dragon.jpg/","ARGENTINA","BUENOS AIRES");
 
         String json = """
                 {
@@ -159,7 +159,7 @@ class HistoryControllerTest {
     void gethHistoryByUserId() throws JsonProcessingException {
 
         HttpEntity<String> request = new HttpEntity<>(headers);
-        ResponseEntity<JsonNode> result = testRestTemplate.exchange("/api/v1/history/user/1", HttpMethod.GET, request, JsonNode.class);
+        ResponseEntity<JsonNode> result = testRestTemplate.exchange("/api/v1/history/user/2", HttpMethod.GET, request, JsonNode.class);
 
         JsonUtil.toJsonPrint("List<history> historybyuser",result);
 
