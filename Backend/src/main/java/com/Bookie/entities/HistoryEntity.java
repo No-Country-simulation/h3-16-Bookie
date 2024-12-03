@@ -36,13 +36,16 @@ public class HistoryEntity {
     private String img;
 
     @ManyToOne
-    @JoinColumn(name = "province_entity", referencedColumnName = "id")
+    @JoinColumn(name = "province_entity_id", referencedColumnName = "id")
     @JsonIgnore
     private ProvinceEntity province;
 
     @OneToMany(mappedBy = "history", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<WishlistEntity> wishlishistory;
+
+    @OneToMany(mappedBy = "history", cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
+    private List<ChapterEntity> chapters;
 
 
 }
