@@ -20,7 +20,7 @@ public class ReaderEntity {
     @ManyToOne
     @JoinColumn(name = "user_id",  referencedColumnName = "id")
     @JsonIgnore
-    private UserEntity UserId;
+    private UserEntity userId;
     @ManyToOne
     @JoinColumn(name = "history_id",  referencedColumnName = "id")
     @JsonIgnore
@@ -28,4 +28,9 @@ public class ReaderEntity {
 
     private Boolean complete;
 
+    public ReaderEntity(UserEntity user, HistoryEntity history) {
+        this.userId = user;
+        this.historyId = history;
+        this.complete = true;
+    }
 }

@@ -38,7 +38,7 @@ public class WishlistController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Wishlist created successfully",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = WishlistRequestCreate.class),
-                            examples = @ExampleObject(name = "HistoryDtoRequest",
+                            examples = @ExampleObject(name = "WishlistRequestCreate",
                                     value =  "{\"body\" : {\"id\" : 22, \"userID\" : {\"id\" : 1, \"name\" : \"Osecactest\", \"email\" : \"falsa 123\", \"auth0UserId\" : \"3265874\"}, \"historyID\" : {\"id\" : 74, \"title\" : \"La leyenda del MAGO 2\", \"syopsis\" : \"Una aventura épica sobre un MAGO y su MAGIA divivna.\", \"publish\" : false, \"genre\" : \"FANTASIA\", \"img\" : \"http://imagen-del-dragon.jpg/\"}}}"
 
                             )))
@@ -84,9 +84,7 @@ public class WishlistController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "ACCEPTED",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(),
-                            examples = @ExampleObject(name = "HistoryDtoResponse",
-                                    value = "List<History>: { { \"id\": 1,\"title\": \"new title\", \"synopsis\": \"description of history\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber\",\"country\": \"ARGENTINA\",\"province\": \"BUENOS AIRES\"}, { \"id\": 2,\"title\": \"new title2\", \"synopsis\": \"description of history 2\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber 2\",\"country\": \"ARGENTINA\",\"province\": \"BUENOS AIRES\"} }")))
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     })
     public ResponseEntity<?> deleteHistoryWishlist(@PathVariable Long id) {
         try {

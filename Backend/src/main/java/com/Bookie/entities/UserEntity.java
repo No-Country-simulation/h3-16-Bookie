@@ -44,7 +44,7 @@ public class UserEntity {
     private List<HistoryEntity> wishlist = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "UserId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<ReaderEntity> raiderList = new ArrayList<>();
 
