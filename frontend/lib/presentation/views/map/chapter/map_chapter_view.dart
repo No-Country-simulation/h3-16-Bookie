@@ -91,8 +91,8 @@ class _MapChapterViewState extends State<MapChapterView> {
                 position: LatLng(widget.latitude, widget.longitude),
                 icon: customIcon,
                 infoWindow: InfoWindow(
-                  title: 'Seleccionado',
-                  snippet: 'Ubicación de la historia',
+                  title: widget.title,
+                  snippet: 'Ubicación del capítulo',
                 ),
               ),
             }, // Selecciona el tipo de mapa
@@ -130,27 +130,8 @@ class _MapChapterViewState extends State<MapChapterView> {
               ),
             ),
           ),
-          // Positioned(
-          //   bottom: 100,
-          //   left: 12,
-          //   child: FloatingActionButton(
-          //     onPressed: () {
-          //       // Función para centrar en la ubicación actual
-          //       _mapController?.animateCamera(
-          //         CameraUpdate.newLatLng(
-          //           LatLng(widget.latitude, widget.longitude),
-          //         ),
-          //       );
-          //     },
-          //     backgroundColor: isDarkmode ? Colors.black38 : Colors.white,
-          //     child: Icon(
-          //       Icons.location_on,
-          //       color: colors.primary,
-          //     ),
-          //   ),
-          // ),
           Positioned(
-            bottom: 35,
+            bottom: 24,
             left: 12,
             child: Column(
               children: [
@@ -203,7 +184,7 @@ class _MapChapterViewState extends State<MapChapterView> {
             ),
           ),
           Positioned(
-            bottom: 60, // Espacio de 30 desde la parte inferior
+            bottom: 70, // Espacio de 30 desde la parte inferior
             left: 0,
             right: 0,
             child: Padding(
