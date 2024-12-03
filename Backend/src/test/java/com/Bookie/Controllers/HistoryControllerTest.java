@@ -125,7 +125,7 @@ class HistoryControllerTest {
     void deleteHistory() {
 
         HttpEntity<String> request = new HttpEntity<>(headers);
-        ResponseEntity<String> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/7", HttpMethod.DELETE, request, String.class);
+        ResponseEntity<String> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/28", HttpMethod.DELETE, request, String.class);
         System.out.println("updateHistory = " + crateHistoryResult);
 
 
@@ -142,14 +142,14 @@ class HistoryControllerTest {
     void gethHistoryByIdAndtheirChapters() throws JsonProcessingException {
 
         HttpEntity<String> request = new HttpEntity<>(headers);
-        ResponseEntity<HistoryDtoResponse> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/74", HttpMethod.GET, request, HistoryDtoResponse.class);
+        ResponseEntity<HistoryDtoResponse> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/28", HttpMethod.GET, request, HistoryDtoResponse.class);
         JsonUtil.toJsonPrint("crateHistoryResult = " , crateHistoryResult);
 
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK, crateHistoryResult.getStatusCode()),
                 () -> assertEquals(200, crateHistoryResult.getStatusCode().value()),
-                () -> assertEquals(crateHistoryResult.getBody().id(),74)
+                () -> assertEquals(crateHistoryResult.getBody().id(),28)
 
         );
     }
