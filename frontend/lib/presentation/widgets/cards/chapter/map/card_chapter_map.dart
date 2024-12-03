@@ -25,7 +25,8 @@ class CardChapterMap extends StatelessWidget {
             child: Stack(
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Imagen que ocupa 1/4 del card
                     Container(
@@ -45,22 +46,24 @@ class CardChapterMap extends StatelessWidget {
                     // ListTile para el título y subtítulo
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(
-                            title,
-                            style:
-                                TextStyle(color: colors.primary, fontSize: 14),
-                          ),
-                          subtitle: Text(
-                            'Capítulo $index',
-                            style: TextStyle(
-                                color: Colors.grey.shade600, fontSize: 12),
-                          ),
-                          onTap: () {
-                            // Acción al tocar el card
-                          },
+                        padding: const EdgeInsets.only(
+                            left: 8.0, right: 8.0, top: 24),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              title,
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: colors.primary),
+                            ),
+                            Text(
+                              'Capítulo $index',
+                              style: TextStyle(
+                                  fontSize: 12, color: Colors.grey.shade600),
+                            ),
+                          ],
                         ),
                       ),
                     ),
