@@ -14,11 +14,14 @@ class MapChapter extends StatelessWidget {
 
     final double latitude = extra?['latitude'] ?? 0.0;
     final double longitude = extra?['longitude'] ?? 0.0;
+    final int currentChapter = extra?['currentChapter'] ?? 0;
+    final String title = extra?['title'] ?? '';
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Ubicación del Capítulo'),
-        ),
-        body: MapChapterView(latitude: latitude, longitude: longitude));
+        body: MapChapterView(
+            latitude: latitude,
+            longitude: longitude,
+            currentChapter: currentChapter,
+            title: title));
   }
 }

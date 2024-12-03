@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:animate_do/animate_do.dart';
 import 'package:bookie/config/constants/general.dart';
 import 'package:bookie/config/geolocator/geolocator.dart';
@@ -13,13 +11,19 @@ class ChapterSuccessCompleteChapterView extends StatefulWidget {
   final int isCurrentChapter;
   final double latitude;
   final double longitude;
+  final int randomNumber;
+  final int currentChapter;
+  final String title;
 
   const ChapterSuccessCompleteChapterView(
       {super.key,
       required this.pageContent,
       required this.isCurrentChapter,
       required this.latitude,
-      required this.longitude});
+      required this.longitude,
+      required this.randomNumber,
+      required this.currentChapter,
+      required this.title});
 
   @override
   State<ChapterSuccessCompleteChapterView> createState() =>
@@ -59,11 +63,6 @@ class _ChapterSuccessCompleteChapterViewState
     super.dispose();
   }
 
-  int randomInt() {
-    int randomNumber = Random().nextInt(4) + 1; // Genera un número entre 1 y 4
-    return randomNumber;
-  }
-
   void refreshLocation() {
     setState(() {
       isUnlockedFuture =
@@ -74,7 +73,7 @@ class _ChapterSuccessCompleteChapterViewState
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final randomNumber = randomInt();
+    // final isDarkmode = Theme.of(context).brightness == Brightness.dark;
 
     return Center(
       child: Padding(
@@ -89,7 +88,7 @@ class _ChapterSuccessCompleteChapterViewState
                   height: 200,
                   width: 200,
                   child: Lottie.asset(
-                      'assets/lottie/success_complete_chapter_$randomNumber.json'),
+                      'assets/lottie/success_complete_chapter_${widget.randomNumber}.json'),
                 ),
               ),
             ),
@@ -101,11 +100,11 @@ class _ChapterSuccessCompleteChapterViewState
                   child: Text(
                     "Fin del capítulo 📖",
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      shadows: [
+                      color: colors.primary,
+                      shadows: const [
                         Shadow(
                           blurRadius: 10,
                           color: Colors.black45,
@@ -124,14 +123,14 @@ class _ChapterSuccessCompleteChapterViewState
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: colors.primary,
-                  shadows: const [
-                    Shadow(
-                      blurRadius: 10,
-                      color: Colors.black45,
-                      offset: Offset(2, 2),
-                    ),
-                  ],
+                  // color: colors.primary,
+                  // shadows: const [
+                  //   Shadow(
+                  //     blurRadius: 10,
+                  //     color: Colors.black45,
+                  //     offset: Offset(2, 2),
+                  //   ),
+                  // ],
                 ),
               ),
             ),
@@ -185,7 +184,9 @@ class _ChapterSuccessCompleteChapterViewState
                                       '/chapters/view/128/${widget.isCurrentChapter + 1}/map',
                                       extra: {
                                         'latitude': widget.latitude,
-                                        'longitude': widget.longitude
+                                        'longitude': widget.longitude,
+                                        'currentChapter': widget.currentChapter,
+                                        'title': widget.title
                                       },
                                     );
                             },
@@ -199,9 +200,9 @@ class _ChapterSuccessCompleteChapterViewState
                           ),
                           IconButton(
                               onPressed: refreshLocation,
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.refresh,
-                                color: Colors.blue,
+                                color: colors.primary,
                               )),
                         ],
                       );

@@ -9,9 +9,11 @@ class ChaptersViewStoryWithPage extends StatelessWidget {
   final bool? isEndOfStory;
   final bool? isFirstPage;
   final int? chapterIndex;
-  final String? titleChapter;
+  final String titleChapter;
   final double latitude;
   final double longitude;
+  final int? randomNumber;
+  final int currentChapter;
 
   const ChaptersViewStoryWithPage({
     super.key,
@@ -19,11 +21,13 @@ class ChaptersViewStoryWithPage extends StatelessWidget {
     required this.textStyle,
     required this.longitude,
     required this.latitude,
+    required this.currentChapter,
+    required this.titleChapter,
     this.isCurrentChapter,
     this.isEndOfStory,
     this.isFirstPage,
     this.chapterIndex,
-    this.titleChapter,
+    this.randomNumber,
   });
 
   @override
@@ -58,7 +62,7 @@ class ChaptersViewStoryWithPage extends StatelessWidget {
                           ),
                           Column(children: [
                             Text(
-                              titleChapter!,
+                              titleChapter,
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
@@ -93,6 +97,9 @@ class ChaptersViewStoryWithPage extends StatelessWidget {
                         isCurrentChapter: isCurrentChapter!,
                         latitude: latitude,
                         longitude: longitude,
+                        randomNumber: randomNumber!,
+                        currentChapter: currentChapter,
+                        title: titleChapter,
                       )
                     : Padding(
                         padding: const EdgeInsets.symmetric(

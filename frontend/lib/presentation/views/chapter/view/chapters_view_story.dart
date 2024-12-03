@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bookie/presentation/providers/chapter_provider.dart';
 import 'package:bookie/presentation/views/chapter/view/chapters_view_story_page.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,12 @@ class ChaptersViewStory extends ConsumerStatefulWidget {
 class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
   bool isLoading = true;
   final _controller = GlobalKey<PageFlipWidgetState>();
+
+  int initRandomNumber() {
+    final randomNumber =
+        Random().nextInt(4) + 1; // Genera un número entre 1 y 4
+    return randomNumber;
+  }
 
   Future<void> _loadChapters() async {
     try {
@@ -101,7 +109,7 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
     final isDarkmode = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = isDarkmode
         ? const Color(0xFF121212) // Negro tenue (muy oscuro)
-        : const Color(0xFFFFF8DC); // Amarillo claro tipo papel (Cornsilk)
+        : const Color(0xFFF5E1B2);
 
     // Estilo del texto
     final textStyle = TextStyle(
@@ -140,6 +148,7 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                           pageContent:
                               'Esperamos que la hayas disfrutado. Para continuar al siguiente capítulo tienes que estar cerca.',
                           textStyle: textStyle,
+                          titleChapter: chapters[widget.chapterIndex].title,
                           isEndOfStory:
                               chapters.length - 1 == widget.chapterIndex,
                           isCurrentChapter: widget.chapterIndex,
@@ -147,6 +156,8 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                           latitude: chapters[widget.chapterIndex + 1].latitude,
                           longitude:
                               chapters[widget.chapterIndex + 1].longitude,
+                          randomNumber: initRandomNumber(),
+                          currentChapter: widget.chapterIndex + 2,
                         ),
                         children: pages.map((pageContent) {
                           return ChaptersViewStoryWithPage(
@@ -167,6 +178,7 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                                 chapters[widget.chapterIndex + 1].latitude,
                             longitude:
                                 chapters[widget.chapterIndex + 1].longitude,
+                            currentChapter: widget.chapterIndex + 2,
                           );
                         }).toList(),
                       );

@@ -15,7 +15,7 @@ import 'package:bookie/presentation/views/story/edit_story_view_chapters.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/chapters/view/128/4', // Ruta inicial
+  initialLocation: '/chapters/view/128/7', // Ruta inicial
   routes: [
     GoRoute(path: "/splash", builder: (context, state) => const SplashScreen()),
     GoRoute(
