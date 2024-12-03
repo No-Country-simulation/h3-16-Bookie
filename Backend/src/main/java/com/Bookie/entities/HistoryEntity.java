@@ -48,4 +48,8 @@ public class HistoryEntity {
     private List<ChapterEntity> chapters;
 
 
+    @OneToMany(mappedBy = "historyId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<ReaderEntity> raider;
+
 }
