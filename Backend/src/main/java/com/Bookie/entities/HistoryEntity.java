@@ -44,5 +44,8 @@ public class HistoryEntity {
     @JsonIgnore
     private List<WishlistEntity> wishlishistory;
 
+    @OneToMany(mappedBy = "history", cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
+    private List<ChapterEntity> chapters;
+
 
 }
