@@ -1,7 +1,7 @@
+import 'package:bookie/presentation/screens/map_screen.dart';
 import 'package:bookie/presentation/views/story/create_story_screen.dart';
 import 'package:bookie/presentation/views/favorites/favorites_screen.dart';
 import 'package:bookie/presentation/views/home-first/home_first.dart';
-import 'package:bookie/presentation/views/map/map_stories_google_maps.dart';
 import 'package:bookie/presentation/views/settings/settings_screen.dart';
 import 'package:bookie/presentation/widgets/shared/custom_bottom_navigation.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +21,7 @@ class HomeScreen extends StatelessWidget {
         index: pageIndex, // Índice de la página actual
         children: [
           HomeFirstScreen(),
-          MapStoriesGoogleMaps(),
+          MapScreen(),
           CreateHistoryScreen(),
           FavoritesScreen(),
           SettingsScreen(),

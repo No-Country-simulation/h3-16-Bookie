@@ -33,7 +33,6 @@ class MapChapterView extends ConsumerStatefulWidget {
 class _MapChapterViewState extends ConsumerState<MapChapterView> {
   GoogleMapController? _mapController; // Controlador del mapa
   BitmapDescriptor customIcon = BitmapDescriptor.defaultMarker;
-  // final Set<Marker> _markers = {};
   late Future<bool> isUnlockedFuture;
   bool isLoading = true;
   late final double latitude;
@@ -140,7 +139,7 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
       latitude,
       longitude,
     );
-    // customMarker();
+    customMarker();
     _loadChapters();
   }
 

@@ -29,7 +29,7 @@ Future<Position> determinePosition() async {
     locationSettings: const LocationSettings(
       // accuracy: LocationAccuracy.bestForNavigation,
       accuracy: LocationAccuracy.high,
-      distanceFilter: 50, // Actualiza cada 100 metros
+      distanceFilter: 10, // Actualiza cada 100 metros
     ),
   );
 }
