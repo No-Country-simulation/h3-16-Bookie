@@ -9,7 +9,8 @@ import java.util.List;
 
 @Entity(name = "HistoryEntity")
 @Table(name = "history")
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

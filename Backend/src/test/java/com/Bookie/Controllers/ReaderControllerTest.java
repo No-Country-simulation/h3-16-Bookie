@@ -73,7 +73,7 @@ class ReaderControllerTest {
         String json = " { \"readerId\" : " + readerChapterDto.readerId() + ", \"chapterId\" : " + readerChapterDto.chapterId() + " }";
 
         HttpEntity<String> request = new HttpEntity<>(json, headers);
-        ResponseEntity<ReaderChapterEntity> crateHistoryResult = testRestTemplate.exchange("/api/v1/reader-chapter", HttpMethod.POST, request, ReaderChapterEntity.class);
+        ResponseEntity<ReaderChapterRequest> crateHistoryResult = testRestTemplate.exchange("/api/v1/reader-chapter", HttpMethod.POST, request, ReaderChapterRequest.class);
 
         System.out.println("HistoryDtoRequest = " + json);
         JsonUtil.toJsonPrint("crateHistoryResult", crateHistoryResult);
@@ -82,8 +82,8 @@ class ReaderControllerTest {
         assertAll(
                 () -> assertEquals(HttpStatus.CREATED, crateHistoryResult.getStatusCode()),
                 () -> assertEquals(201, crateHistoryResult.getStatusCode().value()),
-                () -> assertEquals(crateHistoryResult.getBody().getChapter().getId(), readerChapterDto.chapterId()),
-                () -> assertEquals(crateHistoryResult.getBody().getReader().getId(), readerChapterDto.readerId())
+                () -> assertEquals(crateHistoryResult.getBody().chapter().getId(), readerChapterDto.chapterId()),
+                () -> assertEquals(crateHistoryResult.getBody().reader().getId(), readerChapterDto.readerId())
         );
     }
 }

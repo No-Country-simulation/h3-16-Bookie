@@ -9,7 +9,7 @@ import java.util.List;
 @Entity(name = "ReaderEntity")
 @Table(name = "reader")
 @Builder
-@Data
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
