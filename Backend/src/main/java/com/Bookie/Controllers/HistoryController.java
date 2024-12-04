@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -164,5 +165,17 @@ public class HistoryController {
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", ex.getMessage()));
         }
+    }
+
+    @GetMapping("/by-province")
+    public ResponseEntity<List<HistoryDtoResponse>> getHistoriesByProvince(@RequestParam String province) {
+        List<HistoryDtoResponse> histories = historyService.getHistoriesByProvince(province);
+        return ResponseEntity.ok(histories);
+    }
+
+    @GetMapping("/by-country")
+    public ResponseEntity<List<HistoryDtoResponse>> getHistoriesByCountry(@RequestParam String country) {
+        List<HistoryDtoResponse> histories = historyService.getHistoriesByCountry(country);
+        return ResponseEntity.ok(histories);
     }
 }
