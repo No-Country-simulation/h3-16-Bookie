@@ -32,4 +32,7 @@ public class ChapterEntity {
 
     @Column(nullable = false)
     private Double longitude;
+
+    @Column(name = "img", columnDefinition = "text", length = 1000)
+    private String img;
 }
