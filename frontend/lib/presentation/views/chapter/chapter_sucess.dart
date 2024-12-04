@@ -7,8 +7,10 @@ import 'package:lottie/lottie.dart';
 class ChapterSuccess extends StatefulWidget {
   static const String name = 'chapter-success';
   final int storyId;
+  final int chapterIndex;
 
-  const ChapterSuccess({super.key, required this.storyId});
+  const ChapterSuccess(
+      {super.key, required this.storyId, required this.chapterIndex});
 
   @override
   State<ChapterSuccess> createState() => _ChapterSuccessState();
@@ -110,7 +112,8 @@ class _ChapterSuccessState extends State<ChapterSuccess> {
                 ),
                 const SizedBox(height: 40),
                 // Botones mágicos
-                ButtonColumn(context, storyId: widget.storyId),
+                ButtonColumn(context,
+                    storyId: widget.storyId, chapterIndex: widget.chapterIndex),
               ],
             ),
           ),
@@ -171,14 +174,14 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
 }
 
 // Botones mágicos
-Widget ButtonColumn(BuildContext context, {required int storyId}) {
+Widget ButtonColumn(BuildContext context,
+    {required int storyId, required int chapterIndex}) {
   return Column(
     children: [
       ElevatedButton(
         onPressed: () {
           // Acción para vista previa
-          // TODO: REVISAR ESTO, AQUI SE PASA EL CAPITULO NO OLVIDAR
-          context.go('/chapters/view/$storyId/0');
+          context.push('/chapters/view/$storyId/$chapterIndex');
         },
         child: const Text('Vista Previa'),
       ),
@@ -194,7 +197,7 @@ Widget ButtonColumn(BuildContext context, {required int storyId}) {
       ElevatedButton(
         onPressed: () {
           // Acción para ir al home
-          context.go('/home/0');
+          context.push('/home/0');
         },
         child: const Text('Ir a Home'),
       ),

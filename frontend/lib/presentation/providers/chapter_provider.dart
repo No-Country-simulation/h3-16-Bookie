@@ -21,8 +21,10 @@ class ChapterNotifier extends StateNotifier<List<Chapter>> {
   final Future<List<Chapter>> Function(int storyId) fetchChapter;
   final Future<Chapter> Function(ChapterForm) createChapter;
 
-  ChapterNotifier({required this.fetchChapter, required this.createChapter})
-      : super([]);
+  ChapterNotifier({
+    required this.fetchChapter,
+    required this.createChapter,
+  }) : super([]);
 
   Future<void> getChapters(int storyId) async {
     try {
@@ -49,5 +51,9 @@ class ChapterNotifier extends StateNotifier<List<Chapter>> {
       print('Error al crear el capítulo: $e');
       throw Exception('Error al crear el capítulo');
     }
+  }
+
+  int currentChapter(int chapterId) {
+    return state.indexWhere((chapter) => chapter.id == chapterId);
   }
 }

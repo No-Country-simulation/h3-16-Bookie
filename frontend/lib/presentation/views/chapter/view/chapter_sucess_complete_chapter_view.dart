@@ -145,7 +145,7 @@ class _ChapterSuccessCompleteChapterViewState
                     onPressed: () {
                       // Acción para ir al capítulo anterior
                       context.push(
-                          '/chapters/view/128/${widget.isCurrentChapter - 1}');
+                          '/chapters/view/${widget.storyId}/${widget.isCurrentChapter - 1}');
                     },
                     icon: const Icon(Icons.lock_open,
                         color: Colors.green), // Ícono desbloqueado
@@ -178,12 +178,15 @@ class _ChapterSuccessCompleteChapterViewState
                         children: [
                           ElevatedButton.icon(
                             onPressed: () {
+                              print(
+                                  "ISCURRENTCHAPTER: ${widget.isCurrentChapter + 1}");
+
                               // Acción para ir al siguiente capítulo
                               isUnlocked
                                   ? context.push(
-                                      '/chapters/view/128/${widget.isCurrentChapter + 1}')
+                                      '/chapters/view/${widget.storyId}/${widget.isCurrentChapter + 1}')
                                   : context.push(
-                                      '/chapters/view/128/${widget.isCurrentChapter + 1}/map',
+                                      '/chapters/view/${widget.storyId}/${widget.isCurrentChapter + 1}/map',
                                       extra: {
                                         'latitude': widget.latitude,
                                         'longitude': widget.longitude,
@@ -219,7 +222,7 @@ class _ChapterSuccessCompleteChapterViewState
                 ElevatedButton.icon(
                   onPressed: () {
                     // Acción para ir al Home
-                    context.go('/chapter/success/128');
+                    context.push('/home/0');
                   },
                   icon:
                       Icon(Icons.home, color: colors.primary), // Ícono de Home

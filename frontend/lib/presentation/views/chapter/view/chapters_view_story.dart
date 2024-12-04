@@ -154,9 +154,8 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                               chapters.length - 1 == widget.chapterIndex,
                           isCurrentChapter: widget.chapterIndex,
                           // es mas 1 porque necestiamos saber la posicion del capitulo siguiente
-                          latitude: chapters[widget.chapterIndex + 1].latitude,
-                          longitude:
-                              chapters[widget.chapterIndex + 1].longitude,
+                          latitude: chapters[widget.chapterIndex].latitude,
+                          longitude: chapters[widget.chapterIndex].longitude,
                           randomNumber: initRandomNumber(),
                           currentChapter: widget.chapterIndex + 2,
                           storyId: widget.storyId,
@@ -176,10 +175,18 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                             chapterIndex: widget.chapterIndex,
                             titleChapter: chapters[widget.chapterIndex].title,
                             // es mas 1 porque necestiamos saber la posicion del capitulo siguiente
-                            latitude:
-                                chapters[widget.chapterIndex + 1].latitude,
-                            longitude:
-                                chapters[widget.chapterIndex + 1].longitude,
+                            latitude: chapters[
+                                    widget.chapterIndex + widget.chapterIndex ==
+                                            chapters.length - 1
+                                        ? 0
+                                        : 1]
+                                .latitude,
+                            longitude: chapters[
+                                    widget.chapterIndex + widget.chapterIndex ==
+                                            chapters.length - 1
+                                        ? 0
+                                        : 1]
+                                .longitude,
                             currentChapter: widget.chapterIndex + 2,
                             storyId: widget.storyId,
                           );

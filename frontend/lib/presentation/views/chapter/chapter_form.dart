@@ -270,25 +270,25 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
           loadingMessage = "Ya falta poco...";
         });
 
-        ref.read(chapterProvider.notifier).addChapter(chapterForm).then(
-          (chapter) {
-            // ScaffoldMessenger.of(context).showSnackBar(
-            //   SnackBar(
-            //       content: Text('Capítulo creado con éxito.'),
-            //       backgroundColor: Colors.green),
-            // );
-            context.push("/chapter/success/${widget.storyId}");
-          },
-        ).catchError((e) {
-          print("Error: $e");
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: Text('No se pudo crear el capítulo'),
-                backgroundColor: Colors.red),
-          );
-        });
+        final chapter =
+            await ref.read(chapterProvider.notifier).addChapter(chapterForm);
 
-        await Future.delayed(const Duration(seconds: 1));
+        final chapterIndex =
+            ref.read(chapterProvider.notifier).currentChapter(chapter.id);
+
+        if (context.mounted) {
+          context.push("/chapter/success/${widget.storyId}/$chapterIndex");
+        }
+        // ).catchError((e) {
+        //   print("Error: $e");
+        //   ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(
+        //         content: Text('No se pudo crear el capítulo'),
+        //         backgroundColor: Colors.red),
+        //   );
+        // });
+
+        // await Future.delayed(const Duration(seconds: 1));
         isLoading = false;
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

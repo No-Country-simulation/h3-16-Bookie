@@ -15,7 +15,7 @@ import 'package:bookie/presentation/views/story/edit_story_view_chapters.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(
-  // initialLocation: '/chapters/view/128/7', // Ruta inicial
+  // initialLocation: '/chapters/view/138/0', // Ruta inicial
   initialLocation: "/splash", // Ruta inicial
   routes: [
     GoRoute(path: "/splash", builder: (context, state) => const SplashScreen()),
@@ -93,12 +93,15 @@ final appRouter = GoRouter(
     ),
     // sucess page create chapter
     GoRoute(
-      path: '/chapter/success/:storyId',
+      path: '/chapter/success/:storyId/:chapterIndex',
       name: ChapterSuccess.name,
       builder: (context, state) {
         final storyId = int.parse(state.pathParameters['storyId'] ?? '0');
+        final chapterIndex =
+            int.parse(state.pathParameters['chapterIndex'] ?? '0');
         return ChapterSuccess(
           storyId: storyId,
+          chapterIndex: chapterIndex,
         );
       },
     ),

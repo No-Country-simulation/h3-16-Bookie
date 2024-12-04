@@ -140,7 +140,7 @@ Widget ButtonColumn(BuildContext context) {
     children: [
       ElevatedButton(
         onPressed: () {
-          context.go('/chapter/success/128');
+          context.push('/home/0');
         },
         child: const Text('Ir a Home'),
       ),

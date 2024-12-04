@@ -67,7 +67,7 @@ class _StoryEditDetailChaptersPageState
 
       await Future.delayed(const Duration(seconds: 2));
       Navigator.of(context).pop(); // Cerrar el modal
-      context.go('/home/2'); // Redirigir al home/2
+      context.push('/home/2'); // Redirigir al home/2
     } catch (e) {
       // Mostrar mensaje de error en caso de fallo
       ScaffoldMessenger.of(context).showSnackBar(
