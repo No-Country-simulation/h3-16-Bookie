@@ -8,9 +8,11 @@ public record ChapterDtoResponse(
         String content,
         Double latitude,
         Double longitude,
-        Long historyId
+        Long historyId,
+        String image
+
 ) {
     public ChapterDtoResponse(ChapterEntity chapter) {
-        this(chapter.getId(), chapter.getTitle(), chapter.getContent(), chapter.getLatitude(), chapter.getLongitude(), chapter.getHistory().getId());
+        this(chapter.getId(), chapter.getTitle(), chapter.getContent(), chapter.getLatitude(), chapter.getLongitude(), chapter.getHistory().getId(), chapter.getImg());
     }
 }

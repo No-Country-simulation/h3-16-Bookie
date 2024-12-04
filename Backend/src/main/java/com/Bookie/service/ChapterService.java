@@ -33,6 +33,7 @@ public class ChapterService {
                 .content(chapterDto.content())
                 .latitude(chapterDto.latitude())
                 .longitude(chapterDto.longitude())
+                .img(chapterDto.image()) // Agregar la imagen
                 .history(history)
                 .build();
 
@@ -49,15 +50,16 @@ public class ChapterService {
         ChapterEntity chapter = chapterRepository.findById(chapterId)
                 .orElseThrow(() -> new EntityNotFoundException("Chapter not found"));
 
-
         chapter.setTitle(updateRequest.title());
         chapter.setContent(updateRequest.content());
         chapter.setLatitude(updateRequest.latitude());
         chapter.setLongitude(updateRequest.longitude());
 
+        if (updateRequest.image() != null) {
+            chapter.setImg(updateRequest.image()); // Actualizar la imagen si se proporciona
+        }
 
         ChapterEntity updatedChapter = chapterRepository.save(chapter);
-
         return new ChapterDtoResponse(updatedChapter);
     }
 

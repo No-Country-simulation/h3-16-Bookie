@@ -7,6 +7,7 @@ public record ChapterDtoUpdateRequest(
         @NotBlank String title,
         @NotBlank String content,
         @NotNull Double latitude,
-        @NotNull Double longitude
+        @NotNull Double longitude,
+        String image
 ) {
 }
