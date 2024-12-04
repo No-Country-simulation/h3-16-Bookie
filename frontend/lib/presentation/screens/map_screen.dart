@@ -26,6 +26,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
   GoogleMapController? _mapController; // Controlador del mapa
   BitmapDescriptor customUserIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor customStoryIcon = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor customChapterIcon = BitmapDescriptor.defaultMarker;
 
   final TextEditingController _controller = TextEditingController();
   List<String> countries = [
@@ -45,7 +46,6 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
     'Ciudad de México'
   ];
 
-  // final Set<Marker> _markers = {};
   late Future<bool> isUnlockedFuture;
   bool isLoading = true;
   bool isLoadingMap = true;
@@ -55,6 +55,8 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
   late StreamSubscription<Position> positionStream;
   bool isCardVisible = false;
   bool isSwiperVisible = false;
+  final List<LatLng> _markersChapters = [];
+  bool showMarkerChapters = false;
 
   void toggleCard() {
     setState(() {
@@ -141,6 +143,19 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
     );
   }
 
+// TODO REVISAR SI CAMBIAR DE ICONO DE LOS CHAPTERS
+  void customMarkerStoryChapters() {
+    BitmapDescriptor.asset(const ImageConfiguration(size: Size(55, 55)),
+            'assets/images/marker_story_noread_.webp')
+        .then(
+      (value) {
+        // setState(() {
+        customChapterIcon = value;
+        // });
+      },
+    );
+  }
+
   void startTrackingUser() {
     positionStream = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
@@ -170,14 +185,38 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
     LatLng(36.175153, -115.141825), // Lugar 1
   ];
 
+  final listChapters = [
+    LatLng(-8.120775, -79.044919), // Lugar 1
+    LatLng(-8.119848, -79.043964), // Lugar 2
+    LatLng(-8.120125, -79.043572), // Lugar 3
+  ];
+
+  final listChapters2 = [
+    LatLng(-8.120468, -79.050339), // Lugar 1
+    LatLng(-8.120905, -79.047984), // Lugar 2
+  ];
+
+  void _addMarkersChapters(int index) {
+    print("INDEX: $index");
+
+    setState(() {
+      print("AÑADIENDO MARKERS DE LOS CHAPTERS");
+      showMarkerChapters = true;
+      _markersChapters.clear();
+      // TODO CAMBIAR LOGICA PERO ESTA SENCILLO PARA QUE SE AÑADA LOS CHAPTERS DE LOS STORIES
+      _markersChapters.addAll(index == 0 ? listChapters : listChapters2);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     customMarkerUser();
     customMarkerStories();
+    customMarkerStoryChapters();
     locationUser();
     _loadChapters();
-    startTrackingUser();
+    startTrackingUser(); // Iniciar ubicacion del usuario tiempo real
   }
 
   @override
@@ -237,26 +276,52 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                           locationUser();
                         }),
                     // ...Set.from(_markers),
-                    ...nearbyPlaces.map((e) => Marker(
-                          markerId: MarkerId('marker_$e'),
-                          position: e,
-                          icon: customStoryIcon,
-                          infoWindow: InfoWindow(
-                              title: 'Title ${e.hashCode}', snippet: "Story"),
-                          onTap: () {
-                            setState(() {
-                              if (!isCardVisible) {
-                                toggleCard();
-                              }
-                              // TODO GUIA PARA MOSTRAR DETALLE DE LA STORY
-                              // _selectedPlace = placeInfos[i];
-                            });
-                            // TODO PARA MOSTRAR EL SWIPER DE STORY O STORIES
-                            // _showMarkerStories();
+                    ...nearbyPlaces.asMap().entries.map((entry) {
+                      final e = entry.value;
+                      final i = entry.key;
+                      return Marker(
+                        markerId: MarkerId('marker_story_$e'),
+                        position: e,
+                        icon: customStoryIcon,
+                        infoWindow: InfoWindow(
+                            title: 'Title ${e.hashCode}', snippet: "Story"),
+                        onTap: () {
+                          setState(() {
+                            if (!isCardVisible) {
+                              toggleCard();
+                            }
+                            // TODO GUIA PARA MOSTRAR DETALLE DE LA STORY
+                            // _selectedPlace = placeInfos[i];
+                          });
+                          // TODO PARA MOSTRAR EL SWIPER DE STORY O STORIES
+                          // _showMarkerStories();
 
-                            // TODO AÑADIR MARKER DE LOS CHAPTERS DE LA STORY
-                          },
-                        ))
+                          // TODO AÑADIR MARKER DE LOS CHAPTERS DE LA STORY
+                          _addMarkersChapters(i);
+                        },
+                      );
+                    }),
+
+                    // MARKER DE LOS CHAPTERS DE LA STORY
+                    if (showMarkerChapters)
+                      ..._markersChapters.skip(1).map((e) => Marker(
+                            markerId: MarkerId('marker_chapter_$e'),
+                            position: e,
+                            icon: customChapterIcon,
+                            infoWindow: InfoWindow(
+                                title: 'Title ${e.hashCode}', snippet: "Story"),
+                            onTap: () {
+                              // setState(() {
+                              // if (!isCardVisible) {
+                              //   toggleCard();
+                              // } else if (!isSwiperVisible) {
+                              //   toggleSwiper();
+                              // }
+                              // _selectedPlace = placeInfos[i];
+                              // });
+                              // _showMarkerStories();
+                            },
+                          )),
                   }, //
                 ),
           Padding(
@@ -309,7 +374,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                             },
                             // onChanged: () {},
                             decoration: InputDecoration(
-                              hintText: 'Busca por título, país o ciudad...',
+                              hintText: 'Busca por país o ciudad...',
                               hintStyle: TextStyle(color: Colors.grey.shade500),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
