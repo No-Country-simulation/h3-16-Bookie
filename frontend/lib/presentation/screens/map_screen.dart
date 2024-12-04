@@ -54,10 +54,17 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
   final String title = "title";
   late StreamSubscription<Position> positionStream;
   bool isCardVisible = false;
+  bool isSwiperVisible = false;
 
   void toggleCard() {
     setState(() {
       isCardVisible = !isCardVisible;
+    });
+  }
+
+  void toggleSwiper() {
+    setState(() {
+      isSwiperVisible = !isSwiperVisible;
     });
   }
 
@@ -163,33 +170,12 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
     LatLng(36.175153, -115.141825), // Lugar 1
   ];
 
-  // for (int i = 0; i < nearbyPlaces.length; i++) {
-  // _markers.add(
-  //   Marker(
-  //     markerId: MarkerId('marker_$i'),
-  //     icon: customStoryIcon,
-  //     position: nearbyPlaces[i],
-  //     infoWindow: InfoWindow(title: 'Title ${i + 1}', snippet: "Story"),
-  //     onTap: () {
-  //       setState(() {
-  //         // TODO GUIA PARA MOSTRAR
-  //         // _selectedPlace = placeInfos[i];
-  //       });
-  //       // TODO PARA MOSTRAR EL SWIPER DE STORY O STORIES
-  //       // _showMarkerStories();
-  //     },
-  //   ),
-  //     );
-  //   }
-  // }
-
   @override
   void initState() {
     super.initState();
     customMarkerUser();
     customMarkerStories();
     locationUser();
-    // _addNearbyMarkers();
     _loadChapters();
     startTrackingUser();
   }
@@ -225,6 +211,9 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                   onTap: (_) {
                     if (isCardVisible) {
                       toggleCard();
+                    }
+                    if (isSwiperVisible) {
+                      toggleSwiper();
                     }
                   },
                   zoomControlsEnabled: true, // Activa los botones de zoom
@@ -299,49 +288,110 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
           ),
 
           // autcompletado
-          // Padding(
-          //     padding: const EdgeInsets.only(top: 65, left: 16, right: 16),
-          //     child: Container(
-          //       alignment: Alignment.topCenter,
-          //       child: SizedBox(
-          //         height: kToolbarHeight - 10,
-          //         // child: Row(children: [
-          //         child: TextField(
-          //           controller: _controller,
-          //           onTap: () {
-          //             if (isCardVisible) {
-          //               toggleCard();
-          //             }
-          //           },
-          // onChanged: () {},
-          //   decoration: InputDecoration(
-          //     hintText: 'Busca por titulo, país o ciudad...',
-          //     hintStyle: TextStyle(color: Colors.grey.shade500),
-          //     // prefixIcon: Icon(Icons.search),
-          //     border: OutlineInputBorder(
-          //       borderRadius: BorderRadius.circular(8),
-          //     ),
-          //     fillColor: isDarkmode ? Colors.black54 : Colors.white,
-          //     filled: true,
-          //   ),
-          //   style: TextStyle(
-          //     fontSize: 14,
-          //     color: isDarkmode ? Colors.white : Colors.black,
-          //   ),
-          //   textAlignVertical: TextAlignVertical.center,
-          // ),
-          // const SizedBox(width: 8),
-          // IconButton(
-          //   icon: Icon(
-          //     Icons.clear,
-          //     color: isDarkmode ? Colors.white : Colors.black,
-          //     size: 24,
-          //   ),
-          //   onPressed: () {},
-          // ),
-          // ]
-          //   ),
-          // )),
+          Padding(
+              padding: const EdgeInsets.only(top: 65),
+              child: Container(
+                  alignment: Alignment.topCenter,
+                  child: SizedBox(
+                    // height: kToolbarHeight - 10,
+                    // width: MediaQuery.of(context).size.width - 20,
+                    child: Column(children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16, right: 16),
+                        child: SizedBox(
+                          height: 50,
+                          child: TextField(
+                            controller: _controller,
+                            onTap: () {
+                              if (isCardVisible) {
+                                toggleCard();
+                              }
+                            },
+                            // onChanged: () {},
+                            decoration: InputDecoration(
+                              hintText: 'Busca por título, país o ciudad...',
+                              hintStyle: TextStyle(color: Colors.grey.shade500),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              fillColor:
+                                  isDarkmode ? Colors.black54 : Colors.white,
+                              filled: true,
+                              // Icono a la derecha
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.search),
+                                onPressed: () {
+                                  if (isCardVisible) {
+                                    toggleCard();
+                                  }
+                                  if (!isSwiperVisible) {
+                                    toggleSwiper();
+                                  }
+                                  // Aquí puedes colocar la lógica para ejecutar cuando el icono sea presionado
+                                  print('Buscar: ${_controller.text}');
+                                  // Puedes hacer una búsqueda o cualquier otra acción que desees
+                                },
+                              ),
+                            ),
+
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: isDarkmode ? Colors.white : Colors.black,
+                            ),
+                            textAlignVertical: TextAlignVertical.center,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        height: 40,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 4, right: 4),
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: [
+                              ...[...countries, ...cities].map((option) {
+                                return Padding(
+                                    padding: const EdgeInsets.only(right: 4.0),
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        if (isCardVisible) {
+                                          toggleCard();
+                                        }
+                                        if (!isSwiperVisible) {
+                                          toggleSwiper();
+                                        }
+                                        print('Opción seleccionada: $option');
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: isDarkmode
+                                            ? Colors.black54
+                                            : Colors.white,
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 2.0, horizontal: 8.0),
+                                        shadowColor: Colors
+                                            .transparent, // Eliminar sombra
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                              8.0), // Opcional, para bordes redondeados
+                                        ),
+                                      ),
+                                      child: Text(
+                                        option,
+                                        style: TextStyle(
+                                          color: isDarkmode
+                                              ? colors.primary
+                                              : Colors.black,
+                                        ),
+                                      ),
+                                    ));
+                              }),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ]),
+                  ))),
 
           // CARD DE LA STORY INDIVIDUAL
           Align(
@@ -388,18 +438,17 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
           //
           //
 
-          // CARD DE LAS STORIES RESULTADO DE LA BÚSQUEDA
-
+          // SWIPER CARD DE LAS STORIES RESULTADO DE LA BÚSQUEDA
           Align(
             alignment: Alignment.bottomCenter,
             child: SizedBox(
               // TODO ESTO PUEDES QUITAR PORQUE CUANDO SCROLEAS Y ESTA ESTO VISIBLE NO SE PUEDE HACER ZOOM ETC EN ESA PARTE. PREUBA BAJANDO EL PADDING , ESTE HEIGHT TU ME ENTIENDES
-              height: !isCardVisible ? 0 : 370,
+              height: !isSwiperVisible ? 0 : 370,
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 90, horizontal: 10),
                 child: AnimatedOpacity(
-                  opacity: isCardVisible ? 1.0 : 0.0,
+                  opacity: isSwiperVisible ? 1.0 : 0.0,
                   duration: Duration(milliseconds: 300),
                   child: Swiper(
                     itemCount: 10,
