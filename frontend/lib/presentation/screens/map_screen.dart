@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:bookie/config/constants/environment.dart';
 import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:bookie/presentation/views/map/google_maps_dark.dart';
 import 'package:bookie/presentation/widgets/cards/story/map/card_chapter_map.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
@@ -57,6 +59,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
   bool isSwiperVisible = false;
   final List<LatLng> _markersChapters = [];
   bool showMarkerChapters = false;
+  Map<PolylineId, Polyline> polylinesStory = {};
 
   void toggleCard() {
     setState(() {
@@ -141,6 +144,85 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
         // });
       },
     );
+  }
+
+  Future<List<LatLng>> fetchPolylinePoints({
+    required double latitudeDestination,
+    required double longitudeDestination,
+  }) async {
+    try {
+      final polylinePoints = PolylinePoints();
+
+      final result = await polylinePoints.getRouteBetweenCoordinates(
+          googleApiKey: Environment.theGoogleMapsApiKey,
+          request: PolylineRequest(
+            origin: PointLatLng(latitudeUser, longitudeUser),
+            destination: PointLatLng(latitudeDestination, longitudeDestination),
+            mode: TravelMode.driving,
+          ));
+
+      if (result.points.isNotEmpty) {
+        final points = result.points
+            .map((point) => LatLng(point.latitude, point.longitude))
+            .toList();
+
+        return points;
+      } else {
+        throw Exception("No se encontraron puntos");
+      }
+    } catch (e) {
+      print("Error al obtener los puntos del polyline: $e");
+      return [];
+    }
+  }
+
+  void _showDistance() {
+    // TODO FALTA MOSTRAR LA DISTANCIA Y PONER EN UN TEXTO QUE APARECE TU ME ENTIENDES ESTA FACIL
+  }
+
+  Future<void> generatePolylineFromPoints(
+      {required List<LatLng> polylineCoordinates}) async {
+    try {
+      const id = PolylineId("polyline");
+
+      final polyline = Polyline(
+        polylineId: id,
+        points: polylineCoordinates,
+        color: Colors.amberAccent,
+        width: 5,
+        consumeTapEvents: true,
+        onTap: () {
+          _showDistance(); // Método para manejar el mensaje
+        },
+      );
+
+      setState(() {
+        polylinesStory[id] = polyline;
+      });
+    } catch (e) {
+      throw Exception("Error al generar el polyline");
+    }
+  }
+
+  Future<void> initializePolyline(
+      {required double latitudeDestination,
+      required double longitudeDestination}) async {
+    try {
+      // update de la posición del usuario
+      await locationUser();
+
+      final coordinates = await fetchPolylinePoints(
+        latitudeDestination: latitudeDestination,
+        longitudeDestination: longitudeDestination,
+      );
+
+      await generatePolylineFromPoints(polylineCoordinates: coordinates);
+    } catch (e) {
+      print("Error al inicializar el polyline: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al generar el recorrido')),
+      );
+    }
   }
 
 // TODO REVISAR SI CAMBIAR DE ICONO DE LOS CHAPTERS
@@ -262,6 +344,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                   // myLocationEnabled:
                   //     true, // Muestra la ubicación actual - circulo azul
                   style: isDarkmode ? mapOptionDark : "",
+                  polylines: Set<Polyline>.of(polylinesStory.values),
                   markers: {
                     Marker(
                         markerId: const MarkerId('user-location'),
@@ -296,6 +379,11 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                           // TODO PARA MOSTRAR EL SWIPER DE STORY O STORIES
                           // _showMarkerStories();
 
+                          // TODO RECORRIDO DESDE EL USUARIO AL INICIO DE LA STORY
+                          initializePolyline(
+                              latitudeDestination: e.latitude,
+                              longitudeDestination: e.longitude);
+
                           // TODO AÑADIR MARKER DE LOS CHAPTERS DE LA STORY
                           _addMarkersChapters(i);
                         },
@@ -320,6 +408,9 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                               // _selectedPlace = placeInfos[i];
                               // });
                               // _showMarkerStories();
+                              initializePolyline(
+                                  latitudeDestination: e.latitude,
+                                  longitudeDestination: e.longitude);
                             },
                           )),
                   }, //
