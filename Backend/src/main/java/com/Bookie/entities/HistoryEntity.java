@@ -52,4 +52,6 @@ public class HistoryEntity {
     @JsonIgnore
     private List<ReaderEntity> raider;
 
+
+
 }
