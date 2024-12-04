@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity(name ="Wishlist")
+@Entity(name ="WishlistEntity")
 @Table(name = "wishlist")
 @Builder
 @Data
@@ -13,7 +13,7 @@ import lombok.*;
 @EqualsAndHashCode(of = "id")
 public class WishlistEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @ManyToOne
