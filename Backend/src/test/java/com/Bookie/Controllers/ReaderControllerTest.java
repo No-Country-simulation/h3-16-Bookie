@@ -44,7 +44,7 @@ class ReaderControllerTest {
     @Test
     void createReader() throws JsonProcessingException {
 
-        ReaderCreateRequest readerCreateRequest = new ReaderCreateRequest(1L, 34L);
+        ReaderCreateRequest readerCreateRequest = new ReaderCreateRequest(1L, 58L);
 
 
         String json = " { \"user_id\" : " + readerCreateRequest.user_id() + ", \"history_id\" : " + readerCreateRequest.history_id() + " }";
@@ -59,7 +59,7 @@ class ReaderControllerTest {
         assertAll(
                 () -> assertEquals(HttpStatus.CREATED, crateHistoryResult.getStatusCode()),
                 () -> assertEquals(201, crateHistoryResult.getStatusCode().value()),
-                () -> assertEquals(crateHistoryResult.getBody().user().getId(), readerCreateRequest.user_id()),
+                () -> assertEquals(crateHistoryResult.getBody().user().id(), readerCreateRequest.user_id()),
                 () -> assertEquals(crateHistoryResult.getBody().history().getId(), readerCreateRequest.history_id())
         );
     }

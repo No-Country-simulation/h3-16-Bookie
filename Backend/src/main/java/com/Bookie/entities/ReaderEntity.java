@@ -31,6 +31,7 @@ public class ReaderEntity {
     public ReaderEntity(UserEntity user, HistoryEntity history) {
         this.userId = user;
         this.historyId = history;
-        this.complete = true;
+        this.complete = false;
     }
+
 }

@@ -13,7 +13,7 @@ public record ReaderRequest(
         @NotNull
         Long id,
         @NotNull
-        UserEntity user,
+        UserReaderRequest user,
         @NotNull
         HistoryEntity history,
         @NotBlank
@@ -21,6 +21,7 @@ public record ReaderRequest(
         List<ChapterEntity> chapters
 ) {
         public ReaderRequest(ReaderEntity reader) {
-                this(reader.getId(),reader.getUserId(),reader.getHistoryId(),reader.getComplete(),null);
+                this(reader.getId(),new UserReaderRequest(reader.getUserId() ),
+                        reader.getHistoryId() ,reader.getComplete(),null);
         }
 }

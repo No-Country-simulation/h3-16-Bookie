@@ -3,10 +3,13 @@ select * from country;
 select * from history;
 select * from province;
 select * from wishlist;
+select * from chapter;
+select * from reader;
 
 INSERT INTO wishlist (id_user_entity, id_history) VALUES (1, 68);
 
-
+delete from reader where id = 1;
+delete from wishlist where id = 24;
 DROP TABLE wishlist;
 
 
@@ -20,7 +23,5 @@ CREATE TABLE wishlist (
     CONSTRAINT fk_user FOREIGN KEY (id_user_entity) REFERENCES user_entity(id),
     CONSTRAINT fk_history FOREIGN KEY (id_history) REFERENCES history(id)
 );
-
-
 
 
