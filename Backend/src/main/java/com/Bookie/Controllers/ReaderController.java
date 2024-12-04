@@ -1,0 +1,50 @@
+package com.Bookie.Controllers;
+
+import com.Bookie.dto.ReaderCreateRequest;
+import com.Bookie.dto.WishlistRequestCreate;
+import com.Bookie.service.ReaderService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+@RestController
+@RequestMapping("api/vi/reader")
+@CrossOrigin("*")
+@AllArgsConstructor
+public class ReaderController {
+
+    private final ReaderService readerService;
+
+    @PostMapping
+    @Operation(
+            summary = "Create a reader",
+            description = "Create a new ReaderEntity",
+            tags = {"Reader"}
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Creating a new reading of a story",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = WishlistRequestCreate.class),
+                            examples = @ExampleObject(name = "HistoryDtoRequest",
+                                    value =  "{\"body\" : {\"id\" : 22, \"userID\" : {\"id\" : 1, \"name\" : \"Osecactest\", \"email\" : \"falsa 123\", \"auth0UserId\" : \"3265874\"}, \"historyID\" : {\"id\" : 74, \"title\" : \"La leyenda del MAGO 2\", \"syopsis\" : \"Una aventura épica sobre un MAGO y su MAGIA divivna.\", \"publish\" : false, \"genre\" : \"FANTASIA\", \"img\" : \"http://imagen-del-dragon.jpg/\"}}}"
+
+                            )))
+    })
+    public ResponseEntity<?> createReader (@RequestBody @Valid ReaderCreateRequest readerCreateRequest){
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(readerService.createReaer(readerCreateRequest));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", ex.getMessage()));
+        }
+    }
+}

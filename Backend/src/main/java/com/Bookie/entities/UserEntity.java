@@ -43,6 +43,11 @@ public class UserEntity {
     )
     private List<HistoryEntity> wishlist = new ArrayList<>();
 
+
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<ReaderEntity> raiderList = new ArrayList<>();
+
     @Override
     public String toString() {
         return "UserEntity{id=" + id + ", name='" + name + "', email='" + email + "', auth0UserId='" + auth0UserId + "'}";
