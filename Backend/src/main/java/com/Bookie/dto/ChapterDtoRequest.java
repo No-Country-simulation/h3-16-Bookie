@@ -8,6 +8,7 @@ public record ChapterDtoRequest(
         @NotBlank String content,
         @NotNull Double latitude,
         @NotNull Double longitude,
-        @NotNull Long historyId
+        @NotNull Long historyId,
+        String image
 ) {
 }

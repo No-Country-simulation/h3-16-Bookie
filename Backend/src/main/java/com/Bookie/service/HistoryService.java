@@ -132,4 +132,15 @@ public class HistoryService {
         if(history.isEmpty()) return new ArrayList<>();
         return history.stream().map(HistoryDtoResponse::new).toList();
     }
+
+    public List<HistoryDtoResponse> getHistoriesByProvince(String provinceName) {
+        String normalizedProvince = provinceName.toLowerCase();
+        List<HistoryEntity> histories = historyRepository.findByProvinceName(normalizedProvince);
+        return histories.stream().map(HistoryDtoResponse::new).toList();
+    }
+
+    public List<HistoryDtoResponse> getHistoriesByCountry(String countryName) {
+        List<HistoryEntity> histories = historyRepository.findByCountryName(countryName);
+        return histories.stream().map(HistoryDtoResponse::new).toList();
+    }
 }
