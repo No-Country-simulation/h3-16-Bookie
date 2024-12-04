@@ -35,7 +35,7 @@ class ChapterNotifier extends StateNotifier<List<Chapter>> {
     }
   }
 
-  Future<void> addChapter(ChapterForm chapter) async {
+  Future<Chapter> addChapter(ChapterForm chapter) async {
     try {
       final Chapter newChapter =
           await createChapter(chapter); // Crea el nuevo capítulo
@@ -43,9 +43,11 @@ class ChapterNotifier extends StateNotifier<List<Chapter>> {
         ...state,
         newChapter
       ]; // Actualiza el estado con el nuevo capítulo
+      return newChapter;
     } catch (e) {
       // Manejo de errores al crear el capítulo
       print('Error al crear el capítulo: $e');
+      throw Exception('Error al crear el capítulo');
     }
   }
 }
