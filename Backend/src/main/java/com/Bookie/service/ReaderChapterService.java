@@ -27,6 +27,11 @@ public class ReaderChapterService {
     public ReaderChapterRequest createReaer(ReaderChapterDto readerChapterDto) {
         ReaderEntity reader = readerRepository.findById(readerChapterDto.readerId()).orElseThrow(() -> new EntityNotFoundException("Reader not found"));
         ChapterEntity chapter = chapterRepository.findById(readerChapterDto.chapterId()).orElseThrow(() -> new EntityNotFoundException("Chapter not found"));
+
+        //verificar si existe lo devuelva
+        ReaderChapterEntity readerChapter = readerChapterRespository.findByReaderAndChapter(reader, chapter);
+        if(readerChapter != null) return new ReaderChapterRequest(readerChapter);
+
         ReaderChapterEntity readerChapterDb = readerChapterRespository.save(new ReaderChapterEntity(reader, chapter));
 
         return new ReaderChapterRequest(readerChapterDb);

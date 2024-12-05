@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
+@Entity(name = "ChapterEntity")
 @Table(name = "chapter")
 @Getter
 @Setter
@@ -14,7 +14,7 @@ import lombok.*;
 @EqualsAndHashCode(of = "id")
 public class ChapterEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(nullable = false)

@@ -10,6 +10,7 @@ import java.util.List;
 @Table(name = "reader")
 @Builder
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")

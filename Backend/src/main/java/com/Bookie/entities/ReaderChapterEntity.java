@@ -2,12 +2,14 @@ package com.Bookie.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
-@Entity(name = "RaiderChapterEntity")
+@Entity(name = "ReaderChapterEntity")
 @Table(name = "reader_chapter")
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class ReaderChapterEntity {
 
