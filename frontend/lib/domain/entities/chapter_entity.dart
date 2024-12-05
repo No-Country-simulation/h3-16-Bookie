@@ -1,46 +1,57 @@
-class Chapter {
+class ChapterPartial {
   final int id;
   final String title;
-  final String content;
   final double latitude;
   final double longitude;
-  final int historyId;
+  String? image;
 
-  Chapter({
+  ChapterPartial({
     required this.id,
     required this.title,
-    required this.content,
     required this.latitude,
     required this.longitude,
-    required this.historyId,
+    this.image,
+  });
+}
+
+class Chapter extends ChapterPartial {
+  final String content;
+
+  Chapter({
+    required this.content,
+    required super.id,
+    required super.title,
+    required super.latitude,
+    required super.longitude,
+    super.image,
   });
 }
 
 class ChapterForm {
-  final String title;
+  final int historyId;
   final String content;
+  final String title;
   final double latitude;
   final double longitude;
-  final int historyId;
   String? image;
 
   ChapterForm({
+    required this.historyId,
     required this.title,
-    required this.content,
     required this.latitude,
     required this.longitude,
-    required this.historyId,
+    required this.content,
     this.image,
   });
 
   Map<String, dynamic> toJson() {
     return {
+      "historyId": historyId,
       "title": title,
-      "content": content,
       "latitude": latitude,
       "longitude": longitude,
-      "historyId": historyId,
-      "image": image,
+      "content": content,
+      "image": image
     };
   }
 }

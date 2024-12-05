@@ -1,7 +1,7 @@
 import 'package:bookie/config/fetch/fetch_api.dart';
-import 'package:bookie/config/helpers/sorted.dart';
+// import 'package:bookie/config/helpers/sorted.dart';
 import 'package:bookie/domain/datasources/story_datasource.dart';
-import 'package:bookie/domain/entities/story.dart';
+import 'package:bookie/domain/entities/story_entity.dart';
 import 'package:bookie/infrastructure/mappers/storydb_mapper.dart';
 import 'package:bookie/infrastructure/models/story_db.dart';
 
@@ -12,16 +12,14 @@ class StoriesDbDatasource extends StoriesDatasource {
       final response = await FetchApi.fetchDio().get('/v1/history/all');
       final storiesDBResponse = StoryDbResponse.fromJsonList(response.data);
 
-      final List<Story> stories = storiesDBResponse
-          // .where((story) => story.campoafiltrar)
-          .map((storydb) => StoryMapper.storyDBToEntity(storydb))
-          .toList();
+      final List<Story> stories =
+          storiesDBResponse.map(StoryMapper.storyDbToEntity).toList();
 
-      // Ordenar las historias por la distancia
-      final List<Story> sortedStories = await getSortedStories(
-          stories); // Ordenar las historias por la distancia
+      // TODO Ordenar las historias por la distancia PERO ANTES QUE LOS CAPITULOS SE ORDENEN POR ID DEL MENOR AL MAYOR POR SIACASO
+      // final List<Story> sortedStories = await getSortedStories(
+      //     stories); // Ordenar las historias por la distancia
 
-      return sortedStories;
+      return stories;
     } catch (e) {
       print("Error al obtener las historias: $e");
       return [];
@@ -33,28 +31,19 @@ class StoriesDbDatasource extends StoriesDatasource {
     final response = await FetchApi.fetchDio().get('/v1/history/user/$userId');
     final storiesDBResponse = StoryDbResponse.fromJsonList(response.data);
 
-    final List<Story> stories = storiesDBResponse
-        // .where((story) => story.campoafiltrar)
-        .map((storydb) => StoryMapper.storyDBToEntity(storydb))
-        .toList();
+    final List<Story> stories =
+        storiesDBResponse.map(StoryMapper.storyDbToEntity).toList();
 
-    // Ordenar las historias por la distancia
-    final List<Story> sortedStories = await getSortedStories(
-        stories); // Ordenar las historias por la distancia
-
-    return sortedStories;
+    return stories;
   }
 
   @override
   Future<Story> getStory(int storyId) async {
-    print("Obteniendo historia con id: $storyId");
-
     final response = await FetchApi.fetchDio().get('/v1/history/$storyId');
-    print("Respuesta de la API: ${response.data}");
 
     final storyDBResponse = StoryDbResponse.fromJson(response.data);
 
-    final Story story = StoryMapper.storyDBToEntity(storyDBResponse);
+    final Story story = StoryMapper.storyDbToEntity(storyDBResponse);
 
     return story;
   }
@@ -70,7 +59,7 @@ class StoriesDbDatasource extends StoriesDatasource {
 
     final storyDBResponse = StoryDbResponse.fromJson(response.data);
 
-    final Story story = StoryMapper.storyDBToEntity(storyDBResponse);
+    final Story story = StoryMapper.storyDbToEntity(storyDBResponse);
 
     return story;
   }

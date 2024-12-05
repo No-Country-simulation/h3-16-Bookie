@@ -1,16 +1,48 @@
+import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:go_router/go_router.dart';
 
-class CardChapterMap extends StatelessWidget {
+class CardChapterMap extends StatefulWidget {
   final String title;
   final int index;
-  final Future<bool> isBlocked;
+  final double latitude;
+  final double longitude;
+  final int storyId;
 
-  const CardChapterMap(
-      {super.key,
-      required this.title,
-      required this.index,
-      required this.isBlocked});
+  const CardChapterMap({
+    super.key,
+    required this.title,
+    required this.index,
+    required this.latitude,
+    required this.longitude,
+    required this.storyId,
+  });
+
+  @override
+  State<CardChapterMap> createState() => CardChapterMapState();
+}
+
+class CardChapterMapState extends State<CardChapterMap> {
+  late Future<bool> isBlocked;
+  bool enableGoToMapOrChapter = false;
+
+  @override
+  void initState() {
+    super.initState();
+    calculateBlockedStatus();
+  }
+
+  void calculateBlockedStatus() {
+    setState(() {
+      enableGoToMapOrChapter = false;
+    });
+    if (mounted) {
+      setState(() {
+        isBlocked = isBlockedFuture(widget.latitude, widget.longitude);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +54,44 @@ class CardChapterMap extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
-      child: SizedBox(
-          width: double.infinity, // Ancho del card
-          height: 160, // Alto del card
+      child: InkWell(
+        onTap: () {
+          if (enableGoToMapOrChapter) {
+            // Acción para navegar a la historia
+            // context
+            isBlocked.then((value) {
+              if (!value) {
+                // es decir si esta desbloqueado
+                context
+                    .push('/chapters/view/${widget.storyId}/${widget.index}');
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content:
+                        Text("Tienes que estar cerca para ver el capítulo"),
+                    duration: Duration(seconds: 1),
+                    backgroundColor: colors.primary,
+                  ),
+                );
+              }
+            });
+          } else {
+            // Mostrar Tooltip si no está habilitado aún
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                    "Espera un momento, estamos calculando la ubicación..."),
+                duration: Duration(seconds: 1),
+                backgroundColor: colors.primary,
+              ),
+            );
+          }
+        },
+        splashColor: colors.primary.withAlpha(30),
+        highlightColor: colors.primary.withAlpha(50),
+        child: SizedBox(
+          width: double.infinity,
+          height: 160,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Stack(
@@ -33,22 +100,19 @@ class CardChapterMap extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Imagen que ocupa 1/4 del card
                     Container(
-                      width: 75, // 1/4 del tamaño total
+                      width: 75,
                       height: 150,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         image: DecorationImage(
                           image: NetworkImage(
-                            // URL de la imagen (puedes reemplazar con la base de datos en el futuro)
-                            'https://picsum.photos/seed/chapter${index + 1}/100',
+                            'https://picsum.photos/seed/chapter${widget.index + 1}/100',
                           ),
                           fit: BoxFit.cover,
                         ),
                       ),
                     ),
-                    // ListTile para el título y subtítulo
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(
@@ -57,14 +121,15 @@ class CardChapterMap extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              title,
+                              widget.title,
                               style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: colors.primary),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: colors.primary,
+                              ),
                             ),
                             Text(
-                              'Capítulo $index',
+                              'Capítulo ${widget.index + 1}',
                               style: TextStyle(
                                   fontSize: 12, color: Colors.grey.shade600),
                             ),
@@ -74,36 +139,66 @@ class CardChapterMap extends StatelessWidget {
                     ),
                   ],
                 ),
-                // Icono de bloqueo o desbloqueo en la esquina superior derecha
-
                 Positioned(
-                    top: 0,
-                    right: 0,
-                    child: FutureBuilder<bool>(
-                      future: isBlocked,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return SpinKitFadingCircle(
-                            color: Colors.grey,
-                            size: 25.0,
-                          );
-                        } else if (snapshot.hasError) {
-                          return const SizedBox(); // Devolvemos un widget vacío en caso de error
-                        } else {
-                          final isBlockedValue = snapshot.data ?? false;
+                  top: 0,
+                  right: 0,
+                  child: FutureBuilder<bool>(
+                    future: isBlocked,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return SpinKitFadingCircle(
+                          color: Colors.grey,
+                          size: 25.0,
+                        );
+                      } else if (snapshot.hasError) {
+                        return const SizedBox();
+                      } else {
+                        final isBlockedValue = snapshot.data ?? false;
 
-                          return Icon(
-                            isBlockedValue ? Icons.lock : Icons.lock_open,
-                            color: isBlockedValue ? Colors.red : Colors.green,
-                            size: 24,
-                          );
-                        }
-                      },
-                    )),
+                        isBlocked.then((value) {
+                          if (mounted) {
+                            // Verifica si el widget sigue montado
+                            setState(() {
+                              enableGoToMapOrChapter = true;
+                            });
+                          }
+                        });
+
+                        return Icon(
+                          isBlockedValue ? Icons.lock : Icons.lock_open,
+                          color: isBlockedValue ? Colors.red : Colors.green,
+                          size: 24,
+                        );
+                      }
+                    },
+                  ),
+                ),
+                Positioned(
+                  bottom: -10,
+                  right: -12,
+                  child: IconButton(
+                    style: IconButton.styleFrom(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      backgroundColor:
+                          isDarkmode ? Colors.black38 : Colors.white,
+                    ),
+                    icon: Icon(
+                      Icons.sync,
+                      color: colors.primary,
+                      size: 18,
+                    ),
+                    onPressed: () {
+                      calculateBlockedStatus(); // Llamada para refrescar el estado
+                    },
+                  ),
+                ),
               ],
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 }

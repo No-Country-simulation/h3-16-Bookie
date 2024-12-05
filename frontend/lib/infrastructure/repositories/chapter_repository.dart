@@ -1,5 +1,5 @@
 import 'package:bookie/domain/datasources/chapter_datasource.dart';
-import 'package:bookie/domain/entities/chapter.dart';
+import 'package:bookie/domain/entities/chapter_entity.dart';
 import 'package:bookie/domain/repositories/chapter_repository.dart';
 
 class ChapterRepositoryImpl implements ChapterRepository {

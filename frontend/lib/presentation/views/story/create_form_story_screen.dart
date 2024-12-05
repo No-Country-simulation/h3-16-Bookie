@@ -1,11 +1,12 @@
 import 'dart:io';
 
 import 'package:bookie/config/permissions/image.dart';
-import 'package:bookie/domain/entities/genre.dart';
-import 'package:bookie/domain/entities/story.dart';
+import 'package:bookie/config/persistent/shared_preferences.dart';
+import 'package:bookie/domain/entities/genre_entity.dart';
+import 'package:bookie/domain/entities/story_entity.dart';
 import 'package:bookie/infrastructure/mappers/genredb_mapper.dart';
 import 'package:bookie/presentation/providers/genres_provider.dart';
-import 'package:bookie/presentation/providers/story_provider.dart';
+import 'package:bookie/presentation/providers/stories_user_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -88,7 +89,6 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
           final response = await dio.post(url, data: formData);
 
           // Obtener la URL de la imagen subida
-          print("URL de la imagen subida: ${response.data}");
           image = response.data['secure_url'];
         } catch (e) {
           print("Error al subir la imagen: $e");
@@ -114,25 +114,31 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
       final String genreString =
           GenreToStringExtension(_selectedGenre!).toBackendString;
 
+      final credentials = await SharedPreferencesKeys.getCredentials();
+
       // Crear un objeto con los datos a enviar y enviarlo
       final StoryForm storyForm = StoryForm(
         title: title,
         synopsis: synopsis,
         genre: genreString,
-        creatorId: 1,
+        creatorId: int.parse(credentials.id ?? '1'),
         image: image,
         country: country,
         province: province,
       );
+
+      print("Datos de la historia a crear: ${storyForm.toJson()}");
       // Crear el historia en el backend
       final storyCreated =
-          await ref.read(createStoryProvider(storyForm).future);
+          await ref.read(storiesUserProvider.notifier).createStory(storyForm);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text('Historia creada'), backgroundColor: Colors.green),
       );
       // Navegar a la ruta `/form-chapter` con GoRouter
-      context.push('/chapter/create/${storyCreated.id}');
+      if (context.mounted) {
+        context.push('/chapter/create/${storyCreated.id}');
+      }
     } catch (e) {
       print("EROOOOOOOOOOOOOOOOOOOOO: $e");
       ScaffoldMessenger.of(context).showSnackBar(

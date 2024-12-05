@@ -6,7 +6,7 @@ import 'package:bookie/presentation/views/settings/settings_screen.dart';
 import 'package:bookie/presentation/widgets/shared/custom_bottom_navigation.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   static const name = 'home-screen';
 
   final int pageIndex;
@@ -14,11 +14,39 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, required this.pageIndex});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late PageController _pageController;
+  late int _currentPageIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentPageIndex = widget.pageIndex;
+    _pageController = PageController(initialPage: _currentPageIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        // Contenedor de pantalla de inicio
-        index: pageIndex, // Índice de la página actual
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            // Actualiza el estado con el índice de la página actual
+            _currentPageIndex = index;
+          });
+        },
+        physics:
+            NeverScrollableScrollPhysics(), // Desactiva el desplazamiento por gestos
         children: [
           HomeFirstScreen(),
           MapScreen(),
@@ -26,8 +54,9 @@ class HomeScreen extends StatelessWidget {
           FavoritesScreen(),
           SettingsScreen(),
         ],
-      ), // Contenedor de pantalla de inicio
-      bottomNavigationBar: CustomBottomNavigation(currentIndex: pageIndex),
+      ),
+      bottomNavigationBar:
+          CustomBottomNavigation(currentIndex: _currentPageIndex),
     );
   }
 }

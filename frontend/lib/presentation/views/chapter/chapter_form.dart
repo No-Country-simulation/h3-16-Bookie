@@ -4,7 +4,7 @@ import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:bookie/config/openai/openai_config.dart';
 import 'package:bookie/config/permissions/image.dart';
 import 'package:bookie/config/translator/translator.dart';
-import 'package:bookie/domain/entities/chapter.dart';
+import 'package:bookie/domain/entities/chapter_entity.dart';
 import 'package:bookie/presentation/providers/chapter_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';

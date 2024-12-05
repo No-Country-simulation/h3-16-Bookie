@@ -1,7 +1,7 @@
 import 'package:bookie/config/intl/get_location_for_intl.dart';
 import 'package:bookie/config/intl/i18n.dart';
 import 'package:bookie/presentation/providers/genres_provider.dart';
-import 'package:bookie/presentation/providers/story_provider.dart';
+import 'package:bookie/presentation/providers/stories_all_provider.dart';
 import 'package:bookie/presentation/views/home-first/home_first_search.dart';
 import 'package:flutter/material.dart';
 import 'package:bookie/presentation/widgets/navbar/navbar_homepage.dart';
@@ -39,7 +39,7 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
     detectLanguage().then((locale) {
       changeLanguage(locale);
     });
-    ref.read(getStoriesProvider.notifier).loadStories();
+    ref.read(storiesAllProvider.notifier).loadAllStories();
     ref.read(getGenresProvider.notifier).loadGenres();
     allStories = [...readStories, ...unreadStories];
     filteredStories = allStories;
@@ -62,7 +62,7 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
     setState(() {});
 
     // simular carga de datos
-    await ref.read(getStoriesProvider.notifier).loadStories();
+    await ref.read(storiesAllProvider.notifier).loadAllStories();
 
     if (!isMounted) return;
     isLoading = false;
@@ -79,7 +79,7 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final stories = ref.watch(getStoriesProvider);
+    final stories = ref.watch(storiesAllProvider);
 
     if (stories.isEmpty) {
       // Mostrar un spinner o placeholder mientras no hay datos
@@ -91,6 +91,8 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
     return SafeArea(
       child: PageView(
         controller: _pageController,
+        physics:
+            NeverScrollableScrollPhysics(), // Desactiva el desplazamiento por gestos
         children: [
           // Página principal
           RefreshIndicator(

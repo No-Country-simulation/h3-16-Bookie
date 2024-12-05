@@ -1,10 +1,11 @@
 class ChapterDbResponse {
-  int id;
-  String title;
-  String content;
-  double latitude;
-  double longitude;
-  int historyId;
+  final int id;
+  final String title;
+  final String content;
+  final double latitude;
+  final double longitude;
+  int? historyId;
+  String? image;
 
   ChapterDbResponse({
     required this.id,
@@ -12,17 +13,24 @@ class ChapterDbResponse {
     required this.content,
     required this.latitude,
     required this.longitude,
-    required this.historyId,
+    this.historyId,
+    this.image,
   });
 
-  factory ChapterDbResponse.fromJson(Map<String, dynamic> json) => ChapterDbResponse(
+  factory ChapterDbResponse.fromJson(Map<String, dynamic> json) =>
+      ChapterDbResponse(
         id: json["id"],
         title: json["title"],
         content: json["content"],
-        latitude: json["latitude"]?.toDouble(),
-        longitude: json["longitude"]?.toDouble(),
+        latitude: json["latitude"].toDouble(),
+        longitude: json["longitude"].toDouble(),
         historyId: json["historyId"],
+        image: json["image"],
       );
+
+  static List<ChapterDbResponse> fromJsonList(List<dynamic> jsonList) {
+    return jsonList.map((json) => ChapterDbResponse.fromJson(json)).toList();
+  }
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -31,9 +39,6 @@ class ChapterDbResponse {
         "latitude": latitude,
         "longitude": longitude,
         "historyId": historyId,
+        "image": image,
       };
-
-  static List<ChapterDbResponse> fromJsonList(List<dynamic> jsonList) {
-    return jsonList.map((json) => ChapterDbResponse.fromJson(json)).toList();
-  }
 }

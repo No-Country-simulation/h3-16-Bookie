@@ -1,6 +1,6 @@
 import 'package:bookie/config/fetch/fetch_api.dart';
 import 'package:bookie/domain/datasources/chapter_datasource.dart';
-import 'package:bookie/domain/entities/chapter.dart';
+import 'package:bookie/domain/entities/chapter_entity.dart';
 import 'package:bookie/infrastructure/mappers/chapterdb_mapper.dart';
 import 'package:bookie/infrastructure/models/chapter_db.dart';
 
@@ -14,7 +14,7 @@ class ChapterDbDatasource extends ChapterDatasource {
 
     final List<Chapter> chapters = chaptersDBResponse
         // .where((chapter) => chapter.campoafiltrar)
-        .map((chapterdb) => ChapterDbMapper.chapterToEntity(chapterdb))
+        .map((chapterdb) => ChapterMapper.chapterToEntity(chapterdb))
         .toList();
 
     return chapters;
@@ -29,7 +29,7 @@ class ChapterDbDatasource extends ChapterDatasource {
 
     final chapterDBResponse = ChapterDbResponse.fromJson(response.data);
 
-    final Chapter chapter = ChapterDbMapper.chapterToEntity(chapterDBResponse);
+    final Chapter chapter = ChapterMapper.chapterToEntity(chapterDBResponse);
 
     return chapter;
   }

@@ -1,44 +1,100 @@
 import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:bookie/config/constants/environment.dart';
 import 'package:bookie/config/fetch/fetch_api.dart';
+import 'package:bookie/config/persistent/shared_preferences.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   final auth0 = Auth0(Environment.theAuth0Domain, Environment.theAuth0ClientId);
 
-  Future<void> login(BuildContext context) async {
+  Future<void> checkLoginWithPreferencesAndDB(BuildContext context) async {
     try {
-      // Invoca el Universal Login
-      final credentials = await auth0
-          .webAuthentication(
-            scheme: 'demo',
-          )
-          .login();
+      // Verificar si hay credenciales guardadas en SharedPreferences
+      final credentials = await SharedPreferencesKeys.getCredentials();
 
-      // Guardar los credenciales en SharedPreferences
+      if (credentials.idToken != null && credentials.idToken!.isNotEmpty) {
+        try {
+          // Validar las credenciales en la base de datos
+          final response = await FetchApi.fetchDio().get(
+            '/auth/user',
+            options: Options(
+              headers: {
+                'Authorization': 'Bearer ${credentials.idToken}',
+              },
+            ),
+          );
 
-      // prueba para visualizar los datos guardados
+          // Si las credenciales son válidas, redirigir a Home
+          if (response.data['id'] != null) {
+            if (context.mounted) {
+              context.go('/home/0'); // Redirigir al home
+            }
+            return;
+          }
+        } catch (e) {
+          print("Usuario no encontrado o credenciales inválidas: $e");
+        }
+      }
+
+      if (context.mounted) {
+        context.go('/login'); // Redirigir a la pantalla de login
+      }
+      // Si no hay credenciales válidas, proceder al login con Auth0
+      // await loginOrRegisterWithAuth0(context);
+    } catch (e) {
+      print("Error al verificar credenciales: $e");
+    }
+  }
+
+  Future<void> loginOrRegisterWithAuth0(BuildContext context) async {
+    try {
+      // Realizar el flujo de inicio de sesión con Auth0
+      final authCredentials =
+          await auth0.webAuthentication(scheme: 'demo').login();
+
+      // Obtener información del usuario desde la API
       final response = await FetchApi.fetchDio().get(
         '/auth/user',
         options: Options(
           headers: {
-            'Authorization': 'Bearer ${credentials.idToken}',
+            'Authorization': 'Bearer ${authCredentials.idToken}',
           },
         ),
       );
 
-      print("Datos guardados en SharedPreferences: ${response.data}");
+      // Guardar las credenciales obtenidas en SharedPreferences
+      await SharedPreferencesKeys.saveCredentials(
+        SharedPrefencesFields(
+          name: response.data['name'],
+          email: response.data['email'],
+          id: response.data['id'].toString(),
+          idToken: authCredentials.idToken,
+        ),
+      );
 
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setString('id', response.data['id'].toString());
-      prefs.setString('name', response.data['name']);
-      prefs.setString('email', response.data['email']);
-      context.go('/home/0'); // Usando go_route
+      // Mostrar mensaje de éxito
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('¡Sesión iniciada exitosamente!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        context.go('/home/0'); // Redirigir al home
+      }
     } catch (e) {
-      print("ERORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR: $e");
+      print("Error en el flujo de inicio de sesión con Auth0: $e");
+      // TODO MOSTRAR MENSAJE DE ERROR, REVISA QUE SE HAGA BIEN PORQUE AVECES SALE EN CASOS QUE NO CORRESPONDE PRUEBA VARIAS VECES Y TE DARAS CUENTA.
+      // if (context.mounted) {
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(
+      //       content: Text('Error al iniciar sesión'),
+      //       backgroundColor: Colors.red,
+      //     ),
+      //   );
+      // }
     }
   }
 
@@ -51,14 +107,20 @@ class AuthService {
           .logout();
 
       // Limpiar datos de sesión persistente
-      final prefs = await SharedPreferences.getInstance();
-      prefs.remove('id');
-      prefs.remove('name');
-      prefs.remove('email');
+      await SharedPreferencesKeys.clearCredentials();
 
-      context.go('/splash'); // Redirige a la pantalla de splash/login
+      if (context.mounted) {
+        context.go('/splash'); // Redirige a la pantalla de splash/login
+      }
     } catch (e) {
-      print("ERROOOOOOOOOOOO LOGOUTTTTTTTTTTTTTTTTTTTTT: $e");
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error al cerrar sesión'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 }

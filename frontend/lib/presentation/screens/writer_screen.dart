@@ -1,5 +1,5 @@
 import 'package:bookie/config/helpers/get_image_final.dart';
-import 'package:bookie/presentation/providers/story_provider.dart';
+import 'package:bookie/presentation/providers/stories_all_provider.dart';
 import 'package:bookie/shared/data/writers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -141,7 +141,7 @@ class _WriterProfileScreenState extends ConsumerState<WriterProfileScreen> {
                           ),
                           title: Text(story.title),
                           subtitle: Text(
-                              '${story.chapters!.length} capítulos | Ubicación: A ${story.distance}m'),
+                              '${story.chapters.length} capítulos | Ubicación: A ${story.distance}m'),
                           onTap: () {
                             // Acción para navegar a la historia
                             context.push('/story/${story.id}');

@@ -21,8 +21,6 @@ final appRouter = GoRouter(
     GoRoute(path: "/splash", builder: (context, state) => const SplashScreen()),
     GoRoute(
         path: "/login", builder: (context, state) => LoginOrRegisterScreen()),
-    // GoRoute(path: "/register", builder: (context, state) => RegisterScreen()),
-    // Ruta principal de HomeScreen
     GoRoute(
       path: '/home/:page', // Ruta dinámica para cambiar de pantalla
       name: HomeScreen.name,
@@ -40,7 +38,6 @@ final appRouter = GoRouter(
           name: SettingsThemeScreen.name,
           builder: (context, state) => const SettingsThemeScreen(),
         ),
-        // vista siguiente para formulario de creación de historia
       ],
     ),
 
@@ -135,7 +132,7 @@ final appRouter = GoRouter(
       },
     ),
 
-    // Ruta de redirección para '/' hacia '/home/0'
+    // Ruta de redirección para '/' hacia '/home/0' si no existe la ruta
     GoRoute(
       path: '/',
       redirect: (_, __) => '/home/0', // Redirige a la primera página

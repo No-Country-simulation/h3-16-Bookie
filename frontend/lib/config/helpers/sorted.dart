@@ -1,8 +1,9 @@
 import 'package:bookie/config/constants/environment.dart';
 import 'package:bookie/config/geolocator/geolocator.dart';
-import 'package:bookie/domain/entities/story.dart';
+import 'package:bookie/domain/entities/story_entity.dart';
 import 'package:dio/dio.dart';
 
+// TODO: Solo toma el primer capítulo o todos(ELEGI POR AHORA EL PRIMER CAPITULO, REVISAR PORQUE PODRIA HABER UN CASO QUE UN CAPITULO DE LA HISTORIA ESTE CERCA BUENO PREGUNTAR O REVISAR)
 Future<List<Story>> getSortedStories(List<Story> stories) async {
   try {
     // Obtener la posición actual
@@ -14,8 +15,8 @@ Future<List<Story>> getSortedStories(List<Story> stories) async {
         .map(
           (story) => distanceFromGeolocator(
             currentPosition,
-            story.chapters![0].latitude,
-            story.chapters![0].longitude,
+            story.chapters[0].latitude,
+            story.chapters[0].longitude,
           ),
         )
         .toList();
@@ -23,7 +24,7 @@ Future<List<Story>> getSortedStories(List<Story> stories) async {
     // Crear las coordenadas de destino
     final destinations = stories
         .map((story) =>
-            "${story.chapters![0].latitude},${story.chapters![0].longitude}")
+            "${story.chapters[0].latitude},${story.chapters[0].longitude}")
         .join('|');
 
     // Llamar a la API de Google Maps Distance Matrix

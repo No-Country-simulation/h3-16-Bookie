@@ -22,7 +22,7 @@ class _StoryViewMapState extends State<StoryViewMap> {
 
   void customMarker() {
     BitmapDescriptor.asset(const ImageConfiguration(size: Size(75, 75)),
-            'assets/images/marker_story_noread.webp')
+            'assets/images/marker_story.webp')
         .then(
       (value) {
         customIcon = value;

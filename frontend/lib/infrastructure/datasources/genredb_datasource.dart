@@ -1,6 +1,6 @@
 import 'package:bookie/config/fetch/fetch_api.dart';
 import 'package:bookie/domain/datasources/genre_datasource.dart';
-import 'package:bookie/domain/entities/genre.dart';
+import 'package:bookie/domain/entities/genre_entity.dart';
 import 'package:bookie/infrastructure/mappers/genredb_mapper.dart';
 
 class GenreDbDatasource extends GenreDatasource {

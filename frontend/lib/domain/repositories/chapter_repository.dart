@@ -1,4 +1,4 @@
-import 'package:bookie/domain/entities/chapter.dart';
+import 'package:bookie/domain/entities/chapter_entity.dart';
 
 abstract class ChapterRepository {
   Future<List<Chapter>> getChaptersByStoryId(int storyId);

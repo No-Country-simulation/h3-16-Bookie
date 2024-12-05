@@ -1,4 +1,4 @@
-import 'package:bookie/domain/entities/story.dart';
+import 'package:bookie/domain/entities/story_entity.dart';
 
 abstract class StoriesRepository {
   Future<List<Story>> getStories();

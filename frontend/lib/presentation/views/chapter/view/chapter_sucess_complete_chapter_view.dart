@@ -1,5 +1,4 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:bookie/config/constants/general.dart';
 import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -34,30 +33,15 @@ class ChapterSuccessCompleteChapterView extends StatefulWidget {
 
 class _ChapterSuccessCompleteChapterViewState
     extends State<ChapterSuccessCompleteChapterView> {
-  late Future<bool> isUnlockedFuture;
-
-  Future<bool> isChapterUnlocked() async {
-    try {
-      final userPosition = await determinePosition();
-      final double radius = GeneralConstants.radius;
-      final isUnlocked = isWithinRadius(
-        userPosition,
-        widget.latitude,
-        widget.longitude,
-        radius,
-      );
-
-      return isUnlocked;
-    } catch (e) {
-      print('Error al determinar la posición: $e');
-      return false;
-    }
-  }
+  late Future<bool> isBlocked;
 
   @override
   void initState() {
     super.initState();
-    isUnlockedFuture = isChapterUnlocked();
+    isBlocked = isBlockedFuture(
+      widget.latitude,
+      widget.longitude,
+    );
   }
 
   @override
@@ -67,8 +51,10 @@ class _ChapterSuccessCompleteChapterViewState
 
   void refreshLocation() {
     setState(() {
-      isUnlockedFuture =
-          isChapterUnlocked(); // Actualiza el estado para recalcular
+      isBlocked = isBlockedFuture(
+        widget.latitude,
+        widget.longitude,
+      ); // Actualiza el estado para recalcular
     });
   }
 
@@ -156,7 +142,7 @@ class _ChapterSuccessCompleteChapterViewState
                 // Botón para ir al siguiente capítulo (bloqueado)
                 // TODO: AQUI FALTA LA LOGICA CUANDO EL CAPITULO ES DESBLOQUEADO CUANDO EL LECTOR YA LO DESBLOQUEO ANTES QUE SON DE HISTORIAS LEIDAS.
                 FutureBuilder<bool>(
-                  future: isUnlockedFuture,
+                  future: isBlocked,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Padding(
@@ -172,7 +158,7 @@ class _ChapterSuccessCompleteChapterViewState
                         style: TextStyle(color: Colors.red),
                       );
                     } else {
-                      final isUnlocked = snapshot.data ?? false;
+                      final blocked = snapshot.data ?? false;
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -182,7 +168,7 @@ class _ChapterSuccessCompleteChapterViewState
                                   "ISCURRENTCHAPTER: ${widget.isCurrentChapter + 1}");
 
                               // Acción para ir al siguiente capítulo
-                              isUnlocked
+                              !blocked
                                   ? context.push(
                                       '/chapters/view/${widget.storyId}/${widget.isCurrentChapter + 1}')
                                   : context.push(
@@ -196,13 +182,12 @@ class _ChapterSuccessCompleteChapterViewState
                                       },
                                     );
                             },
-                            icon: Icon(
-                                isUnlocked ? Icons.lock_open : Icons.lock,
-                                color: isUnlocked
+                            icon: Icon(!blocked ? Icons.lock_open : Icons.lock,
+                                color: !blocked
                                     ? Colors.green
                                     : Colors.red), // Ícono bloqueado
                             label: Text(
-                                '${isUnlocked ? "Ir al capítulo" : "Capítulo"} ${widget.isCurrentChapter + 2}${isUnlocked ? '' : ' (ir al mapa)'}'),
+                                '${!blocked ? "Ir al capítulo" : "Capítulo"} ${widget.isCurrentChapter + 2}${!blocked ? '' : ' (ir al mapa)'}'),
                           ),
                           IconButton(
                               onPressed: refreshLocation,

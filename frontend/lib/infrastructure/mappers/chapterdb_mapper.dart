@@ -1,15 +1,31 @@
-import 'package:bookie/domain/entities/chapter.dart';
+import 'package:bookie/domain/entities/chapter_entity.dart';
 import 'package:bookie/infrastructure/models/chapter_db.dart';
 
-class ChapterDbMapper {
-  static Chapter chapterToEntity(ChapterDbResponse chapterLocal) {
+class ChapterMapper {
+  static Chapter chapterToEntity(ChapterDbResponse chapter) {
     return Chapter(
-      id: chapterLocal.id,
-      title: chapterLocal.title,
-      content: chapterLocal.content,
-      latitude: chapterLocal.latitude,
-      longitude: chapterLocal.longitude,
-      historyId: chapterLocal.historyId,
+      id: chapter.id,
+      title: chapter.title,
+      content: chapter.content,
+      latitude: chapter.latitude,
+      longitude: chapter.longitude,
+      image: _resolveImageUrl(chapter.image),
     );
+  }
+
+  static ChapterPartial chapterToStoryAllEntity(ChapterDbResponse chapter) {
+    return ChapterPartial(
+      id: chapter.id,
+      latitude: chapter.latitude,
+      longitude: chapter.longitude,
+      title: chapter.title,
+      image: _resolveImageUrl(chapter.image),
+    );
+  }
+
+  static String _resolveImageUrl(String? img) {
+    return (img?.startsWith("http:") == true)
+        ? "sin-imagen"
+        : (img ?? "sin-imagen");
   }
 }

@@ -1,4 +1,5 @@
-import 'package:bookie/config/constants/general.dart';
+import 'dart:async';
+
 import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:bookie/presentation/providers/chapter_provider.dart';
 import 'package:bookie/presentation/views/map/google_maps_dark.dart';
@@ -7,6 +8,8 @@ import 'package:bookie/presentation/widgets/shared/message_empty_chapter.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapChapterView extends ConsumerStatefulWidget {
@@ -32,12 +35,47 @@ class MapChapterView extends ConsumerStatefulWidget {
 
 class _MapChapterViewState extends ConsumerState<MapChapterView> {
   GoogleMapController? _mapController; // Controlador del mapa
-  BitmapDescriptor customIcon = BitmapDescriptor.defaultMarker;
-  late Future<bool> isUnlockedFuture;
+  BitmapDescriptor customChapterIcon = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor customUserIcon = BitmapDescriptor.defaultMarker;
   bool isLoading = true;
+  bool isLoadingMap = true;
   late final double latitude;
   late final double longitude;
   late final String title;
+  late int currentChapterChange;
+  late double latitudeUser;
+  late double longitudeUser;
+  late StreamSubscription<Position> positionStream;
+  final List<LatLng> _markersChapters = [];
+  final SwiperController _controllerSwiper = SwiperController();
+
+// TODO: MEJORAR CUANDO CARGA EL MAPA PORQUE SE PODRIA CARGAR EL MAPA POR MIENTRAS HASTA ENCONTRAR LA UBICACION DEL USUARIO U OTROS ELEMENTOS CREO REVISARLO
+  Future<void> locationUser() async {
+    try {
+      final userPosition = await determinePosition();
+
+      // Verificar si el widget sigue montado antes de modificar su estado.
+      if (mounted) {
+        setState(() {
+          latitudeUser = userPosition.latitude;
+          longitudeUser = userPosition.longitude;
+        });
+      }
+    } catch (e) {
+      print('Error al determinar la posición: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al determinar la posición')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoadingMap = false;
+        });
+      }
+    }
+  }
 
   Future<void> _loadChapters() async {
     try {
@@ -60,54 +98,24 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
     }
   }
 
-  Future<bool> isChapterUnlocked(
-    double latitude,
-    double longitude,
-  ) async {
-    try {
-      final userPosition = await determinePosition();
-      final double radius = GeneralConstants.radius;
-      final isUnlocked = isWithinRadius(
-        userPosition,
-        latitude,
-        longitude,
-        radius,
-      );
-
-      return isUnlocked;
-    } catch (e) {
-      print('Error al determinar la posición: $e');
-      return false;
-    }
-  }
-
-  //   Future<bool> isChapterUnlocked(
-  //   bool latitude,
-  //   bool longitude,
-  // ) async {
-  //   try {
-  //     final userPosition = await determinePosition();
-  //     final double radius = GeneralConstants.radius;
-  //     final isUnlocked = isWithinRadius(
-  //       userPosition,
-  //       widget.latitude,
-  //       widget.longitude,
-  //       radius,
-  //     );
-
-  //     return isUnlocked;
-  //   } catch (e) {
-  //     print('Error al determinar la posición: $e');
-  //     return false;
-  //   }
-  // }
-
-  void customMarker() {
+  void customMarkerChapters() {
     BitmapDescriptor.asset(const ImageConfiguration(size: Size(75, 75)),
-            'assets/images/marker_story_noread.webp')
+            'assets/images/marker_chapter.webp')
         .then(
       (value) {
-        customIcon = value;
+        customChapterIcon = value;
+      },
+    );
+  }
+
+  void customMarkerUser() {
+    BitmapDescriptor.asset(const ImageConfiguration(size: Size(75, 75)),
+            'assets/images/marker_user_location.webp')
+        .then(
+      (value) {
+        // setState(() {
+        customUserIcon = value;
+        // });
       },
     );
   }
@@ -132,29 +140,50 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
   @override
   void initState() {
     super.initState();
+    customMarkerChapters();
+    customMarkerUser();
+    locationUser();
     latitude = widget.latitudeFromRouter;
     longitude = widget.longitudeFromRouter;
     title = widget.titleFromRouter;
-    isUnlockedFuture = isChapterUnlocked(
-      latitude,
-      longitude,
-    );
-    customMarker();
+    currentChapterChange = widget.currentChapter;
     _loadChapters();
+    startTrackingUser();
   }
 
-  void refreshLocation() {
-    setState(() {
-      isUnlockedFuture = isChapterUnlocked(
-        latitude,
-        longitude,
-      ); // Actualiza el estado para recalcular
+  void changePositionChapter({
+    required double latitude,
+    required double longitude,
+  }) {
+    _mapController?.animateCamera(
+      CameraUpdate.newLatLng(
+        LatLng(latitude, longitude), // Centrar en la ubicación actual
+      ),
+    );
+  }
+
+  void startTrackingUser() {
+    positionStream = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10, // Notificar cambios después de 10 metros
+      ),
+    ).listen((Position position) {
+      setState(() {
+        latitudeUser = position.latitude;
+        longitudeUser = position.longitude;
+      });
     });
   }
 
   @override
   void dispose() {
+    positionStream.cancel(); // Cancelar el stream al salir
     super.dispose();
+  }
+
+  void refreshLocation(dynamic value) {
+    value.call();
   }
 
   @override
@@ -166,37 +195,86 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
     return SafeArea(
       child: Stack(
         children: [
-          GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: LatLng(latitude, longitude), // Posición inicial del mapa
-              zoom: 18,
-              tilt: 50,
-              bearing: 0,
-            ),
-            onMapCreated: (controller) {
-              _mapController = controller;
-              // addMarker(); // Agregar marcador cuando el mapa se cree
-            },
-            markers: {
-              Marker(
-                markerId: const MarkerId('selected-location'),
-                position: LatLng(
-                    latitude, longitude), // Posición inicial del marcador
-                icon: customIcon,
-                infoWindow: InfoWindow(
-                  title: title,
-                  snippet: 'Ubicación del capítulo',
+          isLoadingMap
+              ? Center(child: SpinKitFadingCircle(color: colors.primary))
+              : GoogleMap(
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(
+                        latitude, longitude), // Posición inicial del mapa
+                    zoom: 17,
+                    tilt: 50,
+                    bearing: 0,
+                  ),
+                  onMapCreated: (controller) {
+                    _mapController = controller;
+                    // addMarker(); // Agregar marcador cuando el mapa se cree
+                  },
+                  markers: {
+                    // MARKER user
+                    Marker(
+                        markerId: const MarkerId('user-location'),
+                        position: LatLng(latitudeUser,
+                            longitudeUser), // Posición inicial del marcador
+                        icon: customUserIcon,
+                        infoWindow: InfoWindow(
+                          title: "Usuario",
+                          snippet: 'Ubicación del usuario',
+                        ),
+                        onTap: () {
+                          locationUser();
+                        }),
+
+                    // MARKER chapter
+                    if (chapters.isNotEmpty)
+                      ...chapters.map(
+                        (chapter) => Marker(
+                            markerId:
+                                MarkerId('chapter-location-${chapter.id}'),
+                            position: LatLng(
+                                chapter.latitude,
+                                chapter
+                                    .longitude), // Posición inicial del marcador
+                            icon: customChapterIcon,
+                            infoWindow: InfoWindow(
+                              title: chapter.title,
+                              snippet:
+                                  'Ubicación del capítulo ${chapters.indexOf(chapter) + 1}',
+                            ),
+                            onTap: () async {
+// Animación manual para moverse al capítulo deseado lentamente
+                              await Future.delayed(
+                                  const Duration(milliseconds: 300), () {
+                                _controllerSwiper.move(
+                                    chapters.indexOf(chapter),
+                                    animation: true);
+                              });
+
+                              setState(() {
+                                currentChapterChange =
+                                    chapters.indexOf(chapter);
+                              });
+                            }),
+                      ),
+
+                    // Marker(
+                    //   markerId: const MarkerId('selected-location'),
+                    //   position: LatLng(
+                    //       latitude, longitude), // Posición inicial del marcador
+                    //   icon: customChapterIcon,
+                    //   infoWindow: InfoWindow(
+                    //     title: title,
+                    //     snippet: 'Ubicación del capítulo',
+                    //   ),
+                    // ),
+                  }, // Selecciona el tipo de mapa
+                  zoomControlsEnabled: true, // Activa los botones de zoom
+                  myLocationButtonEnabled: true, // Activa el botón de ubicación
+                  mapToolbarEnabled:
+                      true, // Habilita la barra de herramientas de Google Maps
+                  myLocationEnabled:
+                      false, // Muestra la ubicación actual (requiere permisos)
+                  style: isDarkmode ? mapOptionDark : "",
                 ),
-              ),
-            }, // Selecciona el tipo de mapa
-            zoomControlsEnabled: true, // Activa los botones de zoom
-            myLocationButtonEnabled: true, // Activa el botón de ubicación
-            mapToolbarEnabled:
-                true, // Habilita la barra de herramientas de Google Maps
-            myLocationEnabled:
-                true, // Muestra la ubicación actual (requiere permisos)
-            style: isDarkmode ? mapOptionDark : "",
-          ),
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: Container(
@@ -208,7 +286,7 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
                   width: 210,
                   child: AppBar(
                     title: Text(
-                      'Capítulo ${widget.currentChapter}',
+                      'Capítulo ${currentChapterChange + 1}',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -232,12 +310,22 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
                     const EdgeInsets.symmetric(vertical: 90, horizontal: 10),
                 child: isLoading
                     ? Center(
-                        child: CircularProgressIndicator()) // Muestra cargando
+                        child:
+                            Text("Cargando capítulos...")) // Muestra cargando
                     : chapters.isEmpty
                         ? MessageEmptyChapter()
                         : Swiper(
                             itemCount: chapters.length,
-                            index: widget.currentChapter - 2,
+                            index: currentChapterChange,
+                            controller: _controllerSwiper,
+                            onIndexChanged: (index) {
+                              setState(() {
+                                currentChapterChange = index;
+                                changePositionChapter(
+                                    latitude: chapters[index].latitude,
+                                    longitude: chapters[index].longitude);
+                              });
+                            },
                             itemBuilder: (BuildContext context, int index) {
                               final chapter = chapters[index];
 
@@ -245,9 +333,13 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 70, vertical: 25),
                                 child: CardChapterMap(
-                                    title: chapter.title,
-                                    index: index + 1,
-                                    isBlocked: isUnlockedFuture),
+                                  title: chapter.title,
+                                  index: index,
+                                  latitude: chapter.latitude,
+                                  longitude: chapter.longitude,
+                                  storyId: widget.storyId,
+                                  // onAction: refreshLocation,
+                                ),
                               );
                             },
                             pagination: SwiperPagination(
@@ -272,7 +364,6 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
               ),
             ),
           ),
-
           Positioned(
             bottom: 24,
             left: 12,
@@ -287,12 +378,14 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
                     backgroundColor: isDarkmode ? Colors.black38 : Colors.white,
                   ),
                   icon: Icon(
-                    Icons.sync,
+                    Icons.my_location,
                     color: colors.primary,
                     size: 32,
                   ),
                   onPressed: () {
-                    refreshLocation();
+                    // Función para centrar en la ubicación actual
+                    changePositionChapter(
+                        latitude: latitudeUser, longitude: longitudeUser);
                   },
                 ),
                 const SizedBox(height: 10),
@@ -309,26 +402,22 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
                     color: colors.primary,
                     size: 32,
                   ),
-                  onPressed: () {
+                  onPressed: () async {
+                    await Future.delayed(const Duration(milliseconds: 300), () {
+                      _controllerSwiper.move(widget.currentChapter,
+                          animation: true);
+                    });
                     // Función para centrar en la ubicación actual
-                    _mapController?.animateCamera(
-                      CameraUpdate.newLatLng(
-                        LatLng(latitude,
-                            longitude), // Centrar en la ubicación actual
-                      ),
-                    );
+                    setState(() {
+                      currentChapterChange = widget.currentChapter;
+                    });
+                    changePositionChapter(
+                        latitude: latitude, longitude: longitude);
                   },
                 ),
               ],
             ),
           ),
-          //  Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 80),
-          //   child: CardChapterMap(
-          //     title: widget.title,
-          //     index: widget.currentChapter,
-          //   ),
-          // ),
         ],
       ),
     );

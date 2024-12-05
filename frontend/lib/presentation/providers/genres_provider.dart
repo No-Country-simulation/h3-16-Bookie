@@ -1,4 +1,4 @@
-import 'package:bookie/domain/entities/genre.dart';
+import 'package:bookie/domain/entities/genre_entity.dart';
 import 'package:bookie/infrastructure/datasources/genredb_datasource.dart';
 import 'package:bookie/infrastructure/repositories/genres_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

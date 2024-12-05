@@ -1,5 +1,5 @@
 import 'package:bookie/domain/datasources/story_datasource.dart';
-import 'package:bookie/domain/entities/story.dart';
+import 'package:bookie/domain/entities/story_entity.dart';
 import 'package:bookie/domain/repositories/story_repository.dart';
 
 class StoriesRepositoryImpl implements StoriesRepository {

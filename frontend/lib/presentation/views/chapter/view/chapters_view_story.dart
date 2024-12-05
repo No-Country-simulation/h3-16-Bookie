@@ -94,6 +94,7 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
   @override
   void initState() {
     super.initState();
+    print("INITSTATE STORY ID: ${widget.chapterIndex}");
     // Cargar los capítulos de la historia
     _loadChapters();
   }

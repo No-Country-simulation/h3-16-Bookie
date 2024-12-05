@@ -77,7 +77,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
 //   Future<void> customMarkerStories() async {
 //    customStoryIcon = await BitmapDescriptor.fromAssetImage(
 //      const ImageConfiguration(size: Size(65, 65)),
-//      'assets/images/marker_story_noread.webp',
+//      'assets/images/marker_story.webp',
 //    );
 // }
 
@@ -106,25 +106,32 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
     try {
       final userPosition = await determinePosition();
 
-      setState(() {
-        latitudeUser = userPosition.latitude;
-        longitudeUser = userPosition.longitude;
-      });
+      // Verificar si el widget sigue montado antes de modificar su estado.
+      if (mounted) {
+        setState(() {
+          latitudeUser = userPosition.latitude;
+          longitudeUser = userPosition.longitude;
+        });
+      }
     } catch (e) {
       print('Error al determinar la posición: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al determinar la posición')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al determinar la posición')),
+        );
+      }
     } finally {
-      setState(() {
-        isLoadingMap = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoadingMap = false;
+        });
+      }
     }
   }
 
   void customMarkerStories() {
     BitmapDescriptor.asset(const ImageConfiguration(size: Size(65, 65)),
-            'assets/images/marker_story_noread.webp')
+            'assets/images/marker_story.webp')
         .then(
       (value) {
         // setState(() {
@@ -184,11 +191,12 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
       {required List<LatLng> polylineCoordinates}) async {
     try {
       const id = PolylineId("polyline");
+      final colors = Theme.of(context).colorScheme;
 
       final polyline = Polyline(
         polylineId: id,
         points: polylineCoordinates,
-        color: Colors.amberAccent,
+        color: colors.primary,
         width: 5,
         consumeTapEvents: true,
         onTap: () {
@@ -228,7 +236,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
 // TODO REVISAR SI CAMBIAR DE ICONO DE LOS CHAPTERS
   void customMarkerStoryChapters() {
     BitmapDescriptor.asset(const ImageConfiguration(size: Size(55, 55)),
-            'assets/images/marker_story_noread_.webp')
+            'assets/images/marker_chapter.webp')
         .then(
       (value) {
         // setState(() {

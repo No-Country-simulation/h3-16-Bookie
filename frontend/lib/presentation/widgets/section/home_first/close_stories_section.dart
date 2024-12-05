@@ -1,5 +1,5 @@
 import 'package:bookie/config/intl/i18n.dart';
-import 'package:bookie/domain/entities/story.dart';
+import 'package:bookie/domain/entities/story_entity.dart';
 import 'package:bookie/presentation/widgets/cards/close_stories_card.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -54,7 +54,7 @@ class CloseStoriesSection extends StatelessWidget {
                       // reads: story['reads'],
                       distance: story.distance,
                       // TODO: ESTO SE VA POSIBLEMENTE SE QUITE PORQUE SE TRAERA O SE REALIZARA DE OTRA MANERA PARA TRAERSE LOS FAVORITOS, POR AHORA ES SOLO PARA SIMULAR
-                      isFavorite: story.isFavorite,
+                      isFavorite: false, // TODO FAVORITOS
                       onCardPress: () {
                         context.push('/story/${story.id}');
                       },

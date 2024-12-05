@@ -1,11 +1,28 @@
 import 'package:bookie/config/auth/auth0.dart';
 import 'package:flutter/material.dart';
 
-// Pantalla de inicio de sesión
-class LoginOrRegisterScreen extends StatelessWidget {
+// TODO MOSTRAR UNA MEJOR Pantalla de inicio de sesión
+class LoginOrRegisterScreen extends StatefulWidget {
+  const LoginOrRegisterScreen({super.key});
+
+  @override
+  State<LoginOrRegisterScreen> createState() => _LoginOrRegisterScreenState();
+}
+
+class _LoginOrRegisterScreenState extends State<LoginOrRegisterScreen> {
   final AuthService authService = AuthService();
 
-  LoginOrRegisterScreen({super.key});
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final authService = AuthService();
+    await authService.checkLoginWithPreferencesAndDB(
+        context); // Verificar y loguear si es necesario
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +49,8 @@ class LoginOrRegisterScreen extends StatelessWidget {
               ),
               SizedBox(height: 40),
               ElevatedButton(
-                onPressed: () => authService
-                    .login(context), // Usamos el servicio AuthService
+                onPressed: () => authService.loginOrRegisterWithAuth0(
+                    context), // Usamos el servicio AuthService
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(200, 50),
                   shape: RoundedRectangleBorder(

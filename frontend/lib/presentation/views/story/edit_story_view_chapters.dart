@@ -1,7 +1,8 @@
 import 'package:bookie/config/helpers/get_image_final.dart';
 import 'package:bookie/infrastructure/mappers/genredb_mapper.dart';
 import 'package:bookie/presentation/providers/chapter_provider.dart';
-import 'package:bookie/presentation/providers/story_provider.dart';
+import 'package:bookie/presentation/providers/stories_all_provider.dart';
+import 'package:bookie/presentation/providers/stories_user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -54,7 +55,7 @@ class _StoryEditDetailChaptersPageState
 
     try {
       // Ejecutar la eliminación de la historia
-      await ref.read(deleteStoryProvider(widget.storyId).future);
+      await ref.read(storiesUserProvider.notifier).deleteStory(widget.storyId);
 
       // Mostrar mensaje de éxito
       ScaffoldMessenger.of(context).showSnackBar(

@@ -73,7 +73,7 @@ class StoryPreviewMaps extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),
                   child: Image.network(
-                    'https://maps.googleapis.com/maps/api/staticmap?center=$latitude,$longitude&zoom=15&size=600x300&maptype=roadmap&markers=icon:https://res.cloudinary.com/dlixnwuhi/image/upload/v1732358774/e9whpwiyvtdwn8gveven.png%7Clabel:S%7C$latitude,$longitude&key=${Environment.theGoogleMapsApiKey}',
+                    'https://maps.googleapis.com/maps/api/staticmap?center=$latitude,$longitude&zoom=15&size=600x300&maptype=roadmap&markers=icon:https://res.cloudinary.com/dlixnwuhi/image/upload/v1733415545/wcqq4dl23cpcx6cslcgr.png%7Clabel:S%7C$latitude,$longitude&key=${Environment.theGoogleMapsApiKey}',
                     fit: BoxFit.cover,
                     loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress == null) return child;

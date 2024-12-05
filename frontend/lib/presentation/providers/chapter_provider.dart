@@ -1,4 +1,4 @@
-import 'package:bookie/domain/entities/chapter.dart';
+import 'package:bookie/domain/entities/chapter_entity.dart';
 import 'package:bookie/infrastructure/datasources/chapterdb_datasource.dart';
 import 'package:bookie/infrastructure/repositories/chapter_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -1,8 +1,10 @@
-import 'package:bookie/presentation/providers/story_provider.dart';
+import 'package:bookie/presentation/providers/stories_user_provider.dart';
 import 'package:bookie/presentation/widgets/cards/story/story_card.dart';
+import 'package:bookie/presentation/widgets/shared/show_error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 
 class CreateHistoryScreen extends ConsumerStatefulWidget {
   const CreateHistoryScreen({super.key});
@@ -13,44 +15,30 @@ class CreateHistoryScreen extends ConsumerStatefulWidget {
 }
 
 class _CreateHistoryScreenState extends ConsumerState<CreateHistoryScreen> {
-  bool isLoading = false;
-  bool isMounted = true;
-
-  Future<void> onRefresh() async {
-    isLoading = true;
-    setState(() {});
-
-    // simular carga de datos
-    // Al hacer el refresh, el provider se vuelve a ejecutar y actualiza la UI.
-    ref.invalidate(
-        getStoriesByUserProvider(1)); // Esto fuerza a que se recargue la data
-
-    // Si necesitas esperar que termine la carga, puedes usar `await`:
-    await ref.read(getStoriesByUserProvider(1).future);
-
-    if (!isMounted) return;
-    isLoading = false;
-    setState(() {});
-  }
-
   @override
   void initState() {
     super.initState();
-    // Cargar historias del usuario
-    ref.read(getStoriesByUserProvider(1));
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    isMounted = false;
+    // Cargamos las historias del usuario
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(storiesUserProvider.notifier).loadUserStories();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    final storiesAsync = ref.watch(getStoriesByUserProvider(1));
+    final colors = Theme.of(context).colorScheme; // Colores del tema
+    final state = ref.watch(storiesUserProvider);
+
+    if (state.isLoading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (state.hasError) {
+      return ShowError(
+          message: "No se encontraron historias, intenta de nuevo");
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -71,78 +59,77 @@ class _CreateHistoryScreenState extends ConsumerState<CreateHistoryScreen> {
         label: const Text("Crear historia"),
         icon: const Icon(Icons.add),
       ),
-      body: RefreshIndicator(
-        onRefresh: onRefresh,
-        edgeOffset: 10,
-        strokeWidth: 2,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Continuar escribiendo",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontStyle: FontStyle.italic,
+      body: SafeArea(
+        child: state.stories.isEmpty
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 140,
+                      width: 200,
+                      child: Lottie.asset('assets/lottie/view_stories.json'),
+                    ),
+                    const Text(
+                      "No tienes historias, comienza a crear una!",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 16),
+              )
+            : Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Continuar escribiendo",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: state.stories.length + 1,
+                        itemBuilder: (context, index) {
+                          if (index < state.stories.length) {
+                            final story = state.stories[index];
 
-              // Mostrar historias del usuario usando el FutureProvider
-              Expanded(
-                child: storiesAsync.when(
-                  data: (stories) {
-                    return ListView.builder(
-                      itemCount: stories.length + 1,
-                      itemBuilder: (context, index) {
-                        if (index < stories.length) {
-                          final story = stories[index];
-
-                          return GestureDetector(
-                            onTap: () {
-                              // Navegar a la vista de detalles de la historia
-                              context.push('/story/edit/${story.id}');
-                            },
-                            child: StoryCard(
+                            return StoryCard(
                               imageUrl: story.imageUrl,
                               title: story.title,
                               synopsis: story.synopsis,
-                              lenChapters: story.chapters!.length,
-                            ),
-                          );
-                        } else {
-                          // Mostrar la imagen al final de las historias
-                          return Column(
-                            children: [
-                              const SizedBox(height: 16),
-                              Center(
-                                child: Image.asset(
-                                  'assets/images/sapiens_story_create.png',
-                                  height: 200,
-                                  width: 200,
+                              lenChapters: story.chapters.length,
+                              storyId: story.id,
+                            );
+                          } else {
+                            // Mostrar la imagen al final de las historias
+                            return Column(
+                              children: [
+                                Center(
+                                  child: SizedBox(
+                                    height: 120,
+                                    width: 200,
+                                    child: Lottie.asset(
+                                        'assets/lottie/view_stories.json'),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          );
-                        }
-                      },
-                    );
-                  },
-                  loading: () => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                  error: (error, stackTrace) => Center(
-                    child: Text(
-                      "Error al cargar historias: $error",
-                      style: TextStyle(color: colors.error),
+                                const SizedBox(height: 60),
+                              ],
+                            );
+                          }
+                        },
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
       ),
     );
   }

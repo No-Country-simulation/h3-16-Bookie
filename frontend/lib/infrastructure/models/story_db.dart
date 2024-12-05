@@ -1,12 +1,17 @@
+import 'package:bookie/infrastructure/models/chapter_db.dart';
+import 'package:bookie/infrastructure/models/user_db.dart';
+
 class StoryDbResponse {
   final int id;
   final String title;
   final String syopsis;
+  final UserDb? creatorId;
   final bool publish;
   final String genre;
-  final String? img;
   final String? country;
   final String? province;
+  final String? img;
+  final List<ChapterDbResponse> chapters;
 
   StoryDbResponse({
     required this.id,
@@ -14,7 +19,9 @@ class StoryDbResponse {
     required this.syopsis,
     required this.publish,
     required this.genre,
-    this.img,
+    required this.img,
+    required this.chapters,
+    this.creatorId,
     this.country,
     this.province,
   });
@@ -27,8 +34,15 @@ class StoryDbResponse {
         publish: json["publish"],
         genre: json["genre"],
         img: json["img"],
+        creatorId: json["creator_id"] == null
+            ? null
+            : UserDb.fromJson(json["creator_id"]),
         country: json["country"],
         province: json["province"],
+        chapters: json["chapters"] == null
+            ? []
+            : List<ChapterDbResponse>.from(
+                json["chapters"].map((x) => ChapterDbResponse.fromJson(x))),
       );
 
   static List<StoryDbResponse> fromJsonList(List<dynamic> jsonList) {
@@ -42,6 +56,8 @@ class StoryDbResponse {
         "publish": publish,
         "genre": genre,
         "img": img,
+        "chapters": List<dynamic>.from(chapters.map((x) => x.toJson())),
+        "creatorId": creatorId?.toJson(),
         "country": country,
         "province": province,
       };

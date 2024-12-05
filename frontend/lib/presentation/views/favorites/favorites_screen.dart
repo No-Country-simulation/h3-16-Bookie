@@ -1,5 +1,5 @@
 import 'package:bookie/presentation/providers/favorites_provider.dart';
-import 'package:bookie/presentation/providers/story_provider.dart';
+import 'package:bookie/presentation/providers/stories_all_provider.dart';
 import 'package:bookie/presentation/widgets/cards/close_stories_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,7 +20,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
   @override
   Widget build(BuildContext context) {
     final favorites = ref.watch(favoriteProvider);
-    final stories = ref.watch(getStoriesProvider);
+    final stories = ref.watch(storiesAllProvider);
 
     // Filtra las tarjetas que son favoritas
     final favoriteStories =
@@ -61,7 +61,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                       imageUrl: card.imageUrl,
                       title: card.title,
                       distance: card.distance,
-                      isFavorite: card.isFavorite,
+                      isFavorite: false, // TODO FAVORITOS
                       onCardPress: () {
                         context.push('/story/${card.id}');
                       },

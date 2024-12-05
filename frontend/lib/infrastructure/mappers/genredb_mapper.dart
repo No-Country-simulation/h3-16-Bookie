@@ -1,4 +1,4 @@
-import 'package:bookie/domain/entities/genre.dart';
+import 'package:bookie/domain/entities/genre_entity.dart';
 
 class GenreMapper {
   // Mapeo de String del backend a los valores del enum

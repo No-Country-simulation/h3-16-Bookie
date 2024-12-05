@@ -1,5 +1,5 @@
-
 import 'package:bookie/config/helpers/capitalize.dart';
+import 'package:bookie/config/helpers/word_plural.dart';
 import 'package:bookie/presentation/providers/favorites_provider.dart';
 import 'package:bookie/presentation/widgets/shared/image_3d.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +11,7 @@ class StoryHeroImageAndGeneral extends ConsumerStatefulWidget {
   final String title;
   final int lenChapters;
   final bool isFavorite;
+  final String nameWriter;
 
   const StoryHeroImageAndGeneral({
     super.key,
@@ -19,6 +20,7 @@ class StoryHeroImageAndGeneral extends ConsumerStatefulWidget {
     required this.imageUrl,
     required this.title,
     required this.lenChapters,
+    required this.nameWriter,
   });
 
   @override
@@ -111,18 +113,19 @@ class _StoryHeroImageAndGeneralState
                     color: colors.primary),
               ),
               SizedBox(height: 8),
-              Text("Autor: Ana Sofia"),
+              Text(widget.nameWriter),
             ],
           ),
         ),
         SizedBox(height: 8),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Row(
               children: [
                 const Icon(Icons.location_on, size: 18, color: Colors.grey),
                 const SizedBox(width: 4),
+                // TODO: ESTO LO CALCULAS CON GOOGLE API Y LA DISTANCIA TBM YA SABES COMO HACERLO.
                 Text("Bogota, a 2 km",
                     style: const TextStyle(fontSize: 14, color: Colors.grey)),
               ],
@@ -131,18 +134,19 @@ class _StoryHeroImageAndGeneralState
               children: [
                 const Icon(Icons.book, size: 18, color: Colors.grey),
                 const SizedBox(width: 4),
-                Text("${widget.lenChapters} capítulos",
+                Text(
+                    "${widget.lenChapters} ${getChaptersLabel(widget.lenChapters)}",
                     style: const TextStyle(fontSize: 14, color: Colors.grey)),
               ],
             ),
-            Row(
-              children: [
-                const Icon(Icons.access_time, size: 18, color: Colors.grey),
-                const SizedBox(width: 4),
-                const Text("30 min",
-                    style: TextStyle(fontSize: 14, color: Colors.grey)),
-              ],
-            ),
+            // Row(
+            //   children: [
+            //     const Icon(Icons.access_time, size: 18, color: Colors.grey),
+            //     const SizedBox(width: 4),
+            //     const Text("30 min",
+            //         style: TextStyle(fontSize: 14, color: Colors.grey)),
+            //   ],
+            // ),
           ],
         ),
       ]),
