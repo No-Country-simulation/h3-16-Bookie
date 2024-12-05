@@ -67,7 +67,7 @@ class ReaderControllerTest {
     @Test
     void createReaderChapter() throws JsonProcessingException {
 
-        ReaderChapterDto readerChapterDto = new ReaderChapterDto(402L, 1L);
+        ReaderChapterDto readerChapterDto = new ReaderChapterDto(402L, 2L);
 
 
         String json = " { \"readerId\" : " + readerChapterDto.readerId() + ", \"chapterId\" : " + readerChapterDto.chapterId() + " }";
