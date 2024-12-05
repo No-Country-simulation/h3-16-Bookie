@@ -158,14 +158,15 @@ class _ChapterSuccessCompleteChapterViewState
                         style: TextStyle(color: Colors.red),
                       );
                     } else {
-                      final blocked = snapshot.data ?? false;
+                      print("ISBLOCKEDVALUE: ${snapshot.data}");
+                      final blocked = snapshot.data ?? true;
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ElevatedButton.icon(
                             onPressed: () {
                               print(
-                                  "ISCURRENTCHAPTER: ${widget.isCurrentChapter + 1}");
+                                  "ISCURRENTCHAPTER: ${widget.isCurrentChapter}");
 
                               // Acción para ir al siguiente capítulo
                               !blocked
@@ -176,7 +177,8 @@ class _ChapterSuccessCompleteChapterViewState
                                       extra: {
                                         'latitude': widget.latitude,
                                         'longitude': widget.longitude,
-                                        'currentChapter': widget.currentChapter,
+                                        'currentChapter':
+                                            widget.isCurrentChapter + 1,
                                         'title': widget.title,
                                         'storyId': widget.storyId
                                       },

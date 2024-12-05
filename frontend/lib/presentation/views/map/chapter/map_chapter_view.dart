@@ -139,6 +139,8 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
 
   @override
   void initState() {
+    print("ISCURRENTCHAPTER MAP: ${widget.currentChapter}");
+
     super.initState();
     customMarkerChapters();
     customMarkerUser();
