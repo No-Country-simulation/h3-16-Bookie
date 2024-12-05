@@ -9,8 +9,12 @@ import com.Bookie.entities.HistoryEntity;
 import com.Bookie.entities.ReaderEntity;
 import com.Bookie.entities.UserEntity;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ReaderService {
@@ -24,7 +28,7 @@ public class ReaderService {
     @Autowired
     private HistoryRepository historyRepository;
 
-    public ReaderRequest createReaer(ReaderCreateRequest readerCreateRequest) {
+    public  ReaderRequest createReaer(ReaderCreateRequest readerCreateRequest) {
 
         UserEntity user = userRepository.findById(readerCreateRequest.user_id()).orElseThrow(() -> new EntityNotFoundException("user not found"));
         HistoryEntity history = historyRepository.findById(readerCreateRequest.history_id()).orElseThrow(() -> new EntityNotFoundException("history not found"));
@@ -35,5 +39,14 @@ public class ReaderService {
 
         ReaderEntity readerDb = readerRepository.save(new ReaderEntity(user, history));
         return new ReaderRequest(readerDb);
+    }
+
+    public  List<ReaderRequest> getReaderByUserId(@NotNull  Long id) {
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("user not found"));
+        List<ReaderEntity> readers = readerRepository.findByUser(user);
+        if(readers == null) return new ArrayList<>();
+
+        List<ReaderRequest> readerRequests = readers.stream().map(ReaderRequest::new).toList();
+        return readerRequests;
     }
 }
