@@ -1,5 +1,4 @@
 import 'package:bookie/domain/entities/story_entity.dart';
-import 'package:bookie/presentation/providers/chapter_provider.dart';
 import 'package:bookie/presentation/providers/stories_all_provider.dart';
 import 'package:bookie/presentation/views/story/components/view_chapters.dart';
 import 'package:bookie/presentation/views/story/components/view_hero_image_and_general.dart';
