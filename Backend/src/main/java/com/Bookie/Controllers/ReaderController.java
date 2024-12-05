@@ -34,9 +34,10 @@ public class ReaderController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Creating a new reading of a story",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = WishlistRequestCreate.class),
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ReaderCreateRequest.class),
                             examples = @ExampleObject(name = "HistoryDtoRequest",
-                                    value =  "{\"body\" : {\"id\" : 22, \"userID\" : {\"id\" : 1, \"name\" : \"Osecactest\", \"email\" : \"falsa 123\", \"auth0UserId\" : \"3265874\"}, \"historyID\" : {\"id\" : 74, \"title\" : \"La leyenda del MAGO 2\", \"syopsis\" : \"Una aventura épica sobre un MAGO y su MAGIA divivna.\", \"publish\" : false, \"genre\" : \"FANTASIA\", \"img\" : \"http://imagen-del-dragon.jpg/\"}}}"
+                                    value =  "{\"id\":352,\"user\":{\"id\":1,\"name\":\"Osecactest\"},\"history\":{\"id\":58,\"title\":\"La leyenda del MAGO 2\",\"syopsis\":\"Una aventura épica sobre un MAGO y su MAGIA divina.\",\"publish\":false,\"genre\":\"FANTASIA\",\"img\":\"http://imagen-del-dragon.jpg/\",\"chapters\":[]},\"complete\":false}"
+
 
                             )))
     })

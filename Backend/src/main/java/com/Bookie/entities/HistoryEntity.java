@@ -9,7 +9,8 @@ import java.util.List;
 
 @Entity(name = "HistoryEntity")
 @Table(name = "history")
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -51,5 +52,7 @@ public class HistoryEntity {
     @OneToMany(mappedBy = "historyId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<ReaderEntity> raider;
+
+
 
 }

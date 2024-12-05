@@ -1,9 +1,7 @@
 package com.Bookie.Controllers;
 
-import com.Bookie.dto.HistoryDtoRequest;
-import com.Bookie.dto.HistoryDtoResponse;
-import com.Bookie.dto.ReaderCreateRequest;
-import com.Bookie.dto.ReaderRequest;
+import com.Bookie.dto.*;
+import com.Bookie.entities.ReaderChapterEntity;
 import com.Bookie.enums.GenreLiterary;
 import com.Bookie.util.JsonUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -44,7 +42,7 @@ class ReaderControllerTest {
     @Test
     void createReader() throws JsonProcessingException {
 
-        ReaderCreateRequest readerCreateRequest = new ReaderCreateRequest(1L, 34L);
+        ReaderCreateRequest readerCreateRequest = new ReaderCreateRequest(2L, 74L);
 
 
         String json = " { \"user_id\" : " + readerCreateRequest.user_id() + ", \"history_id\" : " + readerCreateRequest.history_id() + " }";
@@ -59,8 +57,33 @@ class ReaderControllerTest {
         assertAll(
                 () -> assertEquals(HttpStatus.CREATED, crateHistoryResult.getStatusCode()),
                 () -> assertEquals(201, crateHistoryResult.getStatusCode().value()),
-                () -> assertEquals(crateHistoryResult.getBody().user().getId(), readerCreateRequest.user_id()),
+                () -> assertEquals(crateHistoryResult.getBody().user().id(), readerCreateRequest.user_id()),
                 () -> assertEquals(crateHistoryResult.getBody().history().getId(), readerCreateRequest.history_id())
+        );
+
+
+    }
+
+    @Test
+    void createReaderChapter() throws JsonProcessingException {
+
+        ReaderChapterDto readerChapterDto = new ReaderChapterDto(402L, 2L);
+
+
+        String json = " { \"readerId\" : " + readerChapterDto.readerId() + ", \"chapterId\" : " + readerChapterDto.chapterId() + " }";
+
+        HttpEntity<String> request = new HttpEntity<>(json, headers);
+        ResponseEntity<ReaderChapterRequest> crateHistoryResult = testRestTemplate.exchange("/api/v1/reader-chapter", HttpMethod.POST, request, ReaderChapterRequest.class);
+
+        System.out.println("HistoryDtoRequest = " + json);
+        JsonUtil.toJsonPrint("crateHistoryResult", crateHistoryResult);
+
+
+        assertAll(
+                () -> assertEquals(HttpStatus.CREATED, crateHistoryResult.getStatusCode()),
+                () -> assertEquals(201, crateHistoryResult.getStatusCode().value()),
+                () -> assertEquals(crateHistoryResult.getBody().chapter().getId(), readerChapterDto.chapterId()),
+                () -> assertEquals(crateHistoryResult.getBody().reader().getId(), readerChapterDto.readerId())
         );
     }
 }
