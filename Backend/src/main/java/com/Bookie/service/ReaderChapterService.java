@@ -9,8 +9,11 @@ import com.Bookie.entities.ChapterEntity;
 import com.Bookie.entities.ReaderChapterEntity;
 import com.Bookie.entities.ReaderEntity;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ReaderChapterService {
@@ -30,10 +33,45 @@ public class ReaderChapterService {
 
         //verificar si existe lo devuelva
         ReaderChapterEntity readerChapter = readerChapterRespository.findByReaderAndChapter(reader, chapter);
-        if(readerChapter != null) return new ReaderChapterRequest(readerChapter);
+        if (readerChapter != null) return new ReaderChapterRequest(readerChapter);
 
         ReaderChapterEntity readerChapterDb = readerChapterRespository.save(new ReaderChapterEntity(reader, chapter));
 
         return new ReaderChapterRequest(readerChapterDb);
+    }
+
+    public ReaderChapterRequest publishReaderChapter(@NotNull Long id) {
+        ReaderChapterEntity readerChapter = readerChapterRespository.findById(id).orElseThrow(() -> new EntityNotFoundException("reader-chapter not found"));
+        readerChapter.setComplete(true);
+        readerChapter = readerChapterRespository.save(readerChapter);
+
+        //verificar si todos los capitules fueron leidos para pasar la historia a completada
+        Boolean readerChapterIsComplete = ReaderIsComplete(readerChapter.getReader().getReaderChapter());
+
+        if(readerChapterIsComplete) readerComplete(readerChapter);
+
+        return new ReaderChapterRequest(readerChapter);
+    }
+
+    /**
+     * <p>Pasar el reader a complete true si todos los capitulos estan leidos</p>
+     * @param readerChapter
+     */
+    private void readerComplete(ReaderChapterEntity readerChapter) {
+        ReaderEntity reader =  readerChapter.getReader();
+        reader.setComplete(true);
+        readerRepository.save(reader);
+    }
+
+    /**
+     * <p>Verifica si en la lista todos los capitulos fueron leidos</p>
+     * @param readerChapter
+     * @return boolean
+     */
+    private Boolean ReaderIsComplete(List<ReaderChapterEntity> readerChapter) {
+
+        List<ReaderChapterEntity> readerChapterFilter = readerChapter.stream().filter(ReaderChapterEntity::getComplete).toList();
+
+        return readerChapter.size() == readerChapterFilter.size();
     }
 }

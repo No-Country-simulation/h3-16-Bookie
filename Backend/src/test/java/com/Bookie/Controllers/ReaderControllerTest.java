@@ -1,8 +1,7 @@
 package com.Bookie.Controllers;
 
 import com.Bookie.dto.*;
-import com.Bookie.entities.ReaderChapterEntity;
-import com.Bookie.enums.GenreLiterary;
+import com.Bookie.util.CustomRestTemplate;
 import com.Bookie.util.JsonUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +12,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -86,4 +86,33 @@ class ReaderControllerTest {
                 () -> assertEquals(crateHistoryResult.getBody().reader().getId(), readerChapterDto.readerId())
         );
     }
+
+
+    @Test
+    void publishReaderChapter() throws JsonProcessingException {
+        RestTemplate restPatchTemplate = new CustomRestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>( headers);
+
+
+        int id = 302;
+
+        ResponseEntity<ReaderChapterRequest> crateHistoryResult = restPatchTemplate.exchange(testRestTemplate.getRootUri()+"/api/v1/reader-chapter/"+id, HttpMethod.PATCH, entity, ReaderChapterRequest.class);
+
+
+        JsonUtil.toJsonPrint("crateHistoryResult", crateHistoryResult);
+
+
+        assertAll(
+                () -> assertEquals(HttpStatus.ACCEPTED, crateHistoryResult.getStatusCode()),
+                () -> assertEquals(202, crateHistoryResult.getStatusCode().value()),
+                () -> assertEquals(crateHistoryResult.getBody().id(), id),
+                () -> assertTrue(crateHistoryResult.getBody().complete())
+
+        );
+    }
+
+
 }
