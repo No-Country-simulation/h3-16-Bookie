@@ -43,6 +43,7 @@ public class ReaderChapterService {
     public ReaderChapterRequest publishReaderChapter(@NotNull Long id) {
         ReaderChapterEntity readerChapter = readerChapterRespository.findById(id).orElseThrow(() -> new EntityNotFoundException("reader-chapter not found"));
         readerChapter.setComplete(true);
+        readerChapter = readerChapterRespository.save(readerChapter);
 
         //verificar si todos los capitules fueron leidos para pasar la historia a completada
         Boolean readerChapterIsComplete = ReaderIsComplete(readerChapter.getReader().getReaderChapter());

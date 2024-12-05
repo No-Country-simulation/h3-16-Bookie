@@ -97,18 +97,18 @@ class ReaderControllerTest {
         HttpEntity<String> entity = new HttpEntity<>( headers);
 
 
-        int id = 1;
+        int id = 302;
 
         ResponseEntity<ReaderChapterRequest> crateHistoryResult = restPatchTemplate.exchange(testRestTemplate.getRootUri()+"/api/v1/reader-chapter/"+id, HttpMethod.PATCH, entity, ReaderChapterRequest.class);
 
-       // System.out.println("url: "+testRestTemplate.getRootUri());
+
         JsonUtil.toJsonPrint("crateHistoryResult", crateHistoryResult);
 
 
         assertAll(
                 () -> assertEquals(HttpStatus.ACCEPTED, crateHistoryResult.getStatusCode()),
                 () -> assertEquals(202, crateHistoryResult.getStatusCode().value()),
-                () -> assertEquals(crateHistoryResult.getBody().chapter().getId(), id),
+                () -> assertEquals(crateHistoryResult.getBody().id(), id),
                 () -> assertTrue(crateHistoryResult.getBody().complete())
 
         );
