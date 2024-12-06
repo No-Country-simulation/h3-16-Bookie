@@ -43,11 +43,11 @@ class ChapterControllerTest {
 
     @Test
     void createChapter() throws JsonProcessingException {
-        var chapter = new ChapterDtoRequest("capitulo ", "En un bosque se encontraron dos personas ",
-                35.6037, 56.3816, 34L,"http://img.jpg");
+        var chapter = new ChapterDtoRequest("capitulo 3 Baranquilla", "El regreso ",
+                10.96854, 74.78132, 84L,"http://img.jpg");
 
         String json = " { \"title\" : \"" + chapter.title() + "\" ,  \"content\" : \"" + chapter.content() + "\" ,  \"latitude\" : "
-                + chapter.latitude() + " ,  \"longitude\" : " + chapter.longitude() + " ,  \"historyId\" : " + chapter.historyId() + " } ";
+                + chapter.latitude() + " ,  \"longitude\" : " + chapter.longitude() + " ,  \"historyId\" : " + chapter.historyId() + " ,  \"image\" : \"" + chapter.image() +"\" } ";
 
         JsonUtil.toJsonPrint("json ", json);
 
