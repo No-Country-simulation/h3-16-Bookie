@@ -106,7 +106,7 @@ class _StoryHeroImageAndGeneralState
           child: Column(
             children: [
               Text(
-                capitalize(widget.title),
+                capitalizeFirstWord(widget.title),
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

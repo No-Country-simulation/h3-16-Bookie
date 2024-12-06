@@ -1,3 +1,4 @@
+import 'package:bookie/config/helpers/capitalize.dart';
 import 'package:bookie/config/helpers/get_image_final.dart';
 import 'package:bookie/infrastructure/mappers/genredb_mapper.dart';
 import 'package:bookie/presentation/providers/chapter_provider.dart';
@@ -246,7 +247,8 @@ class _StoryEditDetailChaptersPageState
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                     ),
                     subtitle: Text(
-                      '${story.country}, ${story.province}',
+                      capitalizeAllWords(
+                          '${story.country != "TEMPORAL" ? "${story.country}, " : ""}${story.province != "TEMPORAL" ? story.province : "Otro"}'),
                       style: TextStyle(fontSize: 12),
                     ),
                   ),

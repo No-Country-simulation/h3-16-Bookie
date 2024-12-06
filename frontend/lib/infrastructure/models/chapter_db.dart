@@ -25,7 +25,7 @@ class ChapterDbResponse {
         latitude: json["latitude"].toDouble(),
         longitude: json["longitude"].toDouble(),
         historyId: json["historyId"],
-        image: json["image"],
+        image: json["image"] ?? json["img"],
       );
 
   static List<ChapterDbResponse> fromJsonList(List<dynamic> jsonList) {

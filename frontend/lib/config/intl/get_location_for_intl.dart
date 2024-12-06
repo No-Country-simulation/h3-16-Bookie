@@ -26,12 +26,12 @@ Future<String> detectLanguage() async {
       } else if (country == "BR") {
         return "pt";
       }
-      return "es";
+      return "en";
     }
 
     throw Exception("Error al obtener idioma por geolocalización");
   } catch (e) {
     print("Error al obtener idioma por geolocalización: $e");
-    return "es";
+    return "en";
   }
 }
