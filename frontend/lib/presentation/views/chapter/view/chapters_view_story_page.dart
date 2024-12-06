@@ -62,26 +62,37 @@ class ChaptersViewStoryWithPage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Column(children: [
-                            Text(
-                              titleChapter,
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: isDarkmode ? Colors.white : Colors.black,
-                              ),
+                          SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  titleChapter,
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                    color: isDarkmode
+                                        ? Colors.white
+                                        : Colors.black,
+                                  ),
+                                  softWrap: true,
+                                  overflow: TextOverflow.clip,
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  "Capítulo ${chapterIndex! + 1}",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: isDarkmode
+                                        ? Colors.white.withOpacity(0.5)
+                                        : Colors.black.withOpacity(0.5),
+                                  ),
+                                ),
+                              ],
                             ),
-                            Text(
-                              "Capítulo ${chapterIndex! + 1}",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: isDarkmode
-                                    ? Colors.white.withOpacity(0.5)
-                                    : Colors.black.withOpacity(0.5),
-                              ),
-                            ),
-                          ]),
+                          )
                         ],
                       ),
                       SizedBox(height: 16),

@@ -15,7 +15,8 @@ class MapChapter extends StatelessWidget {
     final double latitude = extra?['latitude'] ?? 0.0;
     final double longitude = extra?['longitude'] ?? 0.0;
     final int currentChapter = extra?['currentChapter'] ?? 0;
-    final String title = extra?['title'] ?? '';
+    // final String title = extra?['title'] ?? '';
+    
     final int storyId = extra?['storyId'] ?? 0;
 
     return Scaffold(
@@ -23,7 +24,7 @@ class MapChapter extends StatelessWidget {
             latitudeFromRouter: latitude,
             longitudeFromRouter: longitude,
             currentChapter: currentChapter,
-            titleFromRouter: title,
+            // titleFromRouter: title,
             storyId: storyId));
   }
 }

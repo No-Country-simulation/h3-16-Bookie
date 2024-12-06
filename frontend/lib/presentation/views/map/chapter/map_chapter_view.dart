@@ -17,7 +17,7 @@ class MapChapterView extends ConsumerStatefulWidget {
   static const String name = 'map-chapter-view';
   final double latitudeFromRouter;
   final double longitudeFromRouter;
-  final String titleFromRouter;
+  // final String titleFromRouter;
   final int currentChapter;
   final int storyId;
 
@@ -26,7 +26,7 @@ class MapChapterView extends ConsumerStatefulWidget {
       required this.latitudeFromRouter,
       required this.longitudeFromRouter,
       required this.currentChapter,
-      required this.titleFromRouter,
+      // required this.titleFromRouter,
       required this.storyId});
 
   @override
@@ -147,7 +147,7 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
     locationUser();
     latitude = widget.latitudeFromRouter;
     longitude = widget.longitudeFromRouter;
-    title = widget.titleFromRouter;
+    // title = widget.titleFromRouter;
     currentChapterChange = widget.currentChapter;
     _loadChapters();
     startTrackingUser();
@@ -295,7 +295,7 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
                         color: colors.primary,
                       ),
                     ),
-                    backgroundColor: isDarkmode ? Colors.black54 : Colors.white,
+                    backgroundColor: isDarkmode ? Colors.black : Colors.white,
                     centerTitle: true,
                     elevation: 5,
                   ),
@@ -358,10 +358,13 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
                             ),
                             loop: false, // Bucle infinito
                             // Habilita la paginación
-                            control: SwiperControl(
-                              color: colors.primary, // Color de las flechas
-                              size: 30, // Tamaño de las flechas
-                            ),
+                            control: chapters.length > 1
+                                ? SwiperControl(
+                                    color:
+                                        colors.primary, // Color de las flechas
+                                    size: 30, // Tamaño de las flechas
+                                  )
+                                : null,
                           ),
               ),
             ),
@@ -377,7 +380,7 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
-                    backgroundColor: isDarkmode ? Colors.black38 : Colors.white,
+                    backgroundColor: isDarkmode ? Colors.black : Colors.white,
                   ),
                   icon: Icon(
                     Icons.my_location,
@@ -397,7 +400,7 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
-                    backgroundColor: isDarkmode ? Colors.black38 : Colors.white,
+                    backgroundColor: isDarkmode ? Colors.black : Colors.white,
                   ),
                   icon: Icon(
                     Icons.menu_book,

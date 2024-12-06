@@ -179,7 +179,7 @@ class _ChapterSuccessCompleteChapterViewState
                                         'longitude': widget.longitude,
                                         'currentChapter':
                                             widget.isCurrentChapter + 1,
-                                        'title': widget.title,
+                                        // 'title': widget.title,
                                         'storyId': widget.storyId
                                       },
                                     );

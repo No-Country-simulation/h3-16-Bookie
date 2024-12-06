@@ -63,8 +63,13 @@ class StoryPreviewMaps extends StatelessWidget {
               onTap: () {
                 // Navegar a la pantalla de mapa
                 context.push(
-                  '/story/$storyId/map',
-                  extra: {'latitude': latitude, 'longitude': longitude},
+                  '/chapters/view/$storyId/0/map',
+                  extra: {
+                    'latitude': latitude,
+                    'longitude': longitude,
+                    'currentChapter': 0,
+                    'storyId': storyId
+                  },
                 );
               },
               child: SizedBox(

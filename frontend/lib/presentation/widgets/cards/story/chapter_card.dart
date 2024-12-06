@@ -76,7 +76,7 @@ class _ChapterCardState extends State<ChapterCard> {
                       'latitude': widget.latitude,
                       'longitude': widget.longitude,
                       'currentChapter': widget.index,
-                      'title': widget.title,
+                      // 'title': widget.title,
                       'storyId': widget.storyId,
                     });
               } else {

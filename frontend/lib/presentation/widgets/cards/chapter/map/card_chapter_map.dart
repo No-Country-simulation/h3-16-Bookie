@@ -50,7 +50,7 @@ class CardChapterMapState extends State<CardChapterMap> {
     final isDarkmode = Theme.of(context).brightness == Brightness.dark;
 
     return Card(
-      color: isDarkmode ? Colors.black54 : Colors.white,
+      color: isDarkmode ? Colors.black : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
@@ -113,42 +113,40 @@ class CardChapterMapState extends State<CardChapterMap> {
                         ),
                       ),
                     ),
+                    SizedBox(width: 8),
                     Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 8.0, right: 8.0, top: 24),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.title,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: colors.primary,
-                              ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            widget.title,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: colors.primary,
                             ),
-                            Text(
-                              'Capítulo ${widget.index + 1}',
-                              style: TextStyle(
-                                  fontSize: 12, color: Colors.grey.shade600),
-                            ),
-                          ],
-                        ),
+                          ),
+                          // Text(
+                          //   'Capítulo ${widget.index + 1}',
+                          //   style: TextStyle(
+                          //       fontSize: 10, color: Colors.grey.shade600),
+                          // ),
+                        ],
                       ),
                     ),
                   ],
                 ),
                 Positioned(
-                  top: 0,
-                  right: 0,
+                  top: -0,
+                  right: -0,
                   child: FutureBuilder<bool>(
                     future: isBlocked,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return SpinKitFadingCircle(
                           color: Colors.grey,
-                          size: 25.0,
+                          size: 20.0,
                         );
                       } else if (snapshot.hasError) {
                         return const SizedBox();
@@ -167,7 +165,7 @@ class CardChapterMapState extends State<CardChapterMap> {
                         return Icon(
                           isBlockedValue ? Icons.lock : Icons.lock_open,
                           color: isBlockedValue ? Colors.red : Colors.green,
-                          size: 24,
+                          size: 20,
                         );
                       }
                     },
@@ -178,11 +176,12 @@ class CardChapterMapState extends State<CardChapterMap> {
                   right: -12,
                   child: IconButton(
                     style: IconButton.styleFrom(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      backgroundColor:
-                          isDarkmode ? Colors.black38 : Colors.white,
+                      // shape: null,
+                      // const RoundedRectangleBorder(
+                      //   borderRadius: BorderRadius.all(Radius.circular(10)),
+                      // ),
+                      backgroundColor: Colors.transparent,
+                      // isDarkmode ? Colors.black38 : Colors.white,
                     ),
                     icon: Icon(
                       Icons.sync,
@@ -192,6 +191,10 @@ class CardChapterMapState extends State<CardChapterMap> {
                     onPressed: () {
                       calculateBlockedStatus(); // Llamada para refrescar el estado
                     },
+                    splashColor: Colors.transparent, // Elimina el efecto splash
+                    highlightColor:
+                        Colors.transparent, // Elimina el efecto highlight
+                    enableFeedback: false, // Desactiva el feedback háptico
                   ),
                 ),
               ],
