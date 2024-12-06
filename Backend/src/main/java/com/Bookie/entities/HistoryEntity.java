@@ -35,6 +35,8 @@ public class HistoryEntity {
     private GenreLiterary genre;
     @Column(name = "img", columnDefinition = "text", length = 1000)
     private String img;
+    @Column(name = "distance")
+    private Double distance;
 
     @ManyToOne
     @JoinColumn(name = "province_entity_id", referencedColumnName = "id")
