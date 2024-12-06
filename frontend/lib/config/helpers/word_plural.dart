@@ -1,5 +1,5 @@
 String getChaptersLabel(int cantidad) {
-  if (cantidad <= 0) {
+  if (cantidad < 0) {
     return "";
   } else if (cantidad == 1) {
     return "capítulo";

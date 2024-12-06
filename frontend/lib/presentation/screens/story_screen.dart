@@ -35,6 +35,7 @@ class _StoryScreenState extends ConsumerState<StoryScreen> {
     _pageController =
         PageController(initialPage: initialIndex >= 0 ? initialIndex : 0);
     // _pageController.addListener(listener);
+    
   }
 
   @override

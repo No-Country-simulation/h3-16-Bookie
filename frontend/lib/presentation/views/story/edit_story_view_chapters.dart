@@ -272,7 +272,7 @@ class _StoryEditDetailChaptersPageState
                       InkWell(
                         onTap: () {
                           // Acción al presionar el botón
-                          context.push('/chapter/create/${widget.storyId}');
+                          context.push('/chapter/create/${widget.storyId}',);
                         },
                         borderRadius: BorderRadius.circular(
                             8), // Opcional, para un efecto visual más elegante

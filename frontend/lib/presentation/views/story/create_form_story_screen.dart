@@ -8,10 +8,12 @@ import 'package:bookie/domain/entities/genre_entity.dart';
 import 'package:bookie/domain/entities/story_entity.dart';
 import 'package:bookie/infrastructure/mappers/genredb_mapper.dart';
 import 'package:bookie/presentation/providers/genres_provider.dart';
+import 'package:bookie/presentation/providers/stories_user_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CreateFormStoryScreen extends ConsumerStatefulWidget {
@@ -63,6 +65,8 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
   }
 
   void _submitForm() async {
+    FocusScope.of(context).unfocus();
+
     setState(() {
       isEnabled = false;
       isLoading = true;
@@ -141,19 +145,25 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
       );
 
       // Crear el historia en el backend
-      // final storyCreated =
-      //     await ref.read(storiesUserProvider.notifier).createStory(storyForm);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text('Historia creada'), backgroundColor: Colors.green),
-      );
+      final storyCreated =
+          await ref.read(storiesUserProvider.notifier).createStory(storyForm);
+
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      _titleController.clear();
+      _synopsisController.clear();
+      _formKey.currentState?.reset();
+      //       content: Text('Historia creada'), backgroundColor: Colors.green),
+      // );
       //Navegar a la ruta `/form-chapter` con GoRouter
-      // if (context.mounted) {
-      //   context.push('/chapter/create/${storyCreated.id}');
-      // }
+
+      if (context.mounted) {
+        context.push('/chapter/create/${storyCreated.id}', 
+          extra: {"country": countryAndProvince?.country ?? "TEMPORAL", "province": countryAndProvince?.province ?? "TEMPORAL"},
+        );
+      }
       isLoading = false;
     } catch (e) {
-      print("EROOOOOOOOOOOOOOOOOOOOO: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text('No se pudo crear la historia'),
@@ -201,7 +211,24 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
   @override
   void initState() {
     super.initState();
+    // Limpiar los controladores al inicializar
     ref.read(getGenresProvider.notifier).loadGenres();
+  }
+
+  // @override
+  // void didChangeDependencies() {
+  //   // Limpiar los controladores cada vez que la pantalla cambie
+  //   super.didChangeDependencies();
+  //   _titleController.clear();
+  //   _synopsisController.clear();
+  // }
+
+  @override
+  void dispose() {
+    // Limpiar los controladores al salir de la pantalla
+    _titleController.dispose();
+    _synopsisController.dispose();
+    super.dispose();
   }
 
   @override
@@ -220,7 +247,7 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
               child: Text(
                 "Siguiente",
                 style: TextStyle(
-                  color: _isFormValid()
+                  color: (_isFormValid() && isEnabled)
                       ? colors.primary
                       : colors.onSurface.withOpacity(0.5),
                 ),
@@ -400,6 +427,14 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
                     size: 50.0,
                   ),
                   const SizedBox(height: 16),
+                  Text(
+                    "Iniciando historia...",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
             ),

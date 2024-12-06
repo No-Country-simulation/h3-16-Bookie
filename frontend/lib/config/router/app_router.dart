@@ -84,8 +84,17 @@ final appRouter = GoRouter(
       name: CreateChapterScreen.name,
       builder: (context, state) {
         final storyId = int.parse(state.pathParameters['storyId'] ?? '0');
+
+        final Map<String, dynamic>? extra =
+            state.extra as Map<String, dynamic>?;
+
+        final String country = extra?['country'] ?? "TEMPORAL";
+        final String province = extra?['province'] ?? "TEMPORAL";
+
         return CreateChapterScreen(
-            storyId: storyId); // Lo pasamos al componente
+            storyId: storyId,
+            country: country,
+            province: province); // Lo pasamos al componente
       },
     ),
     // sucess page create chapter

@@ -17,8 +17,15 @@ import 'package:image_picker/image_picker.dart';
 class CreateChapterScreen extends ConsumerStatefulWidget {
   static const String name = 'create-chapter';
   final int storyId;
+  final String country;
+  final String province;
 
-  const CreateChapterScreen({super.key, required this.storyId});
+  const CreateChapterScreen({
+    super.key,
+    required this.storyId,
+    required this.country,
+    required this.province,
+  });
 
   @override
   ConsumerState<CreateChapterScreen> createState() =>
@@ -66,11 +73,25 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
   @override
   void initState() {
     super.initState();
+    print("INICIO DE CREATE CHAPTER: ${widget.country}  ${widget.province}");
     // Monitorear el foco para actualizar el estado
     focusNode.addListener(() {
       setState(() {});
     });
+
+    _titleController.clear();
+    _contentController.clear();
+    _formKey.currentState?.reset(); // Resetea el estado del formulario
   }
+
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   // Limpiar los controladores cada vez que la pantalla cambie
+  //   _titleController.clear();
+  //   _contentController.clear();
+  //   _formKey.currentState?.reset(); // Resetea el estado del formulario
+  // }
 
   void _openAlignmentMenu() {
     showMenu(
@@ -203,6 +224,8 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
   }
 
   void _submitForm() async {
+    FocusScope.of(context).unfocus();
+
     setState(() {
       isEnabled = false;
       isLoading = true;
@@ -229,7 +252,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
               "https://api.cloudinary.com/v1_1/dlixnwuhi/image/upload",
               data: formData);
 
-          image = response.data['url'];
+          image = response.data['secure_url'];
         } catch (e) {
           print("Error al subir la imagen: $e");
           ScaffoldMessenger.of(context).showSnackBar(
@@ -260,10 +283,10 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
         final chapterForm = ChapterForm(
           title: title,
           content: content,
-          image: image,
           latitude: latitude!,
           longitude: longitude!,
           historyId: widget.storyId,
+          image: image,
         );
 
         setState(() {
@@ -275,6 +298,10 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
 
         final chapterIndex =
             ref.read(chapterProvider.notifier).currentChapter(chapter.id);
+
+        _titleController.clear();
+        _contentController.clear();
+        _formKey.currentState?.reset(); // Resetea el estado del formulario
 
         if (context.mounted) {
           context.push("/chapter/success/${widget.storyId}/$chapterIndex");
