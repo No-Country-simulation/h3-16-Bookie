@@ -92,13 +92,13 @@ public class ChapterService {
 
         for (ChapterEntity chapter : chapters) {
 
-            if (latitude != chapter.getLatitude() && longitude != chapter.getLongitude()) {
+            if (latitude != 0 && longitude != 0) {
 
                 totalKlometros += calcularDistanciaPuntosSuperficieTierra(latitude, longitude, chapter.getLatitude(), chapter.getLongitude());
-                latitude = chapter.getLatitude();
-                longitude = chapter.getLongitude();
-            }
 
+            }
+            latitude = chapter.getLatitude();
+            longitude = chapter.getLongitude();
         }
 
         historyDb.setDistance(totalKlometros);
