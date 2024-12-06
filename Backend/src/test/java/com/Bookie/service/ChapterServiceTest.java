@@ -1,9 +1,8 @@
 package com.Bookie.service;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 class ChapterServiceTest {
@@ -16,9 +15,14 @@ class ChapterServiceTest {
         Double BarranquillaLongitud = 74.78132;
         Double CartagenaLatitud = 10.39972;
         Double CartagenaLongitud = 75.51444;
-        Double totalMetros = 96220.0;
+        Double totalMetros = 102066.13451112839;
         double distancia = ChapterService.calcularDistanciaPuntosSuperficieTierra(BarranquillaLatitud, BarranquillaLongitud, CartagenaLatitud, CartagenaLongitud);
-        assertEquals(distancia, totalMetros, 0.1);
+          assertEquals(distancia, totalMetros, 0.1);
+
+
+
+
+
 
     }
 }

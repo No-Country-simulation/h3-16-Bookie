@@ -94,7 +94,7 @@ public class ChapterService {
 
             if (latitude != chapter.getLatitude() && longitude != chapter.getLongitude()) {
 
-                totalKlometros = calcularDistanciaPuntosSuperficieTierra(latitude, longitude, chapter.getLatitude(), chapter.getLongitude());
+                totalKlometros += calcularDistanciaPuntosSuperficieTierra(latitude, longitude, chapter.getLatitude(), chapter.getLongitude());
                 latitude = chapter.getLatitude();
                 longitude = chapter.getLongitude();
             }
