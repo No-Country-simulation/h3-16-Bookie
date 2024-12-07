@@ -13,6 +13,7 @@ import 'package:bookie/shared/data/histories.dart';
 import 'package:bookie/shared/data/writers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lottie/lottie.dart';
 
 class HomeFirstScreen extends ConsumerStatefulWidget {
   static const String name = 'first-screen';
@@ -80,6 +81,13 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
 
     if (stories.isEmpty) {
       // Mostrar un spinner o placeholder mientras no hay datos
+      // return Center(
+      //   child: SizedBox(
+      //     height: 120,
+      //     width: 200,
+      //     child: Lottie.asset('assets/lottie/loading_init.json'),
+      //   ),
+      // );
       return Center(
         child: SpinKitFadingCircle(
           color: colors.primary,

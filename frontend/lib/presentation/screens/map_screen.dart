@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:lottie/lottie.dart' as lottie;
 
 class MapScreen extends ConsumerStatefulWidget {
   // final int storyId;
@@ -324,8 +325,25 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
     return SafeArea(
       child: Stack(
         children: [
+          // Center(
+          //     child: SizedBox(
+          //       height: 120,
+          //       width: 200,
+          //       child: lottie.Lottie.asset(
+          //         'assets/lottie/loading_map_general.json',
+          //         frameRate: lottie.FrameRate(60), // Ajusta la fluidez.
+          //         repeat: true,
+          //         animate: true,
+          //       ),
+          //     ),
+          //   )
           isLoadingMap
-              ? Center(child: SpinKitFadingCircle(color: colors.primary))
+              ? Center(
+                  child: SpinKitFadingCircle(
+                    color: colors.primary,
+                    size: 50.0,
+                  ),
+                )
               : GoogleMap(
                   initialCameraPosition: CameraPosition(
                     target: LatLng(latitudeUser,

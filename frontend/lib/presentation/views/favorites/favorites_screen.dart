@@ -1,6 +1,8 @@
 import 'package:bookie/presentation/providers/favorites_provider.dart';
 import 'package:bookie/presentation/providers/stories_all_provider.dart';
 import 'package:bookie/presentation/widgets/cards/close_stories_card.dart';
+import 'package:bookie/presentation/widgets/shared/show_error.dart';
+import 'package:bookie/presentation/widgets/shared/show_not_favorites.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -31,7 +33,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
         title: const Text('Favorites'),
       ),
       body: favoriteStories.isEmpty
-          ? const Center(child: Text('No favorites yet.'))
+          ? ShowNotFavorites()
           : MasonryGridView.count(
               crossAxisCount: 3, // Tres columnas
               mainAxisSpacing: 12.0, // Espaciado vertical
