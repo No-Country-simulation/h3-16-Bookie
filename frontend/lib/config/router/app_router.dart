@@ -85,17 +85,25 @@ final appRouter = GoRouter(
       builder: (context, state) {
         final storyId = int.parse(state.pathParameters['storyId'] ?? '0');
 
-        final Map<String, dynamic>? extra =
-            state.extra as Map<String, dynamic>?;
-
-        final String country = extra?['country'] ?? "TEMPORAL";
-        final String province = extra?['province'] ?? "TEMPORAL";
-
         return CreateChapterScreen(
-            storyId: storyId,
-            country: country,
-            province: province); // Lo pasamos al componente
+          storyId: storyId,
+        ); // Lo pasamos al componente
       },
+      routes: [
+        GoRoute(
+            path: 'edit/:chapterId',
+            name: '${CreateChapterScreen.name}-edit',
+            builder: (context, state) {
+              final storyId = int.parse(state.pathParameters['storyId'] ?? '0');
+              final chapterId =
+                  int.parse(state.pathParameters['chapterId'] ?? '0');
+
+              return CreateChapterScreen(
+                storyId: storyId,
+                chapterId: chapterId,
+              );
+            }),
+      ],
     ),
     // sucess page create chapter
     GoRoute(

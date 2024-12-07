@@ -354,9 +354,8 @@ class _StoryEditDetailChaptersPageState
                                       'Capítulo ${index + 1}',
                                     ),
                                     onTap: () {
-                                      // Navegar a la vista del capítulo
                                       context.push(
-                                          '/chapters/view/${widget.storyId}/${chapter.id}');
+                                          '/chapter/create/${widget.storyId}/edit/${chapter.id}');
                                     },
                                   ),
                                 );

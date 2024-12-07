@@ -158,8 +158,8 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
       //Navegar a la ruta `/form-chapter` con GoRouter
 
       if (context.mounted) {
-        context.push('/chapter/create/${storyCreated.id}', 
-          extra: {"country": countryAndProvince?.country ?? "TEMPORAL", "province": countryAndProvince?.province ?? "TEMPORAL"},
+        context.push(
+          '/chapter/create/${storyCreated.id}',
         );
       }
       isLoading = false;

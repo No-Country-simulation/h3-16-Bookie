@@ -17,14 +17,12 @@ import 'package:image_picker/image_picker.dart';
 class CreateChapterScreen extends ConsumerStatefulWidget {
   static const String name = 'create-chapter';
   final int storyId;
-  final String country;
-  final String province;
+  final int? chapterId;
 
   const CreateChapterScreen({
     super.key,
     required this.storyId,
-    required this.country,
-    required this.province,
+    this.chapterId,
   });
 
   @override
@@ -73,12 +71,10 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
   @override
   void initState() {
     super.initState();
-    print("INICIO DE CREATE CHAPTER: ${widget.country}  ${widget.province}");
     // Monitorear el foco para actualizar el estado
     // focusNode.addListener(() {
     //   setState(() {});
     // });
-
     _titleController.clear();
     _contentController.clear();
     _formKey.currentState?.reset(); // Resetea el estado del formulario
