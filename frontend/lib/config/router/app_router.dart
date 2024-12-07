@@ -145,7 +145,7 @@ final appRouter = GoRouter(
       builder: (context, state) {
         final writerId = state.pathParameters['writerId'] ?? '';
         return WriterProfileScreen(
-            writerId: writerId); // Pasa el id al ProfileScreen
+            writerId: int.parse(writerId)); // Pasa el id al ProfileScreen
       },
     ),
 

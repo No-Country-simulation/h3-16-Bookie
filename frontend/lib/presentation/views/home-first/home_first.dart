@@ -2,6 +2,7 @@ import 'package:bookie/config/intl/get_location_for_intl.dart';
 import 'package:bookie/config/intl/i18n.dart';
 import 'package:bookie/presentation/providers/genres_provider.dart';
 import 'package:bookie/presentation/providers/stories_all_provider.dart';
+import 'package:bookie/presentation/providers/user_provider.dart';
 import 'package:bookie/presentation/views/home-first/home_first_search.dart';
 import 'package:flutter/material.dart';
 import 'package:bookie/presentation/widgets/navbar/navbar_homepage.dart';
@@ -10,7 +11,6 @@ import 'package:bookie/presentation/widgets/section/home_first/stories_read_sect
 import 'package:bookie/presentation/widgets/section/home_first/close_stories_section.dart';
 import 'package:bookie/presentation/widgets/section/home_first/writers_section.dart';
 import 'package:bookie/shared/data/histories.dart';
-import 'package:bookie/shared/data/writers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -39,6 +39,7 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
     });
     ref.read(storiesAllProvider.notifier).loadAllStories();
     ref.read(getGenresProvider.notifier).loadGenres();
+    ref.read(usersProvider.notifier).loadWriters();
   }
 
   void changeLanguage(String locale) async {
@@ -59,6 +60,7 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
 
     // simular carga de datos
     await ref.read(storiesAllProvider.notifier).loadAllStories();
+    await ref.read(usersProvider.notifier).reloadWriters();
 
     if (!isMounted) return;
     isLoading = false;
@@ -76,17 +78,11 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
   @override
   Widget build(BuildContext context) {
     final stories = ref.watch(storiesAllProvider);
+    final writers = ref.watch(usersProvider);
+
     final colors = Theme.of(context).colorScheme;
 
-    if (stories.isEmpty) {
-      // Mostrar un spinner o placeholder mientras no hay datos
-      // return Center(
-      //   child: SizedBox(
-      //     height: 120,
-      //     width: 200,
-      //     child: Lottie.asset('assets/lottie/loading_init.json'),
-      //   ),
-      // );
+    if (stories.isEmpty || writers.isEmpty) {
       return Center(
         child: SpinKitFadingCircle(
           color: colors.primary,
@@ -111,9 +107,6 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   NavBarCustom(
-                      userName: "Luis",
-                      avatarUrl:
-                          "https://i.pinimg.com/736x/61/c9/a3/61c9a321f61a2650790911e828ada56d.jpg",
                       onSearchTapped: _showSearchSection, // Botón de búsqueda
                       localizations: localizations,
                       changeLanguage: changeLanguage),

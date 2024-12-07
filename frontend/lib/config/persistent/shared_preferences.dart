@@ -5,6 +5,7 @@ class SharedPreferencesKeys {
   static const String _emailKey = 'email';
   static const String _idKey = 'id';
   static const String _idTokenKey = 'idToken';
+  static const String _imageUrlKey = 'imageUrl';
 
   // Función para obtener las credenciales almacenadas
   static Future<SharedPrefencesFields> getCredentials() async {
@@ -14,6 +15,7 @@ class SharedPreferencesKeys {
       email: prefs.getString(_emailKey) ?? '',
       id: prefs.getString(_idKey) ?? '',
       idToken: prefs.getString(_idTokenKey) ?? '',
+      imageUrl: prefs.getString(_imageUrlKey) ?? '',
     );
   }
 
@@ -33,6 +35,12 @@ class SharedPreferencesKeys {
     await prefs.remove(_nameKey);
     await prefs.remove(_emailKey);
     await prefs.remove(_idTokenKey);
+    await prefs.remove(_imageUrlKey);
+  }
+
+  static Future<void> setImageUrl(String imageUrl) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_imageUrlKey, imageUrl);
   }
 }
 
@@ -41,11 +49,13 @@ class SharedPrefencesFields {
   String? email;
   String? id;
   String? idToken;
+  String? imageUrl;
 
   SharedPrefencesFields({
     this.name,
     this.email,
     this.id,
     this.idToken,
+    this.imageUrl,
   });
 }

@@ -21,7 +21,7 @@ class StoryMapper {
           .map(ChapterMapper.chapterToStoryAllEntity)
           .toList()
         ..sort((a, b) => a.id.compareTo(b.id)),
-      writer: UserMapper.storyDbToEntity(UserDb(
+      writer: UserMapper.userDbToEntity(UserDb(
         id: storyDbResponse.creatorId?.id ?? 0,
         name: storyDbResponse.creatorId?.name ?? "Autor desconocido",
         email: storyDbResponse.creatorId?.email ?? "user@email.com",

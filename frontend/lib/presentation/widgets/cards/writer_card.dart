@@ -1,9 +1,10 @@
 import 'package:bookie/config/helpers/get_image_final.dart';
+import 'package:bookie/config/helpers/short_name.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class WriterCard extends StatefulWidget {
-  final String id; // ID único
+  final int id; // ID único
   final String name;
   final String imageUrl;
   final VoidCallback onCardPress;
@@ -118,10 +119,10 @@ class _WriterCardState extends State<WriterCard> {
                           ),
                         )
                       : Text(
-                          widget.name,
+                          shortenName(widget.name),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                            fontSize: 12,
                           ),
                           textAlign: TextAlign.center,
                         ),

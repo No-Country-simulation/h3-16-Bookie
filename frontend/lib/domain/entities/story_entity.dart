@@ -69,7 +69,7 @@ class Story {
   @override
   String toString() {
     return 'Story(id: $id, title: $title, synopsis: $synopsis, genre: ${genre.name}, '
-        'publish: $publish, imageUrl: $imageUrl, chapters: ${chapters[chapters.length - 1].title}, '
+        'publish: $publish, imageUrl: $imageUrl, '
         'country: $country, province: $province, writer: ${writer?.name ?? "N/A"})';
   }
 }
