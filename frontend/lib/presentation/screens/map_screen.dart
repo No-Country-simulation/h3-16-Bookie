@@ -59,7 +59,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
   bool isSwiperVisible = false;
   final List<LatLng> _markersChapters = [];
   bool showMarkerChapters = false;
-  Map<PolylineId, Polyline> polylinesStory = {};
+  // Map<PolylineId, Polyline> polylinesStory = {};
 
   void toggleCard() {
     setState(() {
@@ -187,51 +187,51 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
     // TODO FALTA MOSTRAR LA DISTANCIA Y PONER EN UN TEXTO QUE APARECE TU ME ENTIENDES ESTA FACIL
   }
 
-  Future<void> generatePolylineFromPoints(
-      {required List<LatLng> polylineCoordinates}) async {
-    try {
-      const id = PolylineId("polyline");
-      final colors = Theme.of(context).colorScheme;
+  // Future<void> generatePolylineFromPoints(
+  //     {required List<LatLng> polylineCoordinates}) async {
+  //   try {
+  //     const id = PolylineId("polyline");
+  //     final colors = Theme.of(context).colorScheme;
 
-      final polyline = Polyline(
-        polylineId: id,
-        points: polylineCoordinates,
-        color: colors.primary,
-        width: 5,
-        consumeTapEvents: true,
-        onTap: () {
-          _showDistance(); // Método para manejar el mensaje
-        },
-      );
+  //     final polyline = Polyline(
+  //       polylineId: id,
+  //       points: polylineCoordinates,
+  //       color: colors.primary,
+  //       width: 5,
+  //       consumeTapEvents: true,
+  //       onTap: () {
+  //         _showDistance(); // Método para manejar el mensaje
+  //       },
+  //     );
 
-      setState(() {
-        polylinesStory[id] = polyline;
-      });
-    } catch (e) {
-      throw Exception("Error al generar el polyline");
-    }
-  }
+  //     setState(() {
+  //       polylinesStory[id] = polyline;
+  //     });
+  //   } catch (e) {
+  //     throw Exception("Error al generar el polyline");
+  //   }
+  // }
 
-  Future<void> initializePolyline(
-      {required double latitudeDestination,
-      required double longitudeDestination}) async {
-    try {
-      // update de la posición del usuario
-      await locationUser();
+  // Future<void> initializePolyline(
+  //     {required double latitudeDestination,
+  //     required double longitudeDestination}) async {
+  //   try {
+  //     // update de la posición del usuario
+  //     await locationUser();
 
-      final coordinates = await fetchPolylinePoints(
-        latitudeDestination: latitudeDestination,
-        longitudeDestination: longitudeDestination,
-      );
+  //     final coordinates = await fetchPolylinePoints(
+  //       latitudeDestination: latitudeDestination,
+  //       longitudeDestination: longitudeDestination,
+  //     );
 
-      await generatePolylineFromPoints(polylineCoordinates: coordinates);
-    } catch (e) {
-      print("Error al inicializar el polyline: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al generar el recorrido')),
-      );
-    }
-  }
+  //     await generatePolylineFromPoints(polylineCoordinates: coordinates);
+  //   } catch (e) {
+  //     print("Error al inicializar el polyline: $e");
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('Error al generar el recorrido')),
+  //     );
+  //   }
+  // }
 
 // TODO REVISAR SI CAMBIAR DE ICONO DE LOS CHAPTERS
   void customMarkerStoryChapters() {
@@ -352,7 +352,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                   // myLocationEnabled:
                   //     true, // Muestra la ubicación actual - circulo azul
                   style: isDarkmode ? mapOptionDark : "",
-                  polylines: Set<Polyline>.of(polylinesStory.values),
+                  // polylines: Set<Polyline>.of(polylinesStory.values),
                   markers: {
                     Marker(
                         markerId: const MarkerId('user-location'),
@@ -360,8 +360,8 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                             longitudeUser), // Posición inicial del marcador
                         icon: customUserIcon,
                         infoWindow: InfoWindow(
-                          title: "Usuario",
-                          snippet: 'Ubicación del usuario',
+                          title: "Usuario actual",
+                          // snippet: 'Ubicación del usuario',
                         ),
                         onTap: () {
                           locationUser();
@@ -374,8 +374,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                         markerId: MarkerId('marker_story_$e'),
                         position: e,
                         icon: customStoryIcon,
-                        infoWindow: InfoWindow(
-                            title: 'Title ${e.hashCode}', snippet: "Story"),
+                        infoWindow: InfoWindow(title: 'Title ${e.hashCode}'),
                         onTap: () {
                           setState(() {
                             if (!isCardVisible) {
@@ -388,9 +387,9 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                           // _showMarkerStories();
 
                           // TODO RECORRIDO DESDE EL USUARIO AL INICIO DE LA STORY
-                          initializePolyline(
-                              latitudeDestination: e.latitude,
-                              longitudeDestination: e.longitude);
+                          // initializePolyline(
+                          //     latitudeDestination: e.latitude,
+                          //     longitudeDestination: e.longitude);
 
                           // TODO AÑADIR MARKER DE LOS CHAPTERS DE LA STORY
                           _addMarkersChapters(i);
@@ -404,8 +403,8 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                             markerId: MarkerId('marker_chapter_$e'),
                             position: e,
                             icon: customChapterIcon,
-                            infoWindow: InfoWindow(
-                                title: 'Title ${e.hashCode}', snippet: "Story"),
+                            infoWindow:
+                                InfoWindow(title: 'Title ${e.hashCode}'),
                             onTap: () {
                               // setState(() {
                               // if (!isCardVisible) {
@@ -416,9 +415,9 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                               // _selectedPlace = placeInfos[i];
                               // });
                               // _showMarkerStories();
-                              initializePolyline(
-                                  latitudeDestination: e.latitude,
-                                  longitudeDestination: e.longitude);
+                              // initializePolyline(
+                              //     latitudeDestination: e.latitude,
+                              //     longitudeDestination: e.longitude);
                             },
                           )),
                   }, //
@@ -431,18 +430,18 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 child: SizedBox(
                   height: kToolbarHeight - 10,
-                  width: 210,
+                  width: 260,
                   child: AppBar(
                     title: Text(
                       // 'Capítulo ${widget.currentChapter}',
-                      'Mapa General',
+                      'Mapa Historias',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: colors.primary,
                       ),
                     ),
-                    backgroundColor: isDarkmode ? Colors.black54 : Colors.white,
+                    backgroundColor: isDarkmode ? Colors.black : Colors.white,
                     centerTitle: true,
                     elevation: 5,
                   ),
@@ -477,9 +476,10 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                               hintStyle: TextStyle(color: Colors.grey.shade500),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
+                                // borderSide: BorderSide(color: Colors.green),
                               ),
                               fillColor:
-                                  isDarkmode ? Colors.black54 : Colors.white,
+                                  isDarkmode ? Colors.black : Colors.white,
                               filled: true,
                               // Icono a la derecha
                               suffixIcon: IconButton(
@@ -529,7 +529,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: isDarkmode
-                                            ? Colors.black54
+                                            ? Colors.black
                                             : Colors.white,
                                         padding: EdgeInsets.symmetric(
                                             vertical: 2.0, horizontal: 8.0),
@@ -678,7 +678,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
-                    backgroundColor: isDarkmode ? Colors.black38 : Colors.white,
+                    backgroundColor: isDarkmode ? Colors.black : Colors.white,
                   ),
                   icon: Icon(
                     Icons.my_location,

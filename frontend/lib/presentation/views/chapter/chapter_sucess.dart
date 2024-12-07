@@ -197,9 +197,9 @@ Widget ButtonColumn(BuildContext context,
       ElevatedButton(
         onPressed: () {
           // Acción para ir al home
-          context.push('/home/0');
+          context.push('/home/2');
         },
-        child: const Text('Ir a Home'),
+        child: const Text('Ir a mis historias'),
       ),
     ],
   );

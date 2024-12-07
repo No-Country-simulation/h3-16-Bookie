@@ -75,9 +75,9 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
     super.initState();
     print("INICIO DE CREATE CHAPTER: ${widget.country}  ${widget.province}");
     // Monitorear el foco para actualizar el estado
-    focusNode.addListener(() {
-      setState(() {});
-    });
+    // focusNode.addListener(() {
+    //   setState(() {});
+    // });
 
     _titleController.clear();
     _contentController.clear();
@@ -223,8 +223,47 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
     }
   }
 
+  void _showSaveChapterDialog() {
+    final colors = Theme.of(context).colorScheme;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false, // No se puede cerrar al hacer clic afuera
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Guardar capítulo',
+              style: TextStyle(color: colors.primary, fontSize: 22),
+              textAlign: TextAlign.center),
+          content: Text(
+              "Vas a guardar este capítulo con tu ubicación actual. Verifica que sea la ubicación correcta antes de proceder."),
+          actionsAlignment: MainAxisAlignment.center,
+          actions: <Widget>[
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: colors.primary,
+              ),
+              onPressed: () {
+                focusNode.unfocus();
+                // Aquí puedes añadir la lógica para guardar el capítulo con la ubicación actual
+                _submitForm();
+              },
+              child: Text('Guardar', style: TextStyle(color: Colors.black)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cerrar el modal sin hacer nada
+              },
+              child: Text('Cancelar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _submitForm() async {
-    FocusScope.of(context).unfocus();
+    // cerrar el modal
+    Navigator.of(context).pop();
 
     setState(() {
       isEnabled = false;
@@ -299,6 +338,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
         final chapterIndex =
             ref.read(chapterProvider.notifier).currentChapter(chapter.id);
 
+        // TODO ESTA LIMPIEZA NO FUNCION VER OTRA FORMA
         _titleController.clear();
         _contentController.clear();
         _formKey.currentState?.reset(); // Resetea el estado del formulario
@@ -386,7 +426,10 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: colors.primary,
               ),
-              onPressed: () => _generateAndModifyStory(context),
+              onPressed: () {
+                focusNode.unfocus();
+                _generateAndModifyStory(context);
+              },
               child: Text('Generar historia',
                   style: TextStyle(color: Colors.black)),
             ),
@@ -395,6 +438,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
                 backgroundColor: colors.primary,
               ),
               onPressed: () {
+                focusNode.unfocus();
                 _modifyStory(context);
               },
               child: Text('Mejorar y corregir',
@@ -430,10 +474,11 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
       isEnabled = false;
       isLoading = true;
       _generatedText = "";
-      _contentController.clear();
+      // _contentController.clear();
+      loadingMessage = "Generando historia...";
     });
 
-    _contentController.text = "Generando historia..."; // Actualiza el TextField
+    // _contentController.text = "Generando historia..."; // Actualiza el TextField
 
     try {
       final chatStream = await generateStory(
@@ -455,10 +500,10 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
             _generatedText; // Actualiza el TextField dinámicamente.
 
         // Asegúrate de que el cursor esté al final del texto
-        focusNode.requestFocus(); // Solicita el enfoque
-        _contentController.selection = TextSelection.fromPosition(
-          TextPosition(offset: _contentController.text.length),
-        );
+        // focusNode.requestFocus(); // Solicita el enfoque
+        // _contentController.selection = TextSelection.fromPosition(
+        //   TextPosition(offset: _contentController.text.length),
+        // );
       }, onDone: () {
         setState(() {
           isLoading = false; // Finaliza el estado de carga.
@@ -497,6 +542,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
       isLoading = true;
       isEnabled = false;
       _generatedText = "";
+      loadingMessage = "Mejorando historia...";
     });
 
     try {
@@ -514,10 +560,10 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
         _contentController.text = _generatedText;
 
         // Asegúrate de que el cursor esté al final del texto
-        focusNode.requestFocus(); // Solicita el enfoque
-        _contentController.selection = TextSelection.fromPosition(
-          TextPosition(offset: _contentController.text.length),
-        );
+        // focusNode.requestFocus(); // Solicita el enfoque
+        // _contentController.selection = TextSelection.fromPosition(
+        //   TextPosition(offset: _contentController.text.length),
+        // );
       }, onDone: () {
         setState(() {
           isLoading = false; // Finaliza el estado de carga.
@@ -569,6 +615,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
                   backgroundColor: colors.primary,
                 ),
                 onPressed: () {
+                  focusNode.unfocus();
                   _translateStory("es", context);
                 },
                 child: Text('Español', style: TextStyle(color: Colors.black)),
@@ -624,6 +671,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
     setState(() {
       isEnabled = false;
       isLoading = true;
+      loadingMessage = "Traduciendo...";
     });
 
     Navigator.of(context).pop(); // Cerrar el modal
@@ -670,7 +718,9 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
           AbsorbPointer(
             absorbing: !isEnabled,
             child: TextButton(
-              onPressed: (_isFormValid() && isEnabled) ? _submitForm : null,
+              onPressed: (_isFormValid() && isEnabled)
+                  ? () => _showSaveChapterDialog()
+                  : null,
               child: Text(
                 "Guardar",
                 style: TextStyle(
@@ -955,6 +1005,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
               IconButton(
                 icon: Icon(Icons.translate),
                 onPressed: () {
+                  focusNode.unfocus();
                   // Lógica para traducir
                   _showTranslateStoryDialogConfirm(context);
                 },
@@ -963,6 +1014,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
               IconButton(
                 icon: Icon(Icons.auto_awesome),
                 onPressed: () {
+                  focusNode.unfocus();
                   _generateAndModifyStory(context);
                 },
               ),

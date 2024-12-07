@@ -27,7 +27,7 @@ class StoryCard extends StatelessWidget {
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      color: const Color(0xFF292929),
+      color: isDarkmode ? Colors.black : Colors.white,
       elevation: 4,
       child: InkWell(
         onTap: () {

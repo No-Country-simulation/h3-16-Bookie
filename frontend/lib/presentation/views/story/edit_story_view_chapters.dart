@@ -6,6 +6,7 @@ import 'package:bookie/presentation/providers/stories_all_provider.dart';
 import 'package:bookie/presentation/providers/stories_user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 
 class StoryEditDetailChaptersPage extends ConsumerStatefulWidget {
@@ -128,6 +129,8 @@ class _StoryEditDetailChaptersPageState
     final storyAsync = ref.watch(getStoryByIdProvider(widget.storyId));
     final chapters = ref.watch(chapterProvider);
     final isDarkmode = Theme.of(context).brightness == Brightness.dark;
+    final colors = Theme.of(context).colorScheme;
+    final colorGeneral = isDarkmode ? Colors.white : Colors.black;
 
     return Scaffold(
       appBar: AppBar(
@@ -202,7 +205,7 @@ class _StoryEditDetailChaptersPageState
                           child: Text(
                             story.title,
                             style: TextStyle(
-                              color: Colors.white,
+                              color: colorGeneral,
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
@@ -264,7 +267,7 @@ class _StoryEditDetailChaptersPageState
                       Text(
                         'Capítulos (${isLoading ? '0' : chapters.length})',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: colorGeneral,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -272,7 +275,9 @@ class _StoryEditDetailChaptersPageState
                       InkWell(
                         onTap: () {
                           // Acción al presionar el botón
-                          context.push('/chapter/create/${widget.storyId}',);
+                          context.push(
+                            '/chapter/create/${widget.storyId}',
+                          );
                         },
                         borderRadius: BorderRadius.circular(
                             8), // Opcional, para un efecto visual más elegante
@@ -280,13 +285,13 @@ class _StoryEditDetailChaptersPageState
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
-                              Icon(Icons.add, color: Colors.white),
+                              Icon(Icons.add, color: colorGeneral),
                               SizedBox(
                                   width:
                                       8), // Separación entre el icono y el texto
                               Text(
                                 'Añadir capítulo',
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(color: colorGeneral),
                               ),
                             ],
                           ),
@@ -299,8 +304,11 @@ class _StoryEditDetailChaptersPageState
                   // Lista de capítulos
                   isLoading
                       ? Center(
-                          child:
-                              CircularProgressIndicator()) // Muestra cargando
+                          child: SpinKitFadingCircle(
+                            color: colors.primary,
+                            size: 50.0,
+                          ),
+                        ) // Muestra cargando
                       : chapters.isEmpty
                           ? Center(child: Text("No hay capítulos disponibles"))
                           : ListView.builder(
@@ -311,8 +319,8 @@ class _StoryEditDetailChaptersPageState
                                 final chapter = chapters[index];
 
                                 return Card(
-                                  color: Colors.grey
-                                      .shade800, // Fondo notable para el capítulo
+                                  color:
+                                      isDarkmode ? Colors.black : Colors.white,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -325,9 +333,9 @@ class _StoryEditDetailChaptersPageState
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(8),
                                         image: DecorationImage(
-                                          image: NetworkImage(
-                                              // TODO: FALTA LA IMAGEN DEL CAPÍTULO DESDE LA BASE DE DATOS
-                                              'https://picsum.photos/seed/chapter${index + 1}/100'),
+                                          image: NetworkImage(getImageUrl(
+                                              isDarkmode,
+                                              chapter.image ?? "sin-imagen")),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -335,16 +343,20 @@ class _StoryEditDetailChaptersPageState
                                     title: Text(
                                       chapter.title,
                                       style: TextStyle(
-                                          color: Colors.white, fontSize: 14),
+                                        color: isDarkmode
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                     subtitle: Text(
                                       'Capítulo ${index + 1}',
-                                      style: TextStyle(
-                                          color: Colors.grey.shade300,
-                                          fontSize: 12),
                                     ),
                                     onTap: () {
                                       // Navegar a la vista del capítulo
+                                      context.push(
+                                          '/chapters/view/${widget.storyId}/${chapter.id}');
                                     },
                                   ),
                                 );
@@ -357,7 +369,12 @@ class _StoryEditDetailChaptersPageState
         },
         loading: () {
           // Si las historias están cargando, mostramos un indicador de carga.
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: SpinKitFadingCircle(
+              color: colors.primary,
+              size: 50.0,
+            ),
+          );
         },
         error: (error, stack) {
           // Si ocurre un error, mostramos el mensaje de error.

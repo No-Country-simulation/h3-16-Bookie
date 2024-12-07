@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
@@ -148,9 +149,13 @@ class _ChapterSuccessCompleteChapterViewState
                       return Padding(
                         padding: const EdgeInsets.all(9.0),
                         child: SizedBox(
-                            height: 30.0,
-                            width: 30.0,
-                            child: CircularProgressIndicator()),
+                          height: 30.0,
+                          width: 30.0,
+                          child: SpinKitFadingCircle(
+                            color: colors.primary,
+                            size: 30.0,
+                          ),
+                        ),
                       );
                     } else if (snapshot.hasError) {
                       return const Text(

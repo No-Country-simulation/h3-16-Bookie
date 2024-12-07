@@ -1,6 +1,7 @@
 import 'package:bookie/config/constants/environment.dart';
 import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -82,7 +83,10 @@ class StoryPreviewMaps extends StatelessWidget {
                     fit: BoxFit.cover,
                     loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress == null) return child;
-                      return const Center(child: CircularProgressIndicator());
+                      return SpinKitFadingCircle(
+                        color: colors.primary,
+                        size: 30.0,
+                      );
                     },
                     errorBuilder: (context, error, stackTrace) {
                       return const Center(

@@ -1,3 +1,4 @@
+import 'package:bookie/config/helpers/get_image_final.dart';
 import 'package:bookie/presentation/views/chapter/view/chapter_sucess_complete_chapter_view.dart';
 import 'package:bookie/presentation/views/chapter/view/chapter_sucess_complete_story_view.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class ChaptersViewStoryWithPage extends StatelessWidget {
   final int? randomNumber;
   final int currentChapter;
   final int storyId;
+  final String imageUrl;
 
   const ChaptersViewStoryWithPage({
     super.key,
@@ -30,6 +32,7 @@ class ChaptersViewStoryWithPage extends StatelessWidget {
     this.chapterIndex,
     this.randomNumber,
     required this.storyId,
+    required this.imageUrl,
   });
 
   @override
@@ -57,7 +60,7 @@ class ChaptersViewStoryWithPage extends StatelessWidget {
                                   const BorderRadius.all(Radius.circular(12)),
                               image: DecorationImage(
                                 image: NetworkImage(
-                                    "https://picsum.photos/id/10/200/300"),
+                                    getImageUrl(isDarkmode, imageUrl)),
                                 fit: BoxFit.fitHeight,
                               ),
                             ),

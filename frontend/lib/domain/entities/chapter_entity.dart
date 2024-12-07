@@ -16,6 +16,7 @@ class ChapterPartial {
 
 class Chapter extends ChapterPartial {
   final String content;
+  int? historyId;
 
   Chapter({
     required this.content,
@@ -23,6 +24,7 @@ class Chapter extends ChapterPartial {
     required super.title,
     required super.latitude,
     required super.longitude,
+    this.historyId,
     super.image,
   });
 }

@@ -37,6 +37,41 @@ class Story {
     this.province,
     this.writer,
   });
+
+  Story copyWith({
+    int? id,
+    String? title,
+    String? synopsis,
+    Genre? genre,
+    bool? publish,
+    String? imageUrl,
+    int? distance,
+    List<ChapterPartial>? chapters,
+    String? country,
+    String? province,
+    User? writer,
+  }) {
+    return Story(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      synopsis: synopsis ?? this.synopsis,
+      genre: genre ?? this.genre,
+      publish: publish ?? this.publish,
+      imageUrl: imageUrl ?? this.imageUrl,
+      distance: distance ?? this.distance,
+      chapters: chapters ?? this.chapters,
+      country: country ?? this.country,
+      province: province ?? this.province,
+      writer: writer ?? this.writer,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'Story(id: $id, title: $title, synopsis: $synopsis, genre: ${genre.name}, '
+        'publish: $publish, imageUrl: $imageUrl, chapters: ${chapters[chapters.length - 1].title}, '
+        'country: $country, province: $province, writer: ${writer?.name ?? "N/A"})';
+  }
 }
 
 // se hizo una nueva clase para no traerse informacion innecesaria de la homepage

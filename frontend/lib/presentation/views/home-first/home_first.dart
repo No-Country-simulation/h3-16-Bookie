@@ -12,6 +12,7 @@ import 'package:bookie/presentation/widgets/section/home_first/writers_section.d
 import 'package:bookie/shared/data/histories.dart';
 import 'package:bookie/shared/data/writers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class HomeFirstScreen extends ConsumerStatefulWidget {
   static const String name = 'first-screen';
@@ -30,9 +31,6 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
   bool isLoading = false;
   bool isMounted = true;
 
-  List<Map<String, dynamic>> allStories = [];
-  List<Map<String, dynamic>> filteredStories = [];
-
   @override
   void initState() {
     super.initState();
@@ -41,8 +39,6 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
     });
     ref.read(storiesAllProvider.notifier).loadAllStories();
     ref.read(getGenresProvider.notifier).loadGenres();
-    allStories = [...readStories, ...unreadStories];
-    filteredStories = allStories;
   }
 
   void changeLanguage(String locale) async {
@@ -80,11 +76,15 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
   @override
   Widget build(BuildContext context) {
     final stories = ref.watch(storiesAllProvider);
+    final colors = Theme.of(context).colorScheme;
 
     if (stories.isEmpty) {
       // Mostrar un spinner o placeholder mientras no hay datos
       return Center(
-        child: CircularProgressIndicator(),
+        child: SpinKitFadingCircle(
+          color: colors.primary,
+          size: 50.0,
+        ),
       );
     }
 

@@ -3,6 +3,7 @@ import 'package:bookie/presentation/widgets/cards/story/story_card.dart';
 import 'package:bookie/presentation/widgets/shared/show_error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
@@ -31,7 +32,10 @@ class _CreateHistoryScreenState extends ConsumerState<CreateHistoryScreen> {
 
     if (state.isLoading) {
       return Center(
-        child: CircularProgressIndicator(),
+        child: SpinKitFadingCircle(
+          color: colors.primary,
+          size: 50.0,
+        ),
       );
     }
 

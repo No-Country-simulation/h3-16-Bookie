@@ -14,6 +14,12 @@ final getStoryByIdProvider =
   return repository.getStory(storyId);
 });
 
+// final getStoryByIdProvider2 =
+//     FutureProvider.family<Story, int>((ref, storyId) async {
+//   final repository = ref.watch(storiesAllProvider);
+//   return repository.getStory(storyId);
+// });
+
 // stories de un usuario
 final getStoriesByUserProvider =
     FutureProvider.family<List<Story>, int>((ref, userId) async {
@@ -28,14 +34,17 @@ final storiesAllProvider =
 
   return StoriesAllNotifier(
     getStoriesAllNotifier: repository.getStories,
+    getStoryByIdNotifier: repository.getStory,
   );
 });
 
 class StoriesAllNotifier extends StateNotifier<List<Story>> {
   final Future<List<Story>> Function() getStoriesAllNotifier;
+  final Future<Story> Function(int storyId) getStoryByIdNotifier;
 
   StoriesAllNotifier({
     required this.getStoriesAllNotifier,
+    required this.getStoryByIdNotifier,
   }) : super([]);
 
   Future<void> loadAllStories() async {
@@ -52,6 +61,10 @@ class StoriesAllNotifier extends StateNotifier<List<Story>> {
 
   void removeStory(int storyId) {
     state = state.where((story) => story.id != storyId).toList();
+  }
+
+  Future<Story> getStoryById(int storyId) {
+    return getStoryByIdNotifier(storyId);
   }
 }
 

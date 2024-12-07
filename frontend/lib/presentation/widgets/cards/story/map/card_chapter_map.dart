@@ -16,7 +16,7 @@ class CardStoryMap extends StatelessWidget {
     final isDarkmode = Theme.of(context).brightness == Brightness.dark;
 
     return Card(
-      color: isDarkmode ? Colors.black54 : Colors.white,
+      color: isDarkmode ? Colors.black : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),

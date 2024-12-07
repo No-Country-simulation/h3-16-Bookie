@@ -1,5 +1,6 @@
 import 'package:bookie/config/constants/general.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -211,7 +212,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 color: Colors.black.withOpacity(
                     0.5), // Fondo oscuro para hacer opaco el formulario
                 child: Center(
-                  child: CircularProgressIndicator(), // Loader
+                  child: SpinKitFadingCircle(
+                    color: colors.primary,
+                    size: 50.0,
+                  ), // Loader
                 ),
               ),
             ),

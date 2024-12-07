@@ -1,3 +1,4 @@
+import 'package:bookie/config/helpers/get_image_final.dart';
 import 'package:bookie/domain/entities/chapter_entity.dart';
 import 'package:bookie/presentation/widgets/cards/story/chapter_card.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _StoryChaptersState extends State<StoryChapters> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final isDarkmode = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,8 +57,7 @@ class _StoryChaptersState extends State<StoryChapters> {
               latitude: chapter.latitude,
               longitude: chapter.longitude,
               title: chapter.title,
-              // TODO CAMBIAR IMAGEN
-              imageUrl: "https://picsum.photos/id/${index + 1}/200/300",
+              imageUrl: getImageUrl(isDarkmode, chapter.image ?? "sin-imagen"),
               storyId: widget.storyId,
             );
           },

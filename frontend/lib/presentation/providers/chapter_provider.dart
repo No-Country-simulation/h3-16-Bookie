@@ -1,6 +1,7 @@
 import 'package:bookie/domain/entities/chapter_entity.dart';
 import 'package:bookie/infrastructure/datasources/chapterdb_datasource.dart';
 import 'package:bookie/infrastructure/repositories/chapter_repository.dart';
+import 'package:bookie/presentation/providers/stories_user_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final chapterRepositoryProvider = Provider((ref) {
@@ -14,16 +15,20 @@ final chapterProvider =
   final createChapter = ref.watch(chapterRepositoryProvider).createChapter;
 
   return ChapterNotifier(
-      fetchChapter: fetchStories, createChapter: createChapter);
+      fetchChapter: fetchStories, createChapter: createChapter, ref: ref);
 });
 
 class ChapterNotifier extends StateNotifier<List<Chapter>> {
   final Future<List<Chapter>> Function(int storyId) fetchChapter;
   final Future<Chapter> Function(ChapterForm) createChapter;
 
+  // Agregamos una referencia a StoriesAllNotifier y StoriesUserNotifier
+  final Ref ref;
+
   ChapterNotifier({
     required this.fetchChapter,
     required this.createChapter,
+    required this.ref,
   }) : super([]);
 
   Future<void> getChapters(int storyId) async {
@@ -45,6 +50,10 @@ class ChapterNotifier extends StateNotifier<List<Chapter>> {
         ...state,
         newChapter
       ]; // Actualiza el estado con el nuevo capítulo
+
+      // Actualizamos el estado de la historia del usuario
+      ref.read(storiesUserProvider.notifier).updateStory(newChapter);
+
       return newChapter;
     } catch (e) {
       // Manejo de errores al crear el capítulo

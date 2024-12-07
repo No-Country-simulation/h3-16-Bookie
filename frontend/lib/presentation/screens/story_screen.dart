@@ -6,6 +6,7 @@ import 'package:bookie/presentation/views/story/components/view_preview_map.dart
 import 'package:bookie/presentation/widgets/shared/show_error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class StoryScreen extends ConsumerStatefulWidget {
   final int storyId; // Recibimos el id desde la ruta
@@ -30,12 +31,13 @@ class _StoryScreenState extends ConsumerState<StoryScreen> {
     super.initState();
     // Configura el PageController con el índice inicial basado en storyId
     final stories = ref.read(storiesAllProvider); // Obtén las historias
+
     final initialIndex =
         stories.indexWhere((story) => story.id == widget.storyId);
+
     _pageController =
         PageController(initialPage: initialIndex >= 0 ? initialIndex : 0);
     // _pageController.addListener(listener);
-    
   }
 
   @override
@@ -48,61 +50,85 @@ class _StoryScreenState extends ConsumerState<StoryScreen> {
   @override
   Widget build(BuildContext context) {
     final stories = ref.watch(storiesAllProvider);
+    final colors = Theme.of(context).colorScheme;
 
     return Scaffold(
       body: SafeArea(
-          child:
-              // ValueListenableBuilder<double>(
-              // valueListenable: _notifierScroll,
-              // builder: (context, value, _) {
-              // return
-              PageView.builder(
-        controller: _pageController, // Asegúrate de usar el PageController aquí
-        itemCount: stories.length,
-        itemBuilder: (context, index) {
-          final story = stories[index];
-          // final percentage = index - value;
-          // final rotation = percentage.clamp(0.0, 1.0);
-          // final fixRotation = pow(rotation, 0.35);
+        child:
+            // ValueListenableBuilder<double>(
+            // valueListenable: _notifierScroll,
+            // builder: (context, value, _) {
+            // return
+            PageView.builder(
+          controller:
+              _pageController, // Asegúrate de usar el PageController aquí
+          itemCount: stories.length,
+          itemBuilder: (context, index) {
+            final story = stories[index];
+            // final percentage = index - value;
+            // final rotation = percentage.clamp(0.0, 1.0);
+            // final fixRotation = pow(rotation, 0.35);
 
-          return Consumer(
-            builder: (context, ref, child) {
-              final asyncStory = ref.watch(getStoryByIdProvider(story.id));
+            // print("ESTADO STORY: ${story.toString()}");
 
-              return asyncStory.when(
-                data: (story) => _StoryScreenDetail(
-                  pageController: _pageController,
-                  story: story,
-                  // rotation: rotation,
-                  // fixRotation: fixRotation,
-                ),
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, stack) =>
-                    ShowError(message: "No se encontró la historia."),
+            return Consumer(builder: (context, ref, child) {
+              final asyncStory =
+                  ref.watch(storiesAllProvider.notifier).getStoryById(story.id);
+
+              return FutureBuilder<Story>(
+                future: asyncStory,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                        child: SpinKitFadingCircle(color: colors.primary));
+                  } else if (snapshot.hasError) {
+                    return ShowError(message: "No se encontraron historias.");
+                  } else {
+                    print("ESTADO STORY DATA: ${snapshot.data?.toString()}");
+
+                    return _StoryScreenDetail(
+                      story: snapshot.data!,
+                      // rotation: rotation,
+                      // fixRotation: fixRotation,
+                    );
+                  }
+                },
               );
-            },
-          );
-        },
-      )
-          // }
+
+              //   return asyncStory.when(
+              //     data: (story) {
+              //       print("ESTADO STORY DATA: ${story.toString()}");
+
+              //       return _StoryScreenDetail(
+              //         story: story,
+              //         // rotation: rotation,
+              //         // fixRotation: fixRotation,
+              //       );
+              //     },
+              //     loading: () => const Center(child: CircularProgressIndicator()),
+              //     error: (error, stack) =>
+              //         ShowError(message: "No se encontró la historia."),
+              //   );
+              // },
+            });
+          },
           // ),
-          ),
+        ),
+      ),
     );
   }
 }
 
 class _StoryScreenDetail extends ConsumerWidget {
-  final PageController _pageController;
   final Story story;
   // final double rotation;
   // final num fixRotation;
 
   const _StoryScreenDetail({
-    required PageController pageController,
     // required this.rotation,
     // required this.fixRotation,
     required this.story,
-  }) : _pageController = pageController;
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

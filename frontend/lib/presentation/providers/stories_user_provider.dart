@@ -1,4 +1,5 @@
 import 'package:bookie/config/persistent/shared_preferences.dart';
+import 'package:bookie/domain/entities/chapter_entity.dart';
 import 'package:bookie/domain/entities/story_entity.dart';
 import 'package:bookie/presentation/providers/stories_all_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -81,7 +82,37 @@ class StoriesUserNotifier extends StateNotifier<StoriesUserState> {
   }
 
   // TODO: TBM SI CREA UNA HISTORIA NO SE PUEDE ENVIAR A LA HOME O ADD AL ESTADO ALL STORIES PORQUE TODAVIA NO TIENE CAPITULOS Y NO SEPUEDE ORDENAR POR DISTANCIAS, EN EL UPDATE RECIEN AÑADIRLO A LA LISTA DE HISTORIAS DEL ESTADO ALL STORIES
+  // actualizamos la historia del userStories y del allStories
+  Future<void> updateStory(Chapter newChapter) async {
+    try {
+      state = state.copyWith(isLoading: true);
 
+      // Actualizamos las historias de manera inmutable
+      final updatedStoriesUser = state.stories.map((story) {
+        if (story.id == newChapter.historyId) {
+          // Creamos una nueva instancia de Story con la lista de capítulos actualizada
+          return story.copyWith(
+            chapters: [
+              ...story.chapters,
+              newChapter
+            ], // Añadimos el nuevo capítulo
+          );
+        }
+        return story; // Devolvemos la historia sin cambios si no coincide el ID
+      }).toList();
+
+      // Actualizamos el estado con las historias modificadas
+      state = state.copyWith(stories: updatedStoriesUser, isLoading: false);
+
+      // Actualizamos las historias del allStories
+      // ref.read(storiesAllProvider.notifier).updateStory(newChapter);
+    } catch (e) {
+      state = state.copyWith(hasError: true, isLoading: false);
+      rethrow;
+    }
+  }
+
+  // no actualizar las storiesAll porque recien se crea, pero cuando añades un capitulo recien actualizas esta historia añadiendo al userStories y al allStories
   Future<Story> createStory(StoryForm storyForm) async {
     try {
       state = state.copyWith(isLoading: true);

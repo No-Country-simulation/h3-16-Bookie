@@ -1,4 +1,5 @@
 import 'package:bookie/config/geolocator/geolocator.dart';
+import 'package:bookie/config/helpers/get_image_final.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +10,7 @@ class CardChapterMap extends StatefulWidget {
   final double latitude;
   final double longitude;
   final int storyId;
+  final String imageUrl;
 
   const CardChapterMap({
     super.key,
@@ -17,6 +19,7 @@ class CardChapterMap extends StatefulWidget {
     required this.latitude,
     required this.longitude,
     required this.storyId,
+    required this.imageUrl,
   });
 
   @override
@@ -107,7 +110,7 @@ class CardChapterMapState extends State<CardChapterMap> {
                         borderRadius: BorderRadius.circular(8),
                         image: DecorationImage(
                           image: NetworkImage(
-                            'https://picsum.photos/seed/chapter${widget.index + 1}/100',
+                            getImageUrl(isDarkmode, widget.imageUrl),
                           ),
                           fit: BoxFit.cover,
                         ),

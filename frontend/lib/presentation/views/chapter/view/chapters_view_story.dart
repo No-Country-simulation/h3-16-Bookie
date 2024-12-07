@@ -137,6 +137,7 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                       List<String> pages = [];
 
                       pages.addAll(paginateContent(
+                        // TODO REVISAR ESTO PORQUE SE ROMPEEE CUANDO SE AÑADEN CAPÍTULOS o cuando voy a mis capitulos de una historia que cree
                         chapters[widget.chapterIndex].content,
                         textStyle,
                         screenSize,
@@ -168,6 +169,8 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                           randomNumber: initRandomNumber(),
                           currentChapter: widget.chapterIndex + 2,
                           storyId: widget.storyId,
+                          imageUrl: chapters[widget.chapterIndex].image ??
+                              "sin-imagen",
                         ),
                         children: pages.map((pageContent) {
                           return ChaptersViewStoryWithPage(
@@ -196,6 +199,8 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                                 .longitude,
                             currentChapter: widget.chapterIndex + 2,
                             storyId: widget.storyId,
+                            imageUrl: chapters[widget.chapterIndex].image ??
+                                "sin-imagen",
                           );
                         }).toList(),
                       );

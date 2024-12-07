@@ -219,8 +219,8 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
                             longitudeUser), // Posición inicial del marcador
                         icon: customUserIcon,
                         infoWindow: InfoWindow(
-                          title: "Usuario",
-                          snippet: 'Ubicación del usuario',
+                          title: "Ubicación actual",
+                          // snippet: 'Ubicación del usuario',
                         ),
                         onTap: () {
                           locationUser();
@@ -239,8 +239,8 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
                             icon: customChapterIcon,
                             infoWindow: InfoWindow(
                               title: chapter.title,
-                              snippet:
-                                  'Ubicación del capítulo ${chapters.indexOf(chapter) + 1}',
+                              // snippet:
+                              //     'Ubicación del capítulo ${chapters.indexOf(chapter) + 1}',
                             ),
                             onTap: () async {
 // Animación manual para moverse al capítulo deseado lentamente
@@ -294,6 +294,7 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
                         fontWeight: FontWeight.bold,
                         color: colors.primary,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                     backgroundColor: isDarkmode ? Colors.black : Colors.white,
                     centerTitle: true,
@@ -335,11 +336,12 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 70, vertical: 25),
                                 child: CardChapterMap(
-                                  title: chapter.title,
                                   index: index,
+                                  title: chapter.title,
                                   latitude: chapter.latitude,
                                   longitude: chapter.longitude,
                                   storyId: widget.storyId,
+                                  imageUrl: chapter.image ?? "sin-imagen",
                                   // onAction: refreshLocation,
                                 ),
                               );

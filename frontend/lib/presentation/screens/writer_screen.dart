@@ -3,6 +3,7 @@ import 'package:bookie/presentation/providers/stories_all_provider.dart';
 import 'package:bookie/shared/data/writers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 
 class WriterProfileScreen extends ConsumerStatefulWidget {
@@ -37,6 +38,7 @@ class _WriterProfileScreenState extends ConsumerState<WriterProfileScreen> {
     final storiesAsync = ref.watch(getStoriesByUserProvider(1));
 
     final isDarkmode = Theme.of(context).brightness == Brightness.dark;
+    final colors = Theme.of(context).colorScheme;
 
     return Scaffold(
       body: SafeArea(
@@ -153,7 +155,12 @@ class _WriterProfileScreenState extends ConsumerState<WriterProfileScreen> {
                 },
                 loading: () {
                   // Si las historias están cargando, mostramos un indicador de carga.
-                  return const Center(child: CircularProgressIndicator());
+                  return Center(
+                    child: SpinKitFadingCircle(
+                      color: colors.primary,
+                      size: 30.0,
+                    ),
+                  );
                 },
                 error: (error, stack) {
                   // Si ocurre un error, mostramos el mensaje de error.
