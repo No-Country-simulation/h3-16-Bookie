@@ -108,7 +108,9 @@ public class WishlistController {
             @ApiResponse(responseCode = "200", description = "Obtener la lista de deseos de un usuario",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(),
                             examples = @ExampleObject(name = "HistoryDtoResponse",
-                                    value = "List<wishlist>: { { \"id\": 1,\"title\": \"new title\", \"synopsis\": \"description of history\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber\",\"country\": \"ARGENTINA\",\"province\": \"BUENOS AIRES\"}, { \"id\": 2,\"title\": \"new title2\", \"synopsis\": \"description of history 2\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber 2\",\"country\": \"ARGENTINA\",\"province\": \"BUENOS AIRES\"} }")))
+                                    value =  "[{\"id\":23,\"histories\":{\"id\":74,\"title\":\"La leyenda del MAGO 2\",\"syopsis\":\"Una aventura épica sobre un MAGO y su MAGIA divivna.\",\"publish\":false,\"genre\":\"FANTASIA\",\"img\":\"http://imagen-del-dragon.jpg/\",\"distance\":null,\"chapters\":[{\"id\":1,\"title\":\"capitulo 1\",\"content\":\"En un bosque se encontraron dos personas\",\"latitude\":34.6037,\"longitude\":58.3816,\"img\":\"imagen.jpg\"}]}},{\"id\":1,\"histories\":{\"id\":35,\"title\":\"Historia del monte embrujado\",\"syopsis\":\"Encuantro cercano con almas en pena\",\"publish\":false,\"genre\":\"NOVELA\",\"img\":\"http://portada.jpg\",\"distance\":null,\"chapters\":[]}}]"
+
+                            )))
     })
     public ResponseEntity<?> getWishlistByUserId(@PathVariable Long id) {
         try {
