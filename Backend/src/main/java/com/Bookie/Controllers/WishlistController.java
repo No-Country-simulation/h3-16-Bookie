@@ -95,4 +95,27 @@ public class WishlistController {
 
         }
     }
+
+
+
+    @GetMapping("/user/{id}")
+    @Operation(
+            summary = "Get List<wishlist>",
+            description = "Get wishlist by ID of user",
+            tags = {"Wishlist"}
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Obtener la lista de deseos de un usuario",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(),
+                            examples = @ExampleObject(name = "HistoryDtoResponse",
+                                    value = "List<wishlist>: { { \"id\": 1,\"title\": \"new title\", \"synopsis\": \"description of history\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber\",\"country\": \"ARGENTINA\",\"province\": \"BUENOS AIRES\"}, { \"id\": 2,\"title\": \"new title2\", \"synopsis\": \"description of history 2\", \"creator_id\": 1,\"genre\": \"NOVEL\",\"img\": \"Base64:veryletterandnumber 2\",\"country\": \"ARGENTINA\",\"province\": \"BUENOS AIRES\"} }")))
+    })
+    public ResponseEntity<?> getWishlistByUserId(@PathVariable Long id) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(wishlistService.getWishlistByUserId(id));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", ex.getMessage()));
+
+        }
+    }
 }

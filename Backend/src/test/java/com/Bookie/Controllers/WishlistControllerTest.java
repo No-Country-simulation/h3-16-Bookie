@@ -1,5 +1,6 @@
 package com.Bookie.Controllers;
 
+import com.Bookie.dto.WishlistByUser;
 import com.Bookie.dto.WishlistResponseCreate;
 import com.Bookie.entities.HistoryEntity;
 import com.Bookie.util.JsonUtil;
@@ -97,5 +98,19 @@ class WishlistControllerTest {
         );
     }
 
+    @Test
+    void getWishlistByUserId() throws JsonProcessingException {
 
+
+        HttpEntity<String> request = new HttpEntity<>( headers);
+        ResponseEntity<List<WishlistByUser>> result = testRestTemplate.exchange("/api/v1/wishlist/user/1", HttpMethod.GET, request, new ParameterizedTypeReference<List<WishlistByUser>>() {});
+        JsonUtil.toJsonPrint("List<HistotyEntity> = " , result);
+
+        assertAll(
+                () -> assertEquals(HttpStatus.OK, result.getStatusCode()),
+                () -> assertEquals(200, result.getStatusCode().value()),
+                () -> assertTrue(!result.getBody().isEmpty())
+
+        );
+    }
 }
