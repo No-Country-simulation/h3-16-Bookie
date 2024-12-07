@@ -12,26 +12,30 @@ class ShowError extends StatelessWidget {
     // final colors = Theme.of(context).colorScheme;
     // final isDarkmode = Theme.of(context).brightness == Brightness.dark;
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SizedBox(
-          height: 120,
-          width: 200,
-          child: Lottie.asset('assets/lottie/no_search.json'),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          message,
-          style: TextStyle(
-            fontSize: 14,
-            fontStyle: FontStyle.italic,
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 120,
+            width: 200,
+            child: Lottie.asset('assets/lottie/no_search.json'),
           ),
-        ),
-        const SizedBox(height: 12),
-        ButtonHome(),
-      ],
+          const SizedBox(height: 12),
+          Text(
+            message,
+            style: TextStyle(
+              fontSize: 14,
+              fontStyle: FontStyle.italic,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 12),
+          ButtonHome(),
+        ],
+      ),
     );
   }
 }

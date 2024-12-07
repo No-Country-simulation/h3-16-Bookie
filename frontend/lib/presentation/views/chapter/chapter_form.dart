@@ -261,6 +261,8 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
     // cerrar el modal
     Navigator.of(context).pop();
 
+    focusNode.unfocus();
+
     setState(() {
       isEnabled = false;
       isLoading = true;
@@ -331,8 +333,13 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
         final chapter =
             await ref.read(chapterProvider.notifier).addChapter(chapterForm);
 
+        print(
+            "CHAPTERINDEX FORM CHAPTER CREATE: ${chapter.id} ${chapter.title}");
+
         final chapterIndex =
             ref.read(chapterProvider.notifier).currentChapter(chapter.id);
+
+        print("CHAPTERINDEX FORM CHAPTER INDEX: $chapterIndex");
 
         // TODO ESTA LIMPIEZA NO FUNCION VER OTRA FORMA
         _titleController.clear();

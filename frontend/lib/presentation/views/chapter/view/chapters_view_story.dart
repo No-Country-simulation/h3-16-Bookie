@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:bookie/presentation/providers/chapter_provider.dart';
 import 'package:bookie/presentation/views/chapter/view/chapters_view_story_page.dart';
 import 'package:bookie/presentation/widgets/shared/message_empty_chapter.dart';
+import 'package:bookie/presentation/widgets/shared/show_error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -31,6 +32,10 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
   }
 
   Future<void> _loadChapters() async {
+    setState(() {
+      isLoading = true; // Mostrar indicador de carga
+    });
+
     try {
       // Obtener los capítulos usando el provider
       await ref.read(chapterProvider.notifier).getChapters(widget.storyId);
@@ -96,6 +101,9 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
     super.initState();
     print("INITSTATE STORY ID: ${widget.chapterIndex}");
     // Cargar los capítulos de la historia
+
+    // Escuchar cambios en el estado del provider
+
     _loadChapters();
   }
 
@@ -136,12 +144,25 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                       final screenSize = MediaQuery.of(context).size;
                       List<String> pages = [];
 
-                      pages.addAll(paginateContent(
-                        // TODO REVISAR ESTO PORQUE SE ROMPEEE CUANDO SE AÑADEN CAPÍTULOS o cuando voy a mis capitulos de una historia que cree
-                        chapters[widget.chapterIndex].content,
-                        textStyle,
-                        screenSize,
-                      ));
+                      // pages.addAll(paginateContent(
+                      //   // TODO REVISAR ESTO PORQUE SE ROMPEEE CUANDO SE AÑADEN CAPÍTULOS o cuando voy a mis capitulos de una historia que cree
+                      //   chapters[widget.chapterIndex].content,
+                      //   textStyle,
+                      //   screenSize,
+                      // ));
+
+                      if (widget.chapterIndex < chapters.length) {
+                        pages.addAll(paginateContent(
+                          chapters[widget.chapterIndex].content,
+                          textStyle,
+                          screenSize,
+                        ));
+                      } else {
+                        // Manejar error de índice fuera de rango
+                        return ShowError(
+                            message:
+                                "El capítulo se esta procesando, por favor regresa más tarde");
+                      }
 
                       return PageFlipWidget(
                         key: _controller,

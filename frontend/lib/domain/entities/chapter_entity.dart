@@ -27,6 +27,11 @@ class Chapter extends ChapterPartial {
     this.historyId,
     super.image,
   });
+
+  @override
+  String toString() {
+    return 'Chapter(id: $id, title: $title, content: $content, historyId: $historyId, latitude: $latitude, longitude: $longitude, image: $image)';
+  }
 }
 
 class ChapterForm {

@@ -51,6 +51,9 @@ class ChapterNotifier extends StateNotifier<List<Chapter>> {
         newChapter
       ]; // Actualiza el estado con el nuevo capítulo
 
+      print(
+          "CHAPTERINDEX STADO LISTA CHAPTERS addChapter: ${state.toString()}");
+
       // Actualizamos el estado de la historia del usuario
       ref.read(storiesUserProvider.notifier).updateStory(newChapter);
 
@@ -63,6 +66,13 @@ class ChapterNotifier extends StateNotifier<List<Chapter>> {
   }
 
   int currentChapter(int chapterId) {
+    print(
+        "CHAPTERINDEX STADO LISTA CHAPTERS currentChapter: ${state.toString()}");
+
     return state.indexWhere((chapter) => chapter.id == chapterId);
+  }
+
+  void resetChapters() {
+    state = [];
   }
 }

@@ -1,3 +1,4 @@
+import 'package:bookie/presentation/providers/chapter_provider.dart';
 import 'package:bookie/presentation/providers/stories_user_provider.dart';
 import 'package:bookie/presentation/widgets/cards/story/story_card.dart';
 import 'package:bookie/presentation/widgets/shared/show_error.dart';
@@ -23,6 +24,11 @@ class _CreateHistoryScreenState extends ConsumerState<CreateHistoryScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(storiesUserProvider.notifier).loadUserStories();
     });
+  }
+
+  void _onCreateNewStory() {
+    // Resetear capítulos al iniciar una nueva historia
+    ref.read(chapterProvider.notifier).resetChapters();
   }
 
   @override
@@ -57,6 +63,8 @@ class _CreateHistoryScreenState extends ConsumerState<CreateHistoryScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
+          // Resetear estado de capítulos al iniciar una nueva historia
+          _onCreateNewStory();
           // Navegar a la pantalla de creación de historias
           context.push('/story/create');
         },
