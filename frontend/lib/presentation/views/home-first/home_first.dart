@@ -13,7 +13,6 @@ import 'package:bookie/shared/data/histories.dart';
 import 'package:bookie/shared/data/writers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:lottie/lottie.dart';
 
 class HomeFirstScreen extends ConsumerStatefulWidget {
   static const String name = 'first-screen';

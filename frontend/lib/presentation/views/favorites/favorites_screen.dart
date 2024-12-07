@@ -1,7 +1,6 @@
 import 'package:bookie/presentation/providers/favorites_provider.dart';
 import 'package:bookie/presentation/providers/stories_all_provider.dart';
 import 'package:bookie/presentation/widgets/cards/close_stories_card.dart';
-import 'package:bookie/presentation/widgets/shared/show_error.dart';
 import 'package:bookie/presentation/widgets/shared/show_not_favorites.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
