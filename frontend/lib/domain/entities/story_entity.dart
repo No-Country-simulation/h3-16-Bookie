@@ -12,7 +12,7 @@ class Story {
   final Genre genre;
   final bool publish;
   final String imageUrl;
-  late final int
+  late int
       distance; // TODO distancia dinamica no viene de la API BACKEND DEPLOY, REVISAR SI ESTO SE TENDRIA QUE COLOCAR AQUI O CAMBIAR
 
   // final bool

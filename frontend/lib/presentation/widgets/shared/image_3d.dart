@@ -4,13 +4,11 @@ import 'package:flutter/material.dart';
 
 class My3DImage extends StatefulWidget {
   final String imageUrl;
-  final String title;
   final int storyId;
 
   const My3DImage({
     super.key,
     required this.imageUrl,
-    required this.title,
     required this.storyId,
   });
 

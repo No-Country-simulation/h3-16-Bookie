@@ -1,4 +1,5 @@
 import 'package:bookie/config/geolocator/geolocator.dart';
+import 'package:bookie/config/helpers/get_distance_minime.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
@@ -49,6 +50,13 @@ class _ChapterCardState extends State<ChapterCard> {
   void dispose() {
     super.dispose();
   }
+
+  // Future<String> getLocation() async {
+  //   return await getCountryAndProvinceAndDistance(
+  //     widget.latitude,
+  //     widget.longitude,
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -181,21 +189,42 @@ class _ChapterCardState extends State<ChapterCard> {
                       ),
 
                       // Distancia
-                      // TODO ESTO LO CAMBIAMOS DESPUES ES FACIL CALCULAR LA DISTANCIA DESDE EL USUARIO AL CAPÍTULO
+                      // afecta el redimiento ESTO LO CAMBIAMOS DESPUES ES FACIL CALCULAR LA DISTANCIA DESDE EL USUARIO AL CAPÍTULO
                       const SizedBox(height: 4.0),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(children: [
-                              Icon(Icons.map, size: 16, color: colors.primary),
-                              const SizedBox(width: 4),
-                              const Text(
-                                "A 10 m",
-                                style: TextStyle(
-                                  fontSize: 12.0,
-                                ),
-                              ),
-                            ]),
+                            // Row(children: [
+                            //   Icon(Icons.route,
+                            //       size: 16, color: colors.primary),
+                            //   const SizedBox(width: 4),
+                            //   FutureBuilder(
+                            //     future: getLocation(),
+                            //     builder: (context, snapshot) {
+                            //       if (snapshot.hasData) {
+                            //         return Text(
+                            //           snapshot.data ?? "10 m",
+                            //           style: TextStyle(
+                            //             fontSize: 12.0,
+                            //           ),
+                            //         );
+                            //       } else {
+                            //         return Text(
+                            //           "10 m",
+                            //           style: TextStyle(
+                            //             fontSize: 12.0,
+                            //           ),
+                            //         );
+                            //       }
+                            //     },
+                            //   ),
+                            //   // const Text(
+                            //   //   "A 10 m",
+                            //   //   style: TextStyle(
+                            //   //     fontSize: 12.0,
+                            //   //   ),
+                            //   // ),
+                            // ]),
                             Text(
                               showMessageGoToMapOrChapter != null
                                   ? showMessageGoToMapOrChapter == true

@@ -1,4 +1,5 @@
 // import 'package:bookie/presentation/providers/favorites_provider.dart';
+import 'package:bookie/config/helpers/format_distance.dart';
 import 'package:bookie/config/helpers/get_image_final.dart';
 import 'package:bookie/presentation/providers/favorite_provider.dart';
 import 'package:flutter/material.dart';
@@ -226,10 +227,10 @@ class _CloseStoriesCardState extends ConsumerState<CloseStoriesCard> {
                         //   Text(
                         //       '${HumanFormats.humanReadbleNumber(widget.reads ?? 0)} reads'),
                         Text(
-                          "A ${widget.distance <= 500 ? "${widget.distance}m" : "${(widget.distance / 1000).toStringAsFixed(1)}km"}",
+                          formatDistance(widget.distance),
                           style: TextStyle(
                             fontWeight: FontWeight.normal,
-                            fontSize: 14,
+                            fontSize: 12,
                           ),
                         ),
                       ],

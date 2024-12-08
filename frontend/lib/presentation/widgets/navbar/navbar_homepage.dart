@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 
 class NavBarCustom extends StatelessWidget {
   final VoidCallback onSearchTapped;
-  final AppLocalizations? localizations;
-  final Function(String) changeLanguage;
+  // final AppLocalizations? localizations;
+  // final Function(String) changeLanguage;
 
   const NavBarCustom({
     super.key,
     required this.onSearchTapped,
-    this.localizations,
-    required this.changeLanguage,
+    // this.localizations,
+    // required this.changeLanguage,
   });
 
   @override

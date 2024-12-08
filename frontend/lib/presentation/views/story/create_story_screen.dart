@@ -120,25 +120,22 @@ class _CreateHistoryScreenState extends ConsumerState<CreateHistoryScreen> {
                               lenChapters: story.chapters.length,
                               storyId: story.id,
                             );
-                          } else {
+                          } else if (index == 3) {
                             // Mostrar la imagen al final de las historias
-                            return Column(
-                              children: [
-                                Center(
-                                  child: SizedBox(
-                                    height: 120,
-                                    width: 200,
-                                    child: Lottie.asset(
-                                        'assets/lottie/view_stories.json'),
-                                  ),
-                                ),
-                                const SizedBox(height: 60),
-                              ],
+                            return Center(
+                              child: SizedBox(
+                                height: 120,
+                                width: 200,
+                                child: Lottie.asset(
+                                    'assets/lottie/view_stories.json'),
+                              ),
                             );
                           }
+                          return null;
                         },
                       ),
                     ),
+                    const SizedBox(height: 60),
                   ],
                 ),
               ),

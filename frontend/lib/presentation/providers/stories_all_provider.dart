@@ -1,3 +1,4 @@
+import 'package:bookie/config/helpers/sorted.dart';
 import 'package:bookie/domain/entities/story_entity.dart';
 import 'package:bookie/infrastructure/datasources/storydb_datasource.dart';
 import 'package:bookie/infrastructure/repositories/story_repository.dart';
@@ -51,7 +52,15 @@ class StoriesAllNotifier extends StateNotifier<List<Story>> {
     final List<Story> stories = await getStoriesAllNotifier();
 
     // TODO: REVISAR SI SE TENDRÍA QUE ORDENAR POR DISTANCIA DEL SUSUARIO
-    state = stories.where((story) => story.chapters.isNotEmpty).toList();
+    final storiesWithoutEmptyChapters =
+        stories.where((story) => story.chapters.isNotEmpty).toList();
+
+    final sortedStories = await getSortedStories(storiesWithoutEmptyChapters);
+
+    print(
+        "DISTANCIAS DE TODOS LOS STORIES: ${sortedStories.map((e) => e.distance).toList()}");
+
+    state = sortedStories;
   }
 
   void addStory(Story story) {

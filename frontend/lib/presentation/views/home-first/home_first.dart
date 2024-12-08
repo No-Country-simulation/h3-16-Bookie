@@ -28,27 +28,27 @@ class HomeFirstScreen extends ConsumerStatefulWidget {
 
 class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
   final PageController _pageController = PageController();
-  AppLocalizations? localizations; // Cambiar a nullable
+  // AppLocalizations? localizations; // Cambiar a nullable
   bool isLoading = false;
   bool isMounted = true;
 
   @override
   void initState() {
     super.initState();
-    detectLanguage().then((locale) {
-      changeLanguage(locale);
-    });
+    // detectLanguage().then((locale) {
+    //   changeLanguage(locale);
+    // });
     ref.read(storiesAllProvider.notifier).loadAllStories();
     ref.read(getGenresProvider.notifier).loadGenres();
     ref.read(usersProvider.notifier).loadWriters();
   }
 
-  void changeLanguage(String locale) async {
-    setState(() {
-      localizations = AppLocalizations(locale);
-      localizations?.load();
-    });
-  }
+  // void changeLanguage(String locale) async {
+  //   setState(() {
+  //     localizations = AppLocalizations(locale);
+  //     localizations?.load();
+  //   });
+  // }
 
   void _showSearchSection() {
     _pageController.animateToPage(1,
@@ -109,11 +109,14 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
                 children: [
                   NavBarCustom(
                       onSearchTapped: _showSearchSection, // Botón de búsqueda
-                      localizations: localizations,
-                      changeLanguage: changeLanguage),
+                      // localizations: localizations,
+                      // changeLanguage: changeLanguage
+                      ),
                   HeroSection(unreadStories: unreadStories),
                   CloseStoriesSection(
-                      stories: stories, localizations: localizations),
+                      stories: stories, 
+                      // localizations: localizations
+                      ),
                   StoriesReadSection(readStories: readStories),
                   WritersSection(writers: writers),
                 ],

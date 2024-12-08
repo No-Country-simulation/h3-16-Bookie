@@ -1,3 +1,4 @@
+import 'package:bookie/config/helpers/get_address.dart';
 import 'package:bookie/domain/entities/story_entity.dart';
 import 'package:bookie/presentation/providers/stories_all_provider.dart';
 import 'package:bookie/presentation/views/story/components/view_chapters.dart';
@@ -128,6 +129,17 @@ class _StoryScreenDetail extends ConsumerWidget {
     required this.story,
   });
 
+  Future<List<String>> getAddresses() async {
+    return await getAddressesFromCoordinates(
+      story.chapters
+          .map((chapter) => [
+                chapter.latitude,
+                chapter.longitude,
+              ])
+          .toList(),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = Theme.of(context).colorScheme;
@@ -149,11 +161,12 @@ class _StoryScreenDetail extends ConsumerWidget {
             // Hero Image (25% de la pantalla)
             StoryHeroImageAndGeneral(
               storyId: story.id,
-              isFavorite: false, // TODO FAVORITOS
               imageUrl: story.imageUrl,
               title: story.title,
               lenChapters: story.chapters.length,
               nameWriter: story.writer?.name ?? "Autor desconocido",
+              latitudeStory: story.chapters[0].latitude,
+              longitudeStory: story.chapters[0].longitude,
               // rotation: rotation,
               // fixRotation: fixRotation,
             ),
@@ -208,22 +221,49 @@ class _StoryScreenDetail extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment
                         .start, // Alinea los lugares a la izquierda
                     children: [
-                      // TODO ESTOS LUGARES LO PUEDES SACAR DELA API DE GOOGLE POR CAPITULOS AVER Q SALE
-                      Text(
-                        '- Museo del Oro Bogotá Cra. 6 #15-88',
-                        style: TextStyle(fontSize: 14),
+                      FutureBuilder(
+                        future: getAddresses(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(
+                              child: SpinKitFadingCircle(
+                                color: Colors.grey,
+                                size: 20.0,
+                              ),
+                            );
+                          } else if (snapshot.hasData) {
+                            return Text(
+                              snapshot.data?.join('\n') ??
+                                  'Direccion no encontrada',
+                              style: TextStyle(fontSize: 14),
+                              textAlign: TextAlign.center,
+                            );
+                          } else {
+                            return Text(
+                              'Direccion no encontrada',
+                              style: TextStyle(fontSize: 14),
+                              textAlign: TextAlign.center,
+                            );
+                          }
+                        },
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '- Address 2 chapter 2',
-                        style: TextStyle(fontSize: 14),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '- Address 3 chapter 3',
-                        style: TextStyle(fontSize: 14),
-                      ),
-                      const SizedBox(height: 4),
+                      // // TODO ESTOS LUGARES LO PUEDES SACAR DELA API DE GOOGLE POR CAPITULOS AVER Q SALE
+                      // Text(
+                      //   '- Museo del Oro Bogotá Cra. 6 #15-88',
+                      //   style: TextStyle(fontSize: 14),
+                      // ),
+                      // const SizedBox(height: 4),
+                      // Text(
+                      //   '- Address 2 chapter 2',
+                      //   style: TextStyle(fontSize: 14),
+                      // ),
+                      // const SizedBox(height: 4),
+                      // Text(
+                      //   '- Address 3 chapter 3',
+                      //   style: TextStyle(fontSize: 14),
+                      // ),
+                      // const SizedBox(height: 4),
                     ]),
               ],
             ),

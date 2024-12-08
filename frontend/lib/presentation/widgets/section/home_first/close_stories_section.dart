@@ -39,9 +39,10 @@ class _CloseStoriesSectionState extends ConsumerState<CloseStoriesSection> {
             alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Text(
-              widget.localizations?.translate("homepage_close_stories") != null
-                  ? "${widget.localizations?.translate("homepage_close_stories")}"
-                  : "",
+              "Historias cercanas",
+              // widget.localizations?.translate("homepage_close_stories") != null
+              //     ? "${widget.localizations?.translate("homepage_close_stories")}"
+              //     : "",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
@@ -69,8 +70,8 @@ class _CloseStoriesSectionState extends ConsumerState<CloseStoriesSection> {
                         onCardPress: () {
                           context.push('/story/${story.id}');
                         },
-                        isFavorite: favorites.any((element) =>
-                            element.story.id == story.id),
+                        isFavorite: favorites
+                            .any((element) => element.story.id == story.id),
                       ),
                     ),
                   );
