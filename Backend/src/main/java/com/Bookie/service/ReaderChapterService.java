@@ -67,9 +67,12 @@ public class ReaderChapterService {
         List<ChapterEntity> chaptersHistory = readerChapter.getReader().getHistoryId().getChapters();
         List<ChapterCompeteRquest> chaptersReaderChapter = readerChapterRespository.findAllByChapter(readerChapter.getReader());
         if(chaptersReaderChapter.size() == chaptersHistory.size()) return;
-        ChapterEntity chapter = chaptersHistory.get(chaptersReaderChapter.size()+1);
-        readerChapter.setChapter(chapter);
-        readerChapterRespository.save(readerChapter);
+        ChapterEntity chapter = chaptersHistory.get(chaptersReaderChapter.size());
+        ReaderChapterEntity newReaderChapter = new ReaderChapterEntity();
+        newReaderChapter.setChapter(chapter);
+        newReaderChapter.setReader(readerChapter.getReader());
+        newReaderChapter.setComplete(false);
+        readerChapterRespository.save(newReaderChapter);
     }
 
     /**

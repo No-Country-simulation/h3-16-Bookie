@@ -126,7 +126,7 @@ class ReaderControllerTest {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
 
-        int id = 352;
+        int id = 602;
 
         ResponseEntity<ReaderChapterRequest> crateHistoryResult = restPatchTemplate.exchange(testRestTemplate.getRootUri() + "/api/v1/reader-chapter/" + id, HttpMethod.PATCH, entity, ReaderChapterRequest.class);
 
