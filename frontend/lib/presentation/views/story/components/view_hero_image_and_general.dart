@@ -1,6 +1,6 @@
 import 'package:bookie/config/helpers/capitalize.dart';
 import 'package:bookie/config/helpers/word_plural.dart';
-import 'package:bookie/presentation/providers/favorites_provider.dart';
+import 'package:bookie/presentation/providers/favorite_provider.dart';
 import 'package:bookie/presentation/widgets/shared/image_3d.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,6 +39,7 @@ class _StoryHeroImageAndGeneralState
   @override
   void initState() {
     super.initState();
+    ref.read(favoriteProvider.notifier).getFavorites();
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -57,8 +58,9 @@ class _StoryHeroImageAndGeneralState
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final isFavorite =
-        ref.watch(favoriteProvider)[widget.storyId] ?? widget.isFavorite;
+    final isFavorite = ref.watch(favoriteProvider);
+    final isFavoriteStory =
+        isFavorite.any((element) => element.story.id == widget.storyId);
 
     return Center(
       child: Column(children: [
@@ -72,9 +74,15 @@ class _StoryHeroImageAndGeneralState
             left: 16,
             child: GestureDetector(
               onTap: () {
-                ref
-                    .read(favoriteProvider.notifier)
-                    .toggleFavorite(widget.storyId);
+                if (isFavoriteStory) {
+                  ref
+                      .read(favoriteProvider.notifier)
+                      .removeFavorite(widget.storyId);
+                } else {
+                  ref
+                      .read(favoriteProvider.notifier)
+                      .addFavorite(widget.storyId);
+                }
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -90,8 +98,8 @@ class _StoryHeroImageAndGeneralState
                 ),
                 padding: const EdgeInsets.all(8.0),
                 child: Icon(
-                  isFavorite ? Icons.favorite : Icons.favorite_border,
-                  color: isFavorite ? Colors.red : Colors.white,
+                  isFavoriteStory ? Icons.favorite : Icons.favorite_border,
+                  color: isFavoriteStory ? Colors.red : Colors.white,
                   size: 24,
                 ),
               ),

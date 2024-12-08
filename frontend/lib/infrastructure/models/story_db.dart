@@ -26,24 +26,25 @@ class StoryDbResponse {
     this.province,
   });
 
-  factory StoryDbResponse.fromJson(Map<String, dynamic> json) =>
-      StoryDbResponse(
-        id: json["id"],
-        title: json["title"],
-        syopsis: json["syopsis"],
-        publish: json["publish"],
-        genre: json["genre"],
-        img: json["img"],
-        creatorId: json["creator_id"] == null
-            ? null
-            : UserDb.fromJson(json["creator_id"]),
-        country: json["country"],
-        province: json["province"],
-        chapters: json["chapters"] == null
-            ? []
-            : List<ChapterDbResponse>.from(
-                json["chapters"].map((x) => ChapterDbResponse.fromJson(x))),
-      );
+  factory StoryDbResponse.fromJson(Map<String, dynamic> json) {
+    return StoryDbResponse(
+      id: json["id"],
+      title: json["title"],
+      syopsis: json["syopsis"],
+      publish: json["publish"],
+      genre: json["genre"],
+      img: json["img"],
+      creatorId: json["creator_id"] == null
+          ? null
+          : UserDb.fromJson(json["creator_id"]),
+      country: json["country"],
+      province: json["province"],
+      chapters: json["chapters"] == null
+          ? []
+          : List<ChapterDbResponse>.from(
+              json["chapters"].map((x) => ChapterDbResponse.fromJson(x))),
+    );
+  }
 
   static List<StoryDbResponse> fromJsonList(List<dynamic> jsonList) {
     return jsonList.map((json) => StoryDbResponse.fromJson(json)).toList();

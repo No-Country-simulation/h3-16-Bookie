@@ -1,10 +1,12 @@
 import 'package:bookie/config/intl/i18n.dart';
 import 'package:bookie/domain/entities/story_entity.dart';
+import 'package:bookie/presentation/providers/favorite_provider.dart';
 import 'package:bookie/presentation/widgets/cards/close_stories_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class CloseStoriesSection extends StatelessWidget {
+class CloseStoriesSection extends ConsumerStatefulWidget {
   final List<Story> stories;
   final AppLocalizations? localizations;
 
@@ -12,7 +14,21 @@ class CloseStoriesSection extends StatelessWidget {
       {super.key, required this.stories, this.localizations});
 
   @override
+  ConsumerState<CloseStoriesSection> createState() =>
+      _CloseStoriesSectionState();
+}
+
+class _CloseStoriesSectionState extends ConsumerState<CloseStoriesSection> {
+  @override
+  void initState() {
+    super.initState();
+    ref.read(favoriteProvider.notifier).getFavorites();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final favorites = ref.watch(favoriteProvider);
+
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
       child: Column(
@@ -23,8 +39,8 @@ class CloseStoriesSection extends StatelessWidget {
             alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Text(
-              localizations?.translate("homepage_close_stories") != null
-                  ? "${localizations?.translate("homepage_close_stories")}"
+              widget.localizations?.translate("homepage_close_stories") != null
+                  ? "${widget.localizations?.translate("homepage_close_stories")}"
                   : "",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -33,17 +49,14 @@ class CloseStoriesSection extends StatelessWidget {
             ),
           ),
           SizedBox(height: 8),
-
-          // todo: esto cambiara, creo q no usar Future Builder sino como estaba antes no se hara de esta manera porque se traera de una api
-          // Sección de "Más historias" con Scroll Horizontal
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: List.generate(
-                stories.length,
+                widget.stories.length,
                 (index) {
-                  final story = stories[index];
+                  final story = widget.stories[index];
                   return Padding(
                     padding: const EdgeInsets.only(right: 4.0),
                     child: SizedBox(
@@ -52,15 +65,12 @@ class CloseStoriesSection extends StatelessWidget {
                         id: story.id,
                         imageUrl: story.imageUrl,
                         title: story.title,
-                        // synopsis: story.synopsis,
-                        // rating: story['rating'],
-                        // reads: story['reads'],
                         distance: story.distance,
-                        // TODO: ESTO SE VA POSIBLEMENTE SE QUITE PORQUE SE TRAERA O SE REALIZARA DE OTRA MANERA PARA TRAERSE LOS FAVORITOS, POR AHORA ES SOLO PARA SIMULAR
-                        isFavorite: false, // TODO FAVORITOS
                         onCardPress: () {
                           context.push('/story/${story.id}');
                         },
+                        isFavorite: favorites.any((element) =>
+                            element.story.id == story.id),
                       ),
                     ),
                   );

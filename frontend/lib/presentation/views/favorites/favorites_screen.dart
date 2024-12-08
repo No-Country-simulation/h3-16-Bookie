@@ -1,5 +1,5 @@
-import 'package:bookie/presentation/providers/favorites_provider.dart';
-import 'package:bookie/presentation/providers/stories_all_provider.dart';
+import 'package:bookie/config/helpers/get_image_final.dart';
+import 'package:bookie/presentation/providers/favorite_provider.dart';
 import 'package:bookie/presentation/widgets/cards/close_stories_card.dart';
 import 'package:bookie/presentation/widgets/shared/show_not_favorites.dart';
 import 'package:flutter/material.dart';
@@ -18,58 +18,105 @@ class FavoritesScreen extends ConsumerStatefulWidget {
 
 class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
     with TickerProviderStateMixin {
+  // Variable para controlar si las tarjetas ya han sido animadas
+  final List<AnimationController> _controllers = [];
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // Limpiar los AnimationController para evitar pérdidas de memoria
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final favorites = ref.watch(favoriteProvider);
-    final stories = ref.watch(storiesAllProvider);
-
-    // Filtra las tarjetas que son favoritas
-    final favoriteStories =
-        stories.where((story) => favorites[story.id] ?? false).toList();
+    final isDarkmode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Favorites'),
+        title: const Text('Favoritos'),
       ),
-      body: favoriteStories.isEmpty
+      body: favorites.isEmpty
           ? ShowNotFavorites()
-          : MasonryGridView.count(
-              crossAxisCount: 3, // Tres columnas
-              mainAxisSpacing: 12.0, // Espaciado vertical
-              crossAxisSpacing: 12.0, // Espaciado horizontal
-              itemCount: favoriteStories.length,
-              itemBuilder: (context, index) {
-                final card = favoriteStories[index];
+          : Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+              child: MasonryGridView.count(
+                crossAxisCount: 3, // Tres columnas
+                mainAxisSpacing: 6.0, // Espaciado vertical
+                crossAxisSpacing: 6.0, // Espaciado horizontal
+                itemCount: favorites.length,
+                itemBuilder: (context, index) {
+                  final card = favorites[index];
+                  final column = index % 3; // Determina la columna (0, 1 o 2)
 
-                // Aplica un efecto de entrada animado al card
-                return AnimatedOpacity(
-                  opacity: 1.0,
-                  duration:
-                      Duration(milliseconds: 500), // Duración de la animación
-                  child: SlideTransition(
-                    position: Tween<Offset>(
-                      begin: Offset(0, -1), // Inicia arriba de la pantalla
-                      end: Offset(0, 0), // Se mueve a su lugar
-                    ).animate(CurvedAnimation(
-                      parent: AnimationController(
-                        vsync: this,
-                        duration: const Duration(milliseconds: 500),
-                      )..forward(), // Inicia la animación
-                      curve: Curves.easeOut,
-                    )),
+                  // Crear un AnimationController si no existe
+                  if (_controllers.length <= index) {
+                    _controllers.add(AnimationController(
+                      vsync: this,
+                      duration: const Duration(milliseconds: 1000),
+                    ));
+                  }
+
+                  final controller = _controllers[index];
+
+                  // Inicia la animación
+                  controller.forward();
+
+                  // Configurar el efecto basado en la columna
+                  Offset beginOffset;
+                  switch (column) {
+                    case 0: // Columna 1 baja
+                      beginOffset = const Offset(0, -1);
+                      break;
+                    case 1: // Columna 2 sube
+                      beginOffset = const Offset(0, 1);
+                      break;
+                    case 2: // Columna 3 baja
+                      beginOffset = const Offset(0, -1);
+                      break;
+                    default:
+                      beginOffset = const Offset(0, 0); // Por si acaso
+                  }
+
+                  return AnimatedBuilder(
+                    animation: controller,
+                    builder: (context, child) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: beginOffset, // Comienza según la columna
+                          end: const Offset(
+                              0, 0), // Termina en su posición original
+                        ).animate(CurvedAnimation(
+                          parent: controller,
+                          curve: Curves.easeOut,
+                        )),
+                        child: child,
+                      );
+                    },
                     child: CloseStoriesCard(
-                      id: card.id,
-                      imageUrl: card.imageUrl,
-                      title: card.title,
-                      distance: card.distance,
-                      isFavorite: false, // TODO FAVORITOS
+                      id: card.story.id,
+                      imageUrl: getImageUrl(
+                          isDarkmode, card.story.img ?? "sin-imagen"),
+                      title: card.story.title,
+                      distance: card.story.quantityChapters,
                       onCardPress: () {
-                        context.push('/story/${card.id}');
+                        context.push('/story/${card.story.id}');
                       },
+                      isFavorite: favorites
+                          .any((element) => element.story.id == card.story.id),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
     );
   }

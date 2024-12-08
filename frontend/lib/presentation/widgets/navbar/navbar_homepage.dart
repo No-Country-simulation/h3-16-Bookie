@@ -1,3 +1,4 @@
+import 'package:bookie/config/helpers/get_image_gender_person.dart';
 import 'package:bookie/config/intl/i18n.dart';
 import 'package:bookie/config/persistent/shared_preferences.dart';
 import 'package:flutter/material.dart';
@@ -42,19 +43,14 @@ class NavBarCustom extends StatelessWidget {
                 future: SharedPreferencesKeys.getCredentials(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    // Cuando se obtienen los datos exitosamente, muestra la imagen.
-                    final userData = snapshot.data!;
+                    final userData = snapshot.data;
                     return CircleAvatar(
-                      backgroundImage: NetworkImage(userData.imageUrl ??
-                          'https://res.cloudinary.com/dlixnwuhi/image/upload/v1733600879/eiwptc2xepcddfjaavqo.webp'),
-                      radius: 20,
+                      backgroundImage: NetworkImage(userData?.imageUrl ??
+                          "https://res.cloudinary.com/dlixnwuhi/image/upload/v1733600879/eiwptc2xepcddfjaavqo.webp"),
                     );
                   } else {
-                    // Si no hay datos disponibles.
                     return const CircleAvatar(
-                      backgroundColor: Colors.grey,
                       radius: 20,
-                      child: Icon(Icons.person, color: Colors.white),
                     );
                   }
                 },

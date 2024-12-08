@@ -5,29 +5,29 @@ import 'package:dio/dio.dart';
 class ImageGenderPerson {
   static final dio = Dio();
 
-  static Future<String> getGenderFromNameWritter(String name) async {
-    try {
-      final response = await dio.get('https://api.genderize.io?name=$name');
+  static String getGenderFromNameWritter(String name) {
+    // try {
+    //   final response = await dio.get('https://api.genderize.io?name=$name');
 
-      if (response.statusCode == 200) {
-        if (response.data['gender'] == null ||
-            response.data['gender'] == 'male') {
-          return 'men';
-        } else {
-          return 'women';
-        }
-      } else {
-        throw Exception('Error al consumir la API');
-      }
-    } catch (e) {
-      print("Error al obtener el género del escritor: $e");
-      return detectGenderByRules(name);
-    }
+    //   if (response.statusCode == 200) {
+    //     if (response.data['gender'] == null ||
+    //         response.data['gender'] == 'male') {
+    //       return 'men';
+    //     } else {
+    //       return 'women';
+    //     }
+    //   } else {
+    //     throw Exception('Error al consumir la API');
+    //   }
+    // } catch (e) {
+    //   print("Error al obtener el género del escritor: $e");
+    return detectGenderByRules(name);
+    // }
   }
 
   static Future<String> getImageFromNameWritter(String name) async {
     try {
-      final gender = await getGenderFromNameWritter(name);
+      final gender = getGenderFromNameWritter(name);
       final randomNumber = _randomNumber();
       final imageUrl =
           "https://randomuser.me/api/portraits/$gender/$randomNumber.jpg";

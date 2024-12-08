@@ -1,4 +1,5 @@
 import 'package:bookie/config/fetch/fetch_api.dart';
+import 'package:bookie/config/helpers/extract_name.dart';
 import 'package:bookie/config/helpers/get_image_gender_person.dart';
 import 'package:bookie/config/persistent/shared_preferences.dart';
 import 'package:bookie/domain/datasources/user_datasource.dart';
@@ -25,8 +26,11 @@ class UserDbDatasource extends UserDatasource {
 
           // aprovechas para añadir la imagen de la persona en su perfil
           final credentials = await SharedPreferencesKeys.getCredentials();
-          if (writer.name == credentials.name) {
-            SharedPreferencesKeys.setImageUrl(imageUrl);
+
+          final nameCredentials = extractName(credentials.name ?? '');
+
+          if (writer.name == nameCredentials) {
+            await SharedPreferencesKeys.setImageUrl(imageUrl);
           }
 
           return writer.copyWith(imageUrl: imageUrl);

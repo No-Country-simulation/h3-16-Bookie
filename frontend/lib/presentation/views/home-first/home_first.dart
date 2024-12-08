@@ -1,5 +1,6 @@
 import 'package:bookie/config/intl/get_location_for_intl.dart';
 import 'package:bookie/config/intl/i18n.dart';
+import 'package:bookie/presentation/providers/favorite_provider.dart';
 import 'package:bookie/presentation/providers/genres_provider.dart';
 import 'package:bookie/presentation/providers/stories_all_provider.dart';
 import 'package:bookie/presentation/providers/user_provider.dart';

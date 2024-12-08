@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bookie/config/geolocator/geolocator.dart';
+import 'package:bookie/config/helpers/get_country_province.dart';
 import 'package:bookie/config/openai/openai_config.dart';
 import 'package:bookie/config/permissions/image.dart';
 import 'package:bookie/config/translator/translator.dart';
@@ -309,9 +310,11 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
         loadingMessage = "Determinando ubicación...";
       });
 
-      final position = await determinePosition();
-      latitude = position.latitude;
-      longitude = position.longitude;
+      if (latitude == null || longitude == null) {
+        final position = await determinePosition();
+        latitude = position.latitude;
+        longitude = position.longitude;
+      }
 
       if (title.trim().isNotEmpty &&
           content.trim().isNotEmpty &&
@@ -333,13 +336,8 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
         final chapter =
             await ref.read(chapterProvider.notifier).addChapter(chapterForm);
 
-        print(
-            "CHAPTERINDEX FORM CHAPTER CREATE: ${chapter.id} ${chapter.title}");
-
         final chapterIndex =
             ref.read(chapterProvider.notifier).currentChapter(chapter.id);
-
-        print("CHAPTERINDEX FORM CHAPTER INDEX: $chapterIndex");
 
         // TODO ESTA LIMPIEZA NO FUNCION VER OTRA FORMA
         _titleController.clear();
@@ -484,11 +482,22 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
     // _contentController.text = "Generando historia..."; // Actualiza el TextField
 
     try {
+      final position = await determinePosition();
+      setState(() {
+        latitude = position.latitude;
+        longitude = position.longitude;
+      });
+
+      final getCountryAndProvince = await getCountryAndProvinceUsingGeocoding(
+        latitude!,
+        longitude!,
+      );
+
       final chatStream = await generateStory(
         contextStory:
             // Este título es importante a considerar en la generación de la historia:
             // TODO: REVISAR ESTO SI CONSIDERAR CIUDAD O PROVINCIA
-            "${_titleController.text.trim().isEmpty ? "" : _titleController.text}. ${_prompt.trim().isEmpty ? "" : _prompt}. Perú, Trujillo",
+            "${_titleController.text.trim().isEmpty ? "" : _titleController.text}. ${_prompt.trim().isEmpty ? "" : _prompt}. ${getCountryAndProvince?.country ?? ""}, ${getCountryAndProvince?.province ?? ""}",
       );
 
       if (!_isGeneratingText) {

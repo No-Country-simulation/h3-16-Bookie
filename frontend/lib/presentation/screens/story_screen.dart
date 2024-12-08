@@ -84,8 +84,6 @@ class _StoryScreenState extends ConsumerState<StoryScreen> {
                   } else if (snapshot.hasError) {
                     return ShowError(message: "No se encontraron historias.");
                   } else {
-                    print("ESTADO STORY DATA: ${snapshot.data?.toString()}");
-
                     return _StoryScreenDetail(
                       story: snapshot.data!,
                       // rotation: rotation,

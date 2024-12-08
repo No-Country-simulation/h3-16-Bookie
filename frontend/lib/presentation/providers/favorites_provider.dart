@@ -2,19 +2,17 @@ import 'package:bookie/domain/entities/story_entity.dart';
 import 'package:bookie/presentation/providers/stories_all_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Definir el provider de favoritos
-// TODO CORREGIR TODO
-final favoriteProvider =
-    StateNotifierProvider<FavoriteNotifier, Map<int, bool>>((ref) {
+final favoriteProviderOld =
+    StateNotifierProvider<FavoriteNotifierOld, Map<int, bool>>((ref) {
   final stories = ref.watch(storiesAllProvider);
 
-  return FavoriteNotifier(stories: stories);
+  return FavoriteNotifierOld(stories: stories);
 });
 
-class FavoriteNotifier extends StateNotifier<Map<int, bool>> {
+class FavoriteNotifierOld extends StateNotifier<Map<int, bool>> {
   final List<Story> stories;
 
-  FavoriteNotifier({required this.stories}) : super({}) {
+  FavoriteNotifierOld({required this.stories}) : super({}) {
     getFavorites();
   }
 

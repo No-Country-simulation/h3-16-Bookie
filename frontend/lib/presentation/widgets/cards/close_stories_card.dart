@@ -1,6 +1,6 @@
 // import 'package:bookie/presentation/providers/favorites_provider.dart';
 import 'package:bookie/config/helpers/get_image_final.dart';
-import 'package:bookie/presentation/providers/favorites_provider.dart';
+import 'package:bookie/presentation/providers/favorite_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
@@ -13,8 +13,8 @@ class CloseStoriesCard extends ConsumerStatefulWidget {
   // final double? rating;
   // final int? reads;
   final int distance;
-  final bool isFavorite;
   final VoidCallback onCardPress;
+  final bool isFavorite;
 
   const CloseStoriesCard({
     super.key,
@@ -25,8 +25,8 @@ class CloseStoriesCard extends ConsumerStatefulWidget {
     // this.rating,
     // this.reads,
     required this.distance,
-    required this.isFavorite,
     required this.onCardPress,
+    required this.isFavorite,
   });
 
   @override
@@ -75,9 +75,10 @@ class _CloseStoriesCardState extends ConsumerState<CloseStoriesCard> {
     final containerShimmer = isDarkmode ? Colors.black : Colors.white;
 
     final colors = Theme.of(context).colorScheme;
-    final isFavorite =
-        ref.watch(favoriteProvider)[widget.id] ?? widget.isFavorite;
     final imageMod = getImageUrl(isDarkmode, widget.imageUrl);
+    // final isFavorite = ref.watch(favoriteProvider);
+    // final isFavoriteStory =
+    //     isFavorite.any((element) => element.story.id == widget.id);
 
     return GestureDetector(
       onTap: widget.onCardPress,
@@ -118,14 +119,22 @@ class _CloseStoriesCardState extends ConsumerState<CloseStoriesCard> {
                   right: 8,
                   child: IconButton(
                     icon: Icon(
-                      isFavorite ? Icons.favorite : Icons.favorite_border,
-                      color: isFavorite ? Colors.red : Colors.white,
+                      widget.isFavorite
+                          ? Icons.favorite
+                          : Icons.favorite_border,
+                      color: widget.isFavorite ? Colors.red : Colors.white,
                     ),
                     onPressed: () {
                       // Llamar al Riverpod para alternar el estado del favorito usando el id
-                      ref
-                          .read(favoriteProvider.notifier)
-                          .toggleFavorite(widget.id);
+                      if (widget.isFavorite) {
+                        ref
+                            .read(favoriteProvider.notifier)
+                            .removeFavorite(widget.id);
+                      } else {
+                        ref
+                            .read(favoriteProvider.notifier)
+                            .addFavorite(widget.id);
+                      }
                     },
                   ),
                 ),

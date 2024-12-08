@@ -47,4 +47,8 @@ class UserNotifier extends StateNotifier<List<User>> {
     state = writers;
     _isLoaded = true;
   }
+
+  void setIsLoaded() {
+    _isLoaded = false;
+  }
 }
