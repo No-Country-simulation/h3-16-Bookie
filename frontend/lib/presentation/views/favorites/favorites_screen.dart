@@ -74,14 +74,14 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                   // Configurar el efecto basado en la columna
                   Offset beginOffset;
                   switch (column) {
-                    case 0: // Columna 1 baja
-                      beginOffset = const Offset(0, -1);
+                    case 0: // Columna 1 empieza en la mitad de la tarjeta hacia abajo
+                      beginOffset = const Offset(0, -0.5); // Comienza más abajo
                       break;
-                    case 1: // Columna 2 sube
-                      beginOffset = const Offset(0, 1);
+                    case 1: // Columna 2 empieza en la mitad hacia arriba
+                      beginOffset = const Offset(0, 0.5); // Comienza más arriba
                       break;
-                    case 2: // Columna 3 baja
-                      beginOffset = const Offset(0, -1);
+                    case 2: // Columna 3 empieza en la mitad de la tarjeta hacia abajo
+                      beginOffset = const Offset(0, -0.5); // Comienza más abajo
                       break;
                     default:
                       beginOffset = const Offset(0, 0); // Por si acaso
@@ -92,7 +92,8 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                     builder: (context, child) {
                       return SlideTransition(
                         position: Tween<Offset>(
-                          begin: beginOffset, // Comienza según la columna
+                          begin:
+                              beginOffset, // Comienza desde la posición configurada
                           end: const Offset(
                               0, 0), // Termina en su posición original
                         ).animate(CurvedAnimation(
