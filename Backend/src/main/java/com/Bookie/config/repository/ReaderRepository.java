@@ -1,5 +1,6 @@
 package com.Bookie.config.repository;
 
+import com.Bookie.dto.ReaderRequest;
 import com.Bookie.entities.HistoryEntity;
 import com.Bookie.entities.ReaderEntity;
 import com.Bookie.entities.UserEntity;
