@@ -47,7 +47,7 @@ class ReaderControllerTest {
     @Test
     void createReader() throws JsonProcessingException {
 
-        ReaderCreateRequest readerCreateRequest = new ReaderCreateRequest(2L, 74L);
+        ReaderCreateRequest readerCreateRequest = new ReaderCreateRequest(3L, 50L);
 
 
         String json = " { \"user_id\" : " + readerCreateRequest.user_id() + ", \"history_id\" : " + readerCreateRequest.history_id() + " }";
@@ -72,13 +72,13 @@ class ReaderControllerTest {
     @Test
     void getReaderByUserId() throws JsonProcessingException {
 
-        int id = 1;
+        int id = 3;
 
 
 
 
         HttpEntity<String> request = new HttpEntity<>( headers);
-        ResponseEntity< List<ReaderEntity>> crateHistoryResult = testRestTemplate.exchange("/api/v1/reader/" + id, HttpMethod.GET, request, new ParameterizedTypeReference<List<ReaderEntity>>() {});
+        ResponseEntity< List<ReaderRequestList>> crateHistoryResult = testRestTemplate.exchange("/api/v1/reader/" + id, HttpMethod.GET, request, new ParameterizedTypeReference<List<ReaderRequestList>>() {});
 
         JsonUtil.toJsonPrint("crateHistoryResult", crateHistoryResult);
 
@@ -96,7 +96,7 @@ class ReaderControllerTest {
     @Test
     void createReaderChapter() throws JsonProcessingException {
 
-        ReaderChapterDto readerChapterDto = new ReaderChapterDto(402L, 2L);
+        ReaderChapterDto readerChapterDto = new ReaderChapterDto(452L, 352L);
 
 
         String json = " { \"readerId\" : " + readerChapterDto.readerId() + ", \"chapterId\" : " + readerChapterDto.chapterId() + " }";
@@ -126,7 +126,7 @@ class ReaderControllerTest {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
 
-        int id = 302;
+        int id = 602;
 
         ResponseEntity<ReaderChapterRequest> crateHistoryResult = restPatchTemplate.exchange(testRestTemplate.getRootUri() + "/api/v1/reader-chapter/" + id, HttpMethod.PATCH, entity, ReaderChapterRequest.class);
 

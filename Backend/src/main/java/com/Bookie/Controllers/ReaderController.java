@@ -52,7 +52,7 @@ public class ReaderController {
 
     @GetMapping("/{id}")
     @Operation(
-            summary = "get a reader",
+            summary = "get reader by user id",
             description = "get reader by user id",
             tags = {"Reader"}
     )

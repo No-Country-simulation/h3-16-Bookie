@@ -3,6 +3,7 @@ package com.Bookie.service;
 import com.Bookie.config.repository.ChapterRepository;
 import com.Bookie.config.repository.ReaderChapterRespository;
 import com.Bookie.config.repository.ReaderRepository;
+import com.Bookie.dto.ChapterCompeteRquest;
 import com.Bookie.dto.ReaderChapterDto;
 import com.Bookie.dto.ReaderChapterRequest;
 import com.Bookie.entities.ChapterEntity;
@@ -45,26 +46,49 @@ public class ReaderChapterService {
         readerChapter.setComplete(true);
         readerChapter = readerChapterRespository.save(readerChapter);
 
+        //agregar la siguiente historia al reader-chapter
+        pasarChapterAListReaderChapter(readerChapter);
+
         //verificar si todos los capitules fueron leidos para pasar la historia a completada
         Boolean readerChapterIsComplete = ReaderIsComplete(readerChapter.getReader().getReaderChapter());
 
-        if(readerChapterIsComplete) readerComplete(readerChapter);
+        if (readerChapterIsComplete) readerComplete(readerChapter);
 
         return new ReaderChapterRequest(readerChapter);
     }
 
+
+    /**
+     * <p>Metodo para cargar el siguiente chapter a la lista de reader-chapter</p>
+     *
+     * @param readerChapter
+     */
+    private void pasarChapterAListReaderChapter(ReaderChapterEntity readerChapter) {
+        List<ChapterEntity> chaptersHistory = readerChapter.getReader().getHistoryId().getChapters();
+        List<ChapterCompeteRquest> chaptersReaderChapter = readerChapterRespository.findAllByChapter(readerChapter.getReader());
+        if(chaptersReaderChapter.size() == chaptersHistory.size()) return;
+        ChapterEntity chapter = chaptersHistory.get(chaptersReaderChapter.size());
+        ReaderChapterEntity newReaderChapter = new ReaderChapterEntity();
+        newReaderChapter.setChapter(chapter);
+        newReaderChapter.setReader(readerChapter.getReader());
+        newReaderChapter.setComplete(false);
+        readerChapterRespository.save(newReaderChapter);
+    }
+
     /**
      * <p>Pasar el reader a complete true si todos los capitulos estan leidos</p>
+     *
      * @param readerChapter
      */
     private void readerComplete(ReaderChapterEntity readerChapter) {
-        ReaderEntity reader =  readerChapter.getReader();
+        ReaderEntity reader = readerChapter.getReader();
         reader.setComplete(true);
         readerRepository.save(reader);
     }
 
     /**
      * <p>Verifica si en la lista todos los capitulos fueron leidos</p>
+     *
      * @param readerChapter
      * @return boolean
      */
