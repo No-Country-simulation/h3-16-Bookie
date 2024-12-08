@@ -3,6 +3,7 @@ package com.Bookie.service;
 import com.Bookie.config.repository.ChapterRepository;
 import com.Bookie.config.repository.ReaderChapterRespository;
 import com.Bookie.config.repository.ReaderRepository;
+import com.Bookie.dto.ChapterCompeteRquest;
 import com.Bookie.dto.ReaderChapterDto;
 import com.Bookie.dto.ReaderChapterRequest;
 import com.Bookie.entities.ChapterEntity;
@@ -64,7 +65,7 @@ public class ReaderChapterService {
      */
     private void pasarChapterAListReaderChapter(ReaderChapterEntity readerChapter) {
         List<ChapterEntity> chaptersHistory = readerChapter.getReader().getHistoryId().getChapters();
-        List<ChapterEntity> chaptersReaderChapter = readerChapterRespository.findAllByChapter(readerChapter.getReader());
+        List<ChapterCompeteRquest> chaptersReaderChapter = readerChapterRespository.findAllByChapter(readerChapter.getReader());
         if(chaptersReaderChapter.size() == chaptersHistory.size()) return;
         ChapterEntity chapter = chaptersHistory.get(chaptersReaderChapter.size()+1);
         readerChapter.setChapter(chapter);

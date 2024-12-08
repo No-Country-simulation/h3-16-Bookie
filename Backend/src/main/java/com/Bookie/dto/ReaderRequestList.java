@@ -14,8 +14,8 @@ public record ReaderRequestList(@NotNull
                                 HistoryEntity history,
                                 @NotBlank
                                 Boolean complete,
-                                List<ChapterEntity> readerChapters) {
-    public ReaderRequestList(ReaderEntity r,List<ChapterEntity> chapters){
+                                List<ChapterCompeteRquest> readerChapters) {
+    public ReaderRequestList(ReaderEntity r,List<ChapterCompeteRquest> chapters){
         this(r.getId(),new UserReaderRequest(r.getUserId()) , r.getHistoryId(), r.getComplete(),chapters);
     }
 }

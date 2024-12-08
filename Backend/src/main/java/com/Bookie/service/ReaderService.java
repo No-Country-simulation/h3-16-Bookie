@@ -4,11 +4,10 @@ import com.Bookie.config.repository.HistoryRepository;
 import com.Bookie.config.repository.ReaderChapterRespository;
 import com.Bookie.config.repository.ReaderRepository;
 import com.Bookie.config.repository.UserRepository;
+import com.Bookie.dto.ChapterCompeteRquest;
 import com.Bookie.dto.ReaderCreateRequest;
 import com.Bookie.dto.ReaderRequest;
 import com.Bookie.dto.ReaderRequestList;
-import com.Bookie.dto.UserReaderRequest;
-import com.Bookie.entities.ChapterEntity;
 import com.Bookie.entities.HistoryEntity;
 import com.Bookie.entities.ReaderEntity;
 import com.Bookie.entities.UserEntity;
@@ -62,7 +61,7 @@ public class ReaderService {
         List<ReaderRequestList> chaptersReturn = new ArrayList<>();
         for (ReaderEntity r : readers) {
             ReaderEntity reader =   readerRepository.findById(r.getId()).orElseThrow(() -> new EntityNotFoundException("reader not found"));
-            List<ChapterEntity> chapters = readerChapterRespository.findAllByChapter(reader);
+            List<ChapterCompeteRquest> chapters = readerChapterRespository.findAllByChapter(reader);
             var readerReturn = new ReaderRequestList(r,chapters);
 
             chaptersReturn.add(readerReturn);

@@ -1,5 +1,6 @@
 package com.Bookie.config.repository;
 
+import com.Bookie.dto.ChapterCompeteRquest;
 import com.Bookie.entities.ChapterEntity;
 import com.Bookie.entities.ReaderChapterEntity;
 import com.Bookie.entities.ReaderEntity;
@@ -17,7 +18,9 @@ public interface ReaderChapterRespository extends JpaRepository<ReaderChapterEnt
     ReaderChapterEntity findByReaderAndChapter(@Param("reader") ReaderEntity reader, @Param("chapter")  ChapterEntity chapter);
 
     @Query("""
-            SELECT r.chapter FROM ReaderChapterEntity r WHERE r.reader = :reader
+            SELECT NEW com.Bookie.dto.ChapterCompeteRquest( r.chapter, r.complete) FROM ReaderChapterEntity r WHERE r.reader = :reader
             """)
-    List<ChapterEntity> findAllByChapter(@Param("reader")ReaderEntity reader);
+    List<ChapterCompeteRquest> findAllByChapter(@Param("reader")ReaderEntity reader);
+
+
 }
