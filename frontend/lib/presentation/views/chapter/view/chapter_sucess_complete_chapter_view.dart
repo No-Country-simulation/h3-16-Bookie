@@ -107,7 +107,7 @@ class _ChapterSuccessCompleteChapterViewState
             FadeInDown(
               delay: const Duration(milliseconds: 500),
               child: Text(
-                widget.pageContent,
+                "Esperamos que la hayas disfrutado. Para continuar al siguiente capítulo tienes que estar cerca.",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,

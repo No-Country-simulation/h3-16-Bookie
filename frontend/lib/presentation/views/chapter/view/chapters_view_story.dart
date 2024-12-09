@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:bookie/presentation/providers/chapter_provider.dart';
+import 'package:bookie/presentation/providers/translater_chapter.dart';
 import 'package:bookie/presentation/views/chapter/view/chapters_view_story_page.dart';
 import 'package:bookie/presentation/widgets/shared/message_empty_chapter.dart';
 import 'package:bookie/presentation/widgets/shared/show_error.dart';
@@ -24,6 +25,7 @@ class ChaptersViewStory extends ConsumerStatefulWidget {
 class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
   bool isLoading = true;
   final _controller = GlobalKey<PageFlipWidgetState>();
+  List<String> pages = [];
 
   int initRandomNumber() {
     final randomNumber =
@@ -78,7 +80,7 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
 
       // Verificar si el texto cabe en la página actual
       // TODO REVISAR EL -350 PORQUE NO ME OCUPABA TODA LA ALTURA DEL DISPOSITIVO REVISAR EN OTROS DISPOSITIVOS
-      if (currentHeight + lineHeight - 350 > maxHeight) {
+      if (currentHeight + lineHeight - 300 > maxHeight) {
         // Guardamos la página actual y empezamos una nueva
         pages.add(currentPage.toString());
         currentPage = StringBuffer(word); // Inicia con la palabra que no cupo
@@ -96,14 +98,103 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
     return pages;
   }
 
+  Future<void> _translateAndPaginate(String content, String language) async {
+    setState(() => isLoading = true);
+
+    Navigator.pop(context);
+
+    try {
+      // Llama al método de traducción del provider
+      await ref
+          .read(pageContentProvider.notifier)
+          .translateContent(content, language);
+
+      // Escucha el estado traducido y repagina
+      final translatedContent = ref.read(pageContentProvider);
+      if (translatedContent != null) {
+        final screenSize = MediaQuery.of(context).size;
+        final textStyle = TextStyle(
+          fontSize: 17,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white
+              : Colors.black,
+          height: 1.75,
+        );
+        pages = paginateContent(translatedContent, textStyle, screenSize);
+      }
+    } catch (e) {
+      print("Error al traducir el contenido: $e");
+    } finally {
+      setState(() => isLoading = false);
+    }
+  }
+
+  void _showLanguageSelector(String content) {
+    final colors = Theme.of(context).colorScheme;
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(16.0)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Selecciona un idioma',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: colors.primary),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                leading: const Icon(Icons.language),
+                title: const Text('Español'),
+                onTap: () => _translateAndPaginate(content, 'es'),
+              ),
+              ListTile(
+                leading: const Icon(Icons.language),
+                title: const Text('Inglés'),
+                onTap: () => _translateAndPaginate(content, 'en'),
+              ),
+              ListTile(
+                leading: const Icon(Icons.language),
+                title: const Text('Portugués'),
+                onTap: () => _translateAndPaginate(content, 'pt'),
+              ),
+              ListTile(
+                leading: const Icon(Icons.language),
+                title: const Text('Italiano'),
+                onTap: () => _translateAndPaginate(content, 'it'),
+              ),
+              ListTile(
+                leading: const Icon(Icons.language),
+                title: const Text('Francés'),
+                onTap: () => _translateAndPaginate(content, 'fr'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
-    print("INITSTATE STORY ID: ${widget.chapterIndex}");
-    // Cargar los capítulos de la historia
-
     // Escuchar cambios en el estado del provider
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(pageContentProvider.notifier).reset();
+    });
     _loadChapters();
   }
 
@@ -120,10 +211,9 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
     final backgroundColor = isDarkmode
         ? const Color(0xFF121212) // Negro tenue (muy oscuro)
         : const Color(0xFFF5E1B2);
-
     // Estilo del texto
     final textStyle = TextStyle(
-      fontSize: 18,
+      fontSize: 17,
       color: isDarkmode ? Colors.white : Colors.black,
       height: 1.75,
     );
@@ -141,8 +231,8 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
               : SafeArea(
                   child: Builder(
                     builder: (context) {
-                      final screenSize = MediaQuery.of(context).size;
-                      List<String> pages = [];
+                      // final screenSize = MediaQuery.of(context).size;
+                      // List<String> pages = [];
 
                       // pages.addAll(paginateContent(
                       //   // TODO REVISAR ESTO PORQUE SE ROMPEEE CUANDO SE AÑADEN CAPÍTULOS o cuando voy a mis capitulos de una historia que cree
@@ -151,17 +241,26 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                       //   screenSize,
                       // ));
 
-                      if (widget.chapterIndex < chapters.length) {
-                        pages.addAll(paginateContent(
+                      // if (widget.chapterIndex < chapters.length) {
+                      //   pages.addAll(paginateContent(
+                      //     chapters[widget.chapterIndex].content,
+                      //     textStyle,
+                      //     screenSize,
+                      //   ));
+                      // } else {
+                      //   // Manejar error de índice fuera de rango
+                      //   return ShowError(
+                      //       message:
+                      //           "El capítulo se esta procesando, por favor regresa más tarde");
+                      // }
+
+                      if (pages.isEmpty) {
+                        final screenSize = MediaQuery.of(context).size;
+                        pages = paginateContent(
                           chapters[widget.chapterIndex].content,
                           textStyle,
                           screenSize,
-                        ));
-                      } else {
-                        // Manejar error de índice fuera de rango
-                        return ShowError(
-                            message:
-                                "El capítulo se esta procesando, por favor regresa más tarde");
+                        );
                       }
 
                       return PageFlipWidget(
@@ -198,7 +297,7 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                             pageContent: pageContent,
                             textStyle: TextStyle(
                               fontSize:
-                                  pages.indexOf(pageContent) == 0 ? 16 : 18,
+                                  pages.indexOf(pageContent) == 0 ? 16 : 17,
                               color: isDarkmode ? Colors.white : Colors.black,
                               height: 1.75,
                               // pages.indexOf(pageContent) == 0 ? 1.5 : 1.75,
@@ -228,6 +327,13 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                     },
                   ),
                 ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.translate),
+        onPressed: () {
+          final chapterContent = chapters[widget.chapterIndex].content;
+          _showLanguageSelector(chapterContent);
+        },
+      ),
     );
   }
 }

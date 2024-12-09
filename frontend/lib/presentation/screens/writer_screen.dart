@@ -117,12 +117,12 @@ class _WriterProfileScreenState extends ConsumerState<WriterProfileScreen> {
                           child: Text(
                             generarBioWriter(),
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 13,
                               color: isDarkmode
                                   ? Colors.grey[400]
                                   : Colors.grey[700],
                             ),
-                            // textAlign: TextAlign.start,
+                            textAlign: TextAlign.center,
                           ),
                         ),
                         const SizedBox(height: 20),
