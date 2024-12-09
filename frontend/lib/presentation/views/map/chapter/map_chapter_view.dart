@@ -38,13 +38,13 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
   BitmapDescriptor customChapterIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor customUserIcon = BitmapDescriptor.defaultMarker;
   bool isLoading = true;
-  bool isLoadingMap = true;
+  bool isLoadingLocationUser = true;
   late final double latitude;
   late final double longitude;
   late final String title;
   late int currentChapterChange;
-  late double latitudeUser;
-  late double longitudeUser;
+  double? latitudeUser;
+  double? longitudeUser;
   late StreamSubscription<Position> positionStream;
   final List<LatLng> _markersChapters = [];
   final SwiperController _controllerSwiper = SwiperController();
@@ -71,7 +71,7 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
     } finally {
       if (mounted) {
         setState(() {
-          isLoadingMap = false;
+          isLoadingLocationUser = false;
         });
       }
     }
@@ -99,7 +99,7 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
   }
 
   void customMarkerChapters() {
-    BitmapDescriptor.asset(const ImageConfiguration(size: Size(75, 75)),
+    BitmapDescriptor.asset(const ImageConfiguration(size: Size(65, 65)),
             'assets/images/marker_chapter.webp')
         .then(
       (value) {
@@ -109,7 +109,7 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
   }
 
   void customMarkerUser() {
-    BitmapDescriptor.asset(const ImageConfiguration(size: Size(75, 75)),
+    BitmapDescriptor.asset(const ImageConfiguration(size: Size(65, 65)),
             'assets/images/marker_user_location.webp')
         .then(
       (value) {
@@ -144,12 +144,19 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
     super.initState();
     customMarkerChapters();
     customMarkerUser();
-    locationUser();
+    initFunctions();
+    // Inicializa las variables en 0 o en un valor predeterminado
     latitude = widget.latitudeFromRouter;
     longitude = widget.longitudeFromRouter;
-    // title = widget.titleFromRouter;
     currentChapterChange = widget.currentChapter;
     _loadChapters();
+    // locationUser();
+    startTrackingUser();
+    // title = widget.titleFromRouter;
+  }
+
+  Future<void> initFunctions() async {
+    await locationUser();
     startTrackingUser();
   }
 
@@ -197,86 +204,84 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
     return SafeArea(
       child: Stack(
         children: [
-          isLoadingMap
-              ? Center(child: SpinKitFadingCircle(color: colors.primary))
-              : GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(
-                        latitude, longitude), // Posición inicial del mapa
-                    zoom: 17,
-                    tilt: 50,
-                    bearing: 0,
-                  ),
-                  onMapCreated: (controller) {
-                    _mapController = controller;
-                    // addMarker(); // Agregar marcador cuando el mapa se cree
-                  },
-                  markers: {
-                    // MARKER user
-                    Marker(
-                        markerId: const MarkerId('user-location'),
-                        position: LatLng(latitudeUser,
-                            longitudeUser), // Posición inicial del marcador
-                        icon: customUserIcon,
-                        infoWindow: InfoWindow(
-                          title: "Ubicación actual",
-                          // snippet: 'Ubicación del usuario',
-                        ),
-                        onTap: () {
-                          locationUser();
-                        }),
+          // isLoadingLocationUser
+          // ? Center(child: SpinKitFadingCircle(color: colors.primary))
+          // :
+          GoogleMap(
+            initialCameraPosition: CameraPosition(
+              target: LatLng(latitude, longitude), // Posición inicial del mapa
+              zoom: 15,
+              // tilt: 50,
+              // bearing: 0,
+            ),
+            onMapCreated: (controller) {
+              _mapController = controller;
+              // addMarker(); // Agregar marcador cuando el mapa se cree
+            },
+            markers: {
+              // MARKER user
+              if (!isLoadingLocationUser &&
+                  latitudeUser != null &&
+                  longitudeUser != null)
+                Marker(
+                    markerId: const MarkerId('user-location'),
+                    position: LatLng(latitudeUser!,
+                        longitudeUser!), // Posición inicial del marcador
+                    icon: customUserIcon,
+                    infoWindow: InfoWindow(
+                      title: "Ubicación actual",
+                      // snippet: 'Ubicación del usuario',
+                    ),
+                    onTap: () {
+                      locationUser();
+                    }),
 
-                    // MARKER chapter
-                    if (chapters.isNotEmpty)
-                      ...chapters.map(
-                        (chapter) => Marker(
-                            markerId:
-                                MarkerId('chapter-location-${chapter.id}'),
-                            position: LatLng(
-                                chapter.latitude,
-                                chapter
-                                    .longitude), // Posición inicial del marcador
-                            icon: customChapterIcon,
-                            infoWindow: InfoWindow(
-                              title: chapter.title,
-                              // snippet:
-                              //     'Ubicación del capítulo ${chapters.indexOf(chapter) + 1}',
-                            ),
-                            onTap: () async {
-// Animación manual para moverse al capítulo deseado lentamente
-                              await Future.delayed(
-                                  const Duration(milliseconds: 300), () {
-                                _controllerSwiper.move(
-                                    chapters.indexOf(chapter),
-                                    animation: true);
-                              });
-
-                              setState(() {
-                                currentChapterChange =
-                                    chapters.indexOf(chapter);
-                              });
-                            }),
+              // MARKER chapter
+              if (chapters.isNotEmpty)
+                ...chapters.map(
+                  (chapter) => Marker(
+                      markerId: MarkerId('chapter-location-${chapter.id}'),
+                      position: LatLng(chapter.latitude,
+                          chapter.longitude), // Posición inicial del marcador
+                      icon: customChapterIcon,
+                      infoWindow: InfoWindow(
+                        title: chapter.title,
+                        // snippet:
+                        //     'Ubicación del capítulo ${chapters.indexOf(chapter) + 1}',
                       ),
+                      onTap: () async {
+// Animación manual para moverse al capítulo deseado lentamente
+                        await Future.delayed(const Duration(milliseconds: 300),
+                            () {
+                          _controllerSwiper.move(chapters.indexOf(chapter),
+                              animation: true);
+                        });
 
-                    // Marker(
-                    //   markerId: const MarkerId('selected-location'),
-                    //   position: LatLng(
-                    //       latitude, longitude), // Posición inicial del marcador
-                    //   icon: customChapterIcon,
-                    //   infoWindow: InfoWindow(
-                    //     title: title,
-                    //     snippet: 'Ubicación del capítulo',
-                    //   ),
-                    // ),
-                  }, // Selecciona el tipo de mapa
-                  zoomControlsEnabled: true, // Activa los botones de zoom
-                  myLocationButtonEnabled: true, // Activa el botón de ubicación
-                  mapToolbarEnabled:
-                      true, // Habilita la barra de herramientas de Google Maps
-                  myLocationEnabled:
-                      false, // Muestra la ubicación actual (requiere permisos)
-                  style: isDarkmode ? mapOptionDark : "",
+                        setState(() {
+                          currentChapterChange = chapters.indexOf(chapter);
+                        });
+                      }),
                 ),
+
+              // Marker(
+              //   markerId: const MarkerId('selected-location'),
+              //   position: LatLng(
+              //       latitude, longitude), // Posición inicial del marcador
+              //   icon: customChapterIcon,
+              //   infoWindow: InfoWindow(
+              //     title: title,
+              //     snippet: 'Ubicación del capítulo',
+              //   ),
+              // ),
+            }, // Selecciona el tipo de mapa
+            zoomControlsEnabled: true, // Activa los botones de zoom
+            myLocationButtonEnabled: true, // Activa el botón de ubicación
+            mapToolbarEnabled:
+                true, // Habilita la barra de herramientas de Google Maps
+            myLocationEnabled:
+                false, // Muestra la ubicación actual (requiere permisos)
+            style: isDarkmode ? mapOptionDark : "",
+          ),
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: Container(
@@ -391,8 +396,19 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
                   ),
                   onPressed: () {
                     // Función para centrar en la ubicación actual
-                    changePositionChapter(
-                        latitude: latitudeUser, longitude: longitudeUser);
+                    if (!isLoadingLocationUser &&
+                        latitudeUser != null &&
+                        longitudeUser != null) {
+                      changePositionChapter(
+                          latitude: latitudeUser!, longitude: longitudeUser!);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                          "Estamos buscando tu ubicación...",
+                        ),
+                        backgroundColor: colors.primary,
+                      ));
+                    }
                   },
                 ),
                 const SizedBox(height: 10),

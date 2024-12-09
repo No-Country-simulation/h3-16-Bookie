@@ -8,7 +8,6 @@ import 'package:bookie/presentation/widgets/shared/show_error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:go_router/go_router.dart';
 
 class StoryScreen extends ConsumerStatefulWidget {
   final int storyId; // Recibimos el id desde la ruta
@@ -181,6 +180,7 @@ class _StoryScreenDetail extends ConsumerWidget {
               latitude: story.chapters[0].latitude,
               longitude: story.chapters[0].longitude,
               storyId: story.id,
+              chapters: story.chapters,
             ),
 
             const SizedBox(height: 16),

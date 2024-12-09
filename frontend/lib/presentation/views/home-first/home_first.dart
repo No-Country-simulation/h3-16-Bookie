@@ -5,6 +5,8 @@ import 'package:bookie/presentation/providers/genres_provider.dart';
 import 'package:bookie/presentation/providers/stories_all_provider.dart';
 import 'package:bookie/presentation/providers/user_provider.dart';
 import 'package:bookie/presentation/views/home-first/home_first_search.dart';
+import 'package:bookie/presentation/widgets/shared/shimmer_close_card.dart';
+import 'package:bookie/presentation/widgets/shared/shimmer_writter_card.dart';
 import 'package:flutter/material.dart';
 import 'package:bookie/presentation/widgets/navbar/navbar_homepage.dart';
 import 'package:bookie/presentation/widgets/section/home_first/hero_section.dart';
@@ -81,16 +83,16 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
     final stories = ref.watch(storiesAllProvider);
     final writers = ref.watch(usersProvider);
 
-    final colors = Theme.of(context).colorScheme;
+    // final colors = Theme.of(context).colorScheme;
 
-    if (stories.isEmpty || writers.isEmpty) {
-      return Center(
-        child: SpinKitFadingCircle(
-          color: colors.primary,
-          size: 50.0,
-        ),
-      );
-    }
+    // if (stories.isEmpty || writers.isEmpty) {
+    //   return Center(
+    //     child: SpinKitFadingCircle(
+    //       color: colors.primary,
+    //       size: 50.0,
+    //     ),
+    //   );
+    // }
 
     return SafeArea(
       child: PageView(
@@ -108,17 +110,21 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   NavBarCustom(
-                      onSearchTapped: _showSearchSection, // Botón de búsqueda
-                      // localizations: localizations,
-                      // changeLanguage: changeLanguage
-                      ),
+                    onSearchTapped: _showSearchSection, // Botón de búsqueda
+                    // localizations: localizations,
+                    // changeLanguage: changeLanguage
+                  ),
                   HeroSection(unreadStories: unreadStories),
-                  CloseStoriesSection(
-                      stories: stories, 
-                      // localizations: localizations
-                      ),
+                  stories.isEmpty
+                      ? ShimmerCardContent()
+                      : CloseStoriesSection(
+                          stories: stories,
+                          // localizations: localizations
+                        ),
                   StoriesReadSection(readStories: readStories),
-                  WritersSection(writers: writers),
+                  writers.isEmpty
+                      ? ShimmerWidgetWritterCard()
+                      : WritersSection(writers: writers),
                 ],
               ),
             ),

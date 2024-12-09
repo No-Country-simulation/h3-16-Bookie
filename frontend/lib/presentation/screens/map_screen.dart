@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bookie/config/constants/environment.dart';
 import 'package:bookie/config/geolocator/geolocator.dart';
+import 'package:bookie/presentation/providers/location_provider.dart';
 import 'package:bookie/presentation/views/map/google_maps_dark.dart';
 import 'package:bookie/presentation/widgets/cards/story/map/card_chapter_map.dart';
 import 'package:card_swiper/card_swiper.dart';
@@ -51,8 +52,8 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
   late Future<bool> isUnlockedFuture;
   bool isLoading = true;
   bool isLoadingMap = true;
-  late double latitudeUser;
-  late double longitudeUser;
+  double? latitudeUser;
+  double? longitudeUser;
   final String title = "title";
   late StreamSubscription<Position> positionStream;
   bool isCardVisible = false;
@@ -130,7 +131,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
   }
 
   void customMarkerStories() {
-    BitmapDescriptor.asset(const ImageConfiguration(size: Size(65, 65)),
+    BitmapDescriptor.asset(const ImageConfiguration(size: Size(60, 60)),
             'assets/images/marker_story.webp')
         .then(
       (value) {
@@ -142,7 +143,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
   }
 
   void customMarkerUser() {
-    BitmapDescriptor.asset(const ImageConfiguration(size: Size(75, 75)),
+    BitmapDescriptor.asset(const ImageConfiguration(size: Size(65, 65)),
             'assets/images/marker_user_location.webp')
         .then(
       (value) {
@@ -153,35 +154,35 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
     );
   }
 
-  Future<List<LatLng>> fetchPolylinePoints({
-    required double latitudeDestination,
-    required double longitudeDestination,
-  }) async {
-    try {
-      final polylinePoints = PolylinePoints();
+  // Future<List<LatLng>> fetchPolylinePoints({
+  //   required double latitudeDestination,
+  //   required double longitudeDestination,
+  // }) async {
+  //   try {
+  //     final polylinePoints = PolylinePoints();
 
-      final result = await polylinePoints.getRouteBetweenCoordinates(
-          googleApiKey: Environment.theGoogleMapsApiKey,
-          request: PolylineRequest(
-            origin: PointLatLng(latitudeUser, longitudeUser),
-            destination: PointLatLng(latitudeDestination, longitudeDestination),
-            mode: TravelMode.driving,
-          ));
+  //     final result = await polylinePoints.getRouteBetweenCoordinates(
+  //         googleApiKey: Environment.theGoogleMapsApiKey,
+  //         request: PolylineRequest(
+  //           origin: PointLatLng(latitudeUser, longitudeUser),
+  //           destination: PointLatLng(latitudeDestination, longitudeDestination),
+  //           mode: TravelMode.driving,
+  //         ));
 
-      if (result.points.isNotEmpty) {
-        final points = result.points
-            .map((point) => LatLng(point.latitude, point.longitude))
-            .toList();
+  //     if (result.points.isNotEmpty) {
+  //       final points = result.points
+  //           .map((point) => LatLng(point.latitude, point.longitude))
+  //           .toList();
 
-        return points;
-      } else {
-        throw Exception("No se encontraron puntos");
-      }
-    } catch (e) {
-      print("Error al obtener los puntos del polyline: $e");
-      return [];
-    }
-  }
+  //       return points;
+  //     } else {
+  //       throw Exception("No se encontraron puntos");
+  //     }
+  //   } catch (e) {
+  //     print("Error al obtener los puntos del polyline: $e");
+  //     return [];
+  //   }
+  // }
 
   void _showDistance() {
     // TODO FALTA MOSTRAR LA DISTANCIA Y PONER EN UN TEXTO QUE APARECE TU ME ENTIENDES ESTA FACIL
@@ -235,7 +236,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
 
 // TODO REVISAR SI CAMBIAR DE ICONO DE LOS CHAPTERS
   void customMarkerStoryChapters() {
-    BitmapDescriptor.asset(const ImageConfiguration(size: Size(55, 55)),
+    BitmapDescriptor.asset(const ImageConfiguration(size: Size(50, 50)),
             'assets/images/marker_chapter.webp')
         .then(
       (value) {
@@ -301,6 +302,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
   @override
   void initState() {
     super.initState();
+
     customMarkerUser();
     customMarkerStories();
     customMarkerStoryChapters();
@@ -319,6 +321,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
   Widget build(BuildContext context) {
     final isDarkmode = Theme.of(context).brightness == Brightness.dark;
     final colors = Theme.of(context).colorScheme;
+    final currentPosition = ref.watch(locationProvider);
     // final chapters = ref.watch(chapterProvider);
 
     return SafeArea(
@@ -336,7 +339,8 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
           //       ),
           //     ),
           //   )
-          isLoadingMap
+          // isLoadingMap
+          currentPosition.latitude == 0.0 && currentPosition.longitude == 0.0
               ? Center(
                   child: SpinKitFadingCircle(
                     color: colors.primary,
@@ -345,11 +349,13 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                 )
               : GoogleMap(
                   initialCameraPosition: CameraPosition(
-                    target: LatLng(latitudeUser,
-                        longitudeUser), // Posición inicial del mapa
-                    zoom: 17,
-                    tilt: 50,
-                    bearing: 0,
+                    target: LatLng(
+                        currentPosition.latitude, currentPosition.longitude),
+                    // LatLng(latitudeUser,
+                    //     longitudeUser), // Posición inicial del mapa
+                    zoom: 14,
+                    // tilt: 50,
+                    // bearing: 0,
                   ),
                   onMapCreated: (controller) {
                     _mapController = controller;
@@ -371,18 +377,21 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                   style: isDarkmode ? mapOptionDark : "",
                   // polylines: Set<Polyline>.of(polylinesStory.values),
                   markers: {
-                    Marker(
-                        markerId: const MarkerId('user-location'),
-                        position: LatLng(latitudeUser,
-                            longitudeUser), // Posición inicial del marcador
-                        icon: customUserIcon,
-                        infoWindow: InfoWindow(
-                          title: "Usuario actual",
-                          // snippet: 'Ubicación del usuario',
-                        ),
-                        onTap: () {
-                          locationUser();
-                        }),
+                    if (!isLoadingMap &&
+                        latitudeUser != null &&
+                        longitudeUser != null)
+                      Marker(
+                          markerId: const MarkerId('user-location'),
+                          position: LatLng(latitudeUser!,
+                              longitudeUser!), // Posición inicial del marcador
+                          icon: customUserIcon,
+                          infoWindow: InfoWindow(
+                            title: "Usuario actual",
+                            // snippet: 'Ubicación del usuario',
+                          ),
+                          onTap: () {
+                            locationUser();
+                          }),
                     // ...Set.from(_markers),
                     ...nearbyPlaces.asMap().entries.map((entry) {
                       final e = entry.value;
@@ -579,17 +588,16 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
             alignment: Alignment.bottomCenter,
             child: SizedBox(
               // TODO ESTO PUEDES QUITAR PORQUE CUANDO SCROLEAS Y ESTA ESTO VISIBLE NO SE PUEDE HACER ZOOM ETC EN ESA PARTE. PREUBA BAJANDO EL PADDING , ESTE HEIGHT TU ME ENTIENDES
-              height: !isCardVisible ? 0 : 370,
+              height: !isCardVisible ? 0 : 230,
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 90, horizontal: 10),
+                padding: const EdgeInsets.only(bottom: 60),
                 child: AnimatedOpacity(
                   opacity: isCardVisible ? 1.0 : 0.0,
                   duration: Duration(milliseconds: 300),
                   // The green box must be a child of the AnimatedOpacity widget.
                   child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 70, vertical: 25),
+                          horizontal: 70, vertical: 7),
                       child: CardStoryMap(
                         index: 1,
                       )),
@@ -624,10 +632,9 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
             alignment: Alignment.bottomCenter,
             child: SizedBox(
               // TODO ESTO PUEDES QUITAR PORQUE CUANDO SCROLEAS Y ESTA ESTO VISIBLE NO SE PUEDE HACER ZOOM ETC EN ESA PARTE. PREUBA BAJANDO EL PADDING , ESTE HEIGHT TU ME ENTIENDES
-              height: !isSwiperVisible ? 0 : 370,
+              height: !isSwiperVisible ? 0 : 230,
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 90, horizontal: 10),
+                padding: const EdgeInsets.only(bottom: 60),
                 child: AnimatedOpacity(
                   opacity: isSwiperVisible ? 1.0 : 0.0,
                   duration: Duration(milliseconds: 300),
@@ -639,7 +646,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
 
                       return Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 70, vertical: 25),
+                            horizontal: 70, vertical: 7),
                         child: CardStoryMap(
                           index: 1,
                         ),
@@ -704,12 +711,25 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                   ),
                   onPressed: () {
                     // Función para centrar en la ubicación actual
-                    _mapController?.animateCamera(
-                      CameraUpdate.newLatLng(
-                        LatLng(latitudeUser,
-                            longitudeUser), // Centrar en la ubicación actual
-                      ),
-                    );
+                    if (!isLoadingMap &&
+                        latitudeUser != null &&
+                        longitudeUser != null) {
+                      _mapController?.animateCamera(
+                        CameraUpdate.newLatLng(
+                          LatLng(latitudeUser!,
+                              longitudeUser!), // Centrar en la ubicación actual
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            "Estamos buscando tu ubicación...",
+                          ),
+                          backgroundColor: colors.primary,
+                        ),
+                      );
+                    }
                   },
                 ),
               ],

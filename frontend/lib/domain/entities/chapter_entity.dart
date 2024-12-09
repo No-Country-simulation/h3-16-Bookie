@@ -12,6 +12,16 @@ class ChapterPartial {
     required this.longitude,
     this.image,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "title": title,
+      "latitude": latitude,
+      "longitude": longitude,
+      "image": image
+    };
+  }
 }
 
 class Chapter extends ChapterPartial {

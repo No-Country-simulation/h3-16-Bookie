@@ -2,10 +2,18 @@ import 'package:bookie/config/constants/environment.dart';
 import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:bookie/domain/entities/story_entity.dart';
 import 'package:dio/dio.dart';
+import 'package:geolocator/geolocator.dart';
+
+class GetSortedStories {
+  final List<Story> stories;
+  final Position currentPosition;
+
+  GetSortedStories({required this.stories, required this.currentPosition});
+}
 
 // TODO: Solo toma el primer capítulo o todos(ELEGI POR AHORA EL PRIMER CAPITULO, REVISAR PORQUE PODRIA HABER UN CASO QUE UN CAPITULO DE LA HISTORIA ESTE CERCA BUENO PREGUNTAR O REVISAR)
 // TBM ELEGI GEOLOCATOR
-Future<List<Story>> getSortedStories(List<Story> stories) async {
+Future<GetSortedStories> getSortedStories(List<Story> stories) async {
   try {
     // Obtener la posición actual
     final currentPosition = await determinePosition();
@@ -96,10 +104,12 @@ Future<List<Story>> getSortedStories(List<Story> stories) async {
     }
     // Ordenar las historias por distancia
     stories.sort((a, b) => a.distance.compareTo(b.distance));
-    return stories;
+    return GetSortedStories(stories: stories, currentPosition: currentPosition);
     // }
   } catch (e) {
     print("Error al obtener la posición: $e");
-    return stories;
+    final currentPosition = await determinePosition();
+
+    return GetSortedStories(stories: stories, currentPosition: currentPosition);
   }
 }

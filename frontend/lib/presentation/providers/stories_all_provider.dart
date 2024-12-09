@@ -2,6 +2,7 @@ import 'package:bookie/config/helpers/sorted.dart';
 import 'package:bookie/domain/entities/story_entity.dart';
 import 'package:bookie/infrastructure/datasources/storydb_datasource.dart';
 import 'package:bookie/infrastructure/repositories/story_repository.dart';
+import 'package:bookie/presentation/providers/location_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final storyRepositoryProvider = Provider((ref) {
@@ -36,35 +37,37 @@ final storiesAllProvider =
   return StoriesAllNotifier(
     getStoriesAllNotifier: repository.getStories,
     getStoryByIdNotifier: repository.getStory,
+    ref: ref,
   );
 });
 
 class StoriesAllNotifier extends StateNotifier<List<Story>> {
   final Future<List<Story>> Function() getStoriesAllNotifier;
   final Future<Story> Function(int storyId) getStoryByIdNotifier;
+  final Ref ref;
 
   StoriesAllNotifier({
     required this.getStoriesAllNotifier,
     required this.getStoryByIdNotifier,
+    required this.ref,
   }) : super([]);
 
   Future<void> loadAllStories() async {
     final List<Story> stories = await getStoriesAllNotifier();
 
-    // TODO: REVISAR SI SE TENDRÍA QUE ORDENAR POR DISTANCIA DEL SUSUARIO
     final storiesWithoutEmptyChapters =
         stories.where((story) => story.chapters.isNotEmpty).toList();
 
     final sortedStories = await getSortedStories(storiesWithoutEmptyChapters);
 
-    print(
-        "DISTANCIAS DE TODOS LOS STORIES: ${sortedStories.map((e) => e.distance).toList()}");
+    ref.read(locationProvider.notifier).updateLocation(
+        sortedStories.currentPosition.latitude,
+        sortedStories.currentPosition.longitude);
 
-    state = sortedStories;
+    state = sortedStories.stories;
   }
 
   void addStory(Story story) {
-    // TODO CUANDO SE AÑADE NO TE OLVIDES DE ORDENAR POR DISTANCIA DEL SUSUARIO REVISAR DE ULTIMAS.
     state = [...state, story];
   }
 
@@ -76,23 +79,3 @@ class StoriesAllNotifier extends StateNotifier<List<Story>> {
     return getStoryByIdNotifier(storyId);
   }
 }
-
-
-
-// crear historia
-// final createStoryProvider =
-//     FutureProvider.autoDispose.family<Story, StoryForm>((ref, storyForm) async {
-//   // print("Datos de la historia a crear: ${storyForm.toJson()}");
-
-//   final repository =
-//       ref.watch(storyRepositoryProvider); // Obtener el repositorio
-//   return await repository
-//       .createStory(storyForm); // Llamar al método de crear historia
-// });
-
-// // eliminar historia
-// final deleteStoryProvider =
-//     FutureProvider.autoDispose.family<void, int>((ref, storyId) async {
-//   final repository = ref.watch(storyRepositoryProvider);
-//   return await repository.deleteStory(storyId);
-// });

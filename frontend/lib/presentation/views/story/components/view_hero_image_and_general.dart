@@ -153,8 +153,10 @@ class _StoryHeroImageAndGeneralState
                           size: 18, color: Colors.grey),
                       const SizedBox(width: 4),
                       Text(snapshot.data ?? "10 m",
-                          style: const TextStyle(
-                              fontSize: 14, color: Colors.grey)),
+                          style: TextStyle(
+                              fontSize: 14,
+                              color:
+                                  isDarkmode ? Colors.grey : Colors.grey[700])),
                     ],
                   );
                 } else {
@@ -186,7 +188,9 @@ class _StoryHeroImageAndGeneralState
                 const SizedBox(width: 4),
                 Text(
                     "${widget.lenChapters} ${getChaptersLabel(widget.lenChapters)}",
-                    style: const TextStyle(fontSize: 14, color: Colors.grey)),
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: isDarkmode ? Colors.grey : Colors.grey[700])),
               ],
             ),
             // Row(

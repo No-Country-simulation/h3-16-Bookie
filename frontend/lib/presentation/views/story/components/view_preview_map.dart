@@ -1,5 +1,6 @@
 import 'package:bookie/config/constants/environment.dart';
 import 'package:bookie/config/geolocator/geolocator.dart';
+import 'package:bookie/domain/entities/chapter_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
@@ -9,16 +10,50 @@ class StoryPreviewMaps extends StatelessWidget {
   final double latitude;
   final double longitude;
   final int storyId;
+  final List<ChapterPartial> chapters;
 
   const StoryPreviewMaps(
       {super.key,
       required this.latitude,
       required this.longitude,
+      required this.chapters,
       required this.storyId});
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final isDarkmode = Theme.of(context).brightness == Brightness.dark;
+
+    // final markersImageView = chapters
+    //     .asMap()
+    //     .map((index, chapter) {
+    //       // Asignar un número como etiqueta para cada marcador
+    //       String label =
+    //           (index + 1).toString(); // Etiqueta como "1", "2", "3", ...
+
+    //       return MapEntry(index,
+    //           'icon:https://res.cloudinary.com/dlixnwuhi/image/upload/w_50,h_50,c_scale/v1733415545/wcqq4dl23cpcx6cslcgr.png|label:$label|${chapter.latitude},${chapter.longitude}');
+    //     })
+    //     .values
+    //     .join('&markers=');
+
+    final markersImageView = chapters
+        .asMap()
+        .map((index, chapter) {
+          // Asignar un número como etiqueta para cada marcador
+          String label =
+              (index + 1).toString(); // Etiqueta como "1", "2", "3", ...
+
+          return MapEntry(index,
+              'label:$label|${chapter.latitude},${chapter.longitude}' // Usamos solo la etiqueta sin ícono
+              );
+        })
+        .values
+        .join('&markers=');
+
+    // final pathImageView = chapters.map((chapter) {
+    //   return '${chapter.latitude},${chapter.longitude}';
+    // }).join('|');
 
     Future<void> openGoogleMaps() async {
       try {
@@ -79,7 +114,23 @@ class StoryPreviewMaps extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),
                   child: Image.network(
-                    'https://maps.googleapis.com/maps/api/staticmap?center=$latitude,$longitude&zoom=15&size=600x300&maptype=roadmap&markers=icon:https://res.cloudinary.com/dlixnwuhi/image/upload/v1733415545/wcqq4dl23cpcx6cslcgr.png%7Clabel:S%7C$latitude,$longitude&key=${Environment.theGoogleMapsApiKey}',
+                    'https://maps.googleapis.com/maps/api/staticmap?center=$latitude,$longitude&zoom=13&size=600x300&maptype=roadmap&markers=$markersImageView'
+                    '${isDarkmode ? '&style=feature:all|element:geometry|color:0x212121' // Fondo oscuro
+                            '&style=feature:all|element:labels.text.stroke|color:0x212121' // Eliminar bordes
+                            '&style=feature:all|element:labels.text.fill|color:0xffffff' // Texto claro
+                            '&style=feature:poi|element:geometry|color:0x37474f' // POI en gris oscuro
+                            '&style=feature:poi|element:labels.icon|visibility:on|color:0x757575' // Íconos POI opacos
+                            '&style=feature:road|element:geometry|color:0x4e4e4e' // Carreteras más claras
+                            '&style=feature:road|element:geometry.stroke|color:0x616161' // Bordes de carretera claros
+                            '&style=feature:road|element:labels.text.fill|color:0xeaeaea' // Texto claro en carreteras
+                            '&style=feature:transit|element:geometry|color:0x2f3948' // Transporte oscuro
+                            '&style=feature:transit|element:labels.icon|visibility:on|color:0x616161' // Íconos de transporte opacos
+                            '&style=feature:administrative|element:labels.icon|visibility:on|color:0x616161' // Íconos administrativos opacos
+                            '&style=feature:landscape.natural|element:labels.icon|visibility:on|color:0x616161' // Íconos de paisajes naturales opacos
+                            '&style=feature:business|element:labels.icon|visibility:on|color:0x616161' // Íconos de negocios opacos
+                            '&style=feature:water|element:geometry|color:0x000000' // Agua negra
+                        : ""}'
+                    '&key=${Environment.theGoogleMapsApiKey}',
                     fit: BoxFit.cover,
                     loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress == null) return child;

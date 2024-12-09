@@ -1,5 +1,4 @@
 import 'package:bookie/config/geolocator/geolocator.dart';
-import 'package:bookie/config/helpers/get_distance_minime.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
