@@ -46,7 +46,7 @@ class StoriesReadSection extends StatelessWidget {
                         chapter: story['chapter']!,
                         onCardPress: () {
                           // Aquí es donde agregarías la lógica para navegar al card
-                          context.push('/story/${story['id']}');
+                          context.push('/chapters/view/259/${index + 1}');
                           // print('Navegando a ${story['title']}');
                         },
                       ),
