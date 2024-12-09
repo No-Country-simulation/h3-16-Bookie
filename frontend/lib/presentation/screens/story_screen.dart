@@ -8,6 +8,7 @@ import 'package:bookie/presentation/widgets/shared/show_error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:go_router/go_router.dart';
 
 class StoryScreen extends ConsumerStatefulWidget {
   final int storyId; // Recibimos el id desde la ruta
@@ -52,6 +53,7 @@ class _StoryScreenState extends ConsumerState<StoryScreen> {
   Widget build(BuildContext context) {
     final stories = ref.watch(storiesAllProvider);
     final colors = Theme.of(context).colorScheme;
+    final isDarkmode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       body: SafeArea(
@@ -278,7 +280,9 @@ class _StoryScreenDetail extends ConsumerWidget {
             const SizedBox(height: 16),
 
             // mostrando temporalmente los capitulos para hacer el mostrado o bloqueado de historias cuando el suusario esta cerca a la ubicación
-            StoryChapters(storyId: story.id, chapters: story.chapters)
+            StoryChapters(storyId: story.id, chapters: story.chapters),
+
+            const SizedBox(height: 8),
           ],
         ),
       )),

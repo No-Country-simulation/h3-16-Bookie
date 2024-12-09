@@ -4,4 +4,6 @@ abstract class ChapterRepository {
   Future<List<Chapter>> getChaptersByStoryId(int storyId);
 
   Future<Chapter> createChapter(ChapterForm chapterForm);
+
+  Future<Chapter> editChapter(ChapterForm chapterForm, int chapterId);
 }

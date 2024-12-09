@@ -333,6 +333,9 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
           final chapterContent = chapters[widget.chapterIndex].content;
           _showLanguageSelector(chapterContent);
         },
+        backgroundColor: isDarkmode
+            ? Colors.black.withOpacity(0.6)
+            : Colors.white.withOpacity(0.6),
       ),
     );
   }

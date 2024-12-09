@@ -16,4 +16,9 @@ class ChapterRepositoryImpl implements ChapterRepository {
   Future<Chapter> createChapter(ChapterForm chapterForm) {
     return datasource.createChapter(chapterForm);
   }
+
+  @override
+  Future<Chapter> editChapter(ChapterForm chapterForm, int chapterId) {
+    return datasource.editChapter(chapterForm, chapterId);
+  }
 }

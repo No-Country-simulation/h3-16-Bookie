@@ -355,7 +355,13 @@ class _StoryEditDetailChaptersPageState
                                     ),
                                     onTap: () {
                                       context.push(
-                                          '/chapter/create/${widget.storyId}/edit/${chapter.id}');
+                                          '/chapter/create/${widget.storyId}/edit/${chapter.id}',
+                                          extra: {
+                                            "title": chapter.title,
+                                            "content": chapter.content,
+                                            "image": chapter.image,
+                                            "edit": true,
+                                          });
                                     },
                                   ),
                                 );

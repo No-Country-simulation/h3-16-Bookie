@@ -98,9 +98,20 @@ final appRouter = GoRouter(
               final chapterId =
                   int.parse(state.pathParameters['chapterId'] ?? '0');
 
+              final extra = state.extra
+                  as Map?; // Esto recupera los parámetros adicionales de la ruta (como 'title' y 'content')
+
+              final String titleMod = extra?['title'] ??
+                  ''; // Usar un valor por defecto si no existe
+              final String contentMod = extra?['content'] ?? '';
+              final bool edit = extra?['edit'] ?? false;
+
               return CreateChapterScreen(
                 storyId: storyId,
                 chapterId: chapterId,
+                titleMod: titleMod,
+                contentMod: contentMod,
+                edit: edit,
               );
             }),
       ],

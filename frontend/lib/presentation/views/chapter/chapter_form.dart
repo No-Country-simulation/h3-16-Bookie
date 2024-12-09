@@ -19,11 +19,17 @@ class CreateChapterScreen extends ConsumerStatefulWidget {
   static const String name = 'create-chapter';
   final int storyId;
   final int? chapterId;
+  final String? titleMod;
+  final String? contentMod;
+  final bool? edit;
 
   const CreateChapterScreen({
     super.key,
     required this.storyId,
+    this.edit,
     this.chapterId,
+    this.titleMod,
+    this.contentMod,
   });
 
   @override
@@ -49,7 +55,21 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
   String _generatedText = ""; // Texto acumulado.
   String _prompt = "";
   bool _isGeneratingText = true;
+
   // final QuillController _controller = QuillController.basic();
+
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   // Obtenemos los parámetros de la ruta actual
+  //   final Map<String, dynamic>? extra =
+  //       GoRouterState.of(context).extra as Map<String, dynamic>?;
+
+  //   // Inicializamos los controladores con los valores obtenidos de la ruta
+  //   _titleController = TextEditingController(text: extra?['title'] ?? "");
+  //   _contentController = TextEditingController(text: extra?['content'] ?? "");
+  //   // _imageController = TextEditingController(text: extra?['image'] ?? "");
+  // }
 
   void _toggleBold() {
     setState(() {
@@ -78,7 +98,15 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
     // });
     _titleController.clear();
     _contentController.clear();
-    _formKey.currentState?.reset(); // Resetea el estado del formulario
+    _formKey.currentState?.reset();
+
+    // asignar si se va a modificar el capitulo
+    if (widget.titleMod != null && widget.contentMod != null) {
+      setState(() {
+        _titleController.text = widget.titleMod!;
+        _contentController.text = widget.contentMod!;
+      });
+    }
   }
 
   // @override
@@ -228,11 +256,12 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
       barrierDismissible: false, // No se puede cerrar al hacer clic afuera
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Guardar capítulo',
+          title: Text(
+              '${widget.edit == true ? "Modificar" : "Guardar"} capítulo',
               style: TextStyle(color: colors.primary, fontSize: 22),
               textAlign: TextAlign.center),
           content: Text(
-              "Vas a guardar este capítulo con tu ubicación actual. Verifica que sea la ubicación correcta antes de proceder."),
+              "Vas a ${widget.edit == true ? "modificar" : "guardar"} este capítulo con tu ubicación actual. Verifica que sea la ubicación correcta antes de proceder."),
           actionsAlignment: MainAxisAlignment.center,
           actions: <Widget>[
             ElevatedButton(
@@ -244,7 +273,8 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
                 // Aquí puedes añadir la lógica para guardar el capítulo con la ubicación actual
                 _submitForm();
               },
-              child: Text('Guardar', style: TextStyle(color: Colors.black)),
+              child: Text(widget.edit == true ? "Modificar" : "Guardar",
+                  style: TextStyle(color: Colors.black)),
             ),
             TextButton(
               onPressed: () {
@@ -333,8 +363,15 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
           loadingMessage = "Ya falta poco...";
         });
 
-        final chapter =
-            await ref.read(chapterProvider.notifier).addChapter(chapterForm);
+        Chapter? chapter;
+        if (widget.edit != true) {
+          chapter =
+              await ref.read(chapterProvider.notifier).addChapter(chapterForm);
+        } else {
+          chapter = await ref
+              .read(chapterProvider.notifier)
+              .modChapter(chapterForm, widget.chapterId!);
+        }
 
         final chapterIndex =
             ref.read(chapterProvider.notifier).currentChapter(chapter.id);
@@ -417,8 +454,10 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
     showDialog(
       context: context,
       barrierDismissible: false, // No se puede cerrar al hacer clic afuera
+
       builder: (BuildContext context) {
         return AlertDialog(
+          actionsAlignment: MainAxisAlignment.center,
           title: Text('Generar texto'),
           content: Text(
               'Se generará una historia basado en el contenido actual con inteligencia artificial, también puedes mejorar y corregir la historia que escribistes.'),
@@ -431,20 +470,20 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
                 focusNode.unfocus();
                 _generateAndModifyStory(context);
               },
-              child: Text('Generar historia',
+              child: Text('Generar o corregir historia',
                   style: TextStyle(color: Colors.black)),
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: colors.primary,
-              ),
-              onPressed: () {
-                focusNode.unfocus();
-                _modifyStory(context);
-              },
-              child: Text('Mejorar y corregir',
-                  style: TextStyle(color: Colors.black)),
-            ),
+            // ElevatedButton(
+            //   style: ElevatedButton.styleFrom(
+            //     backgroundColor: colors.primary,
+            //   ),
+            //   onPressed: () {
+            //     focusNode.unfocus();
+            //     _modifyStory(context);
+            //   },
+            //   child: Text('Mejorar y corregir',
+            //       style: TextStyle(color: Colors.black)),
+            // ),
             TextButton(
               onPressed: () {
                 setState(() {
@@ -479,6 +518,10 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
       loadingMessage = "Generando historia...";
     });
 
+    if (!_isGeneratingText) {
+      Navigator.of(context).pop(); // Cerrar el modal
+    }
+
     // _contentController.text = "Generando historia..."; // Actualiza el TextField
 
     try {
@@ -497,12 +540,8 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
         contextStory:
             // Este título es importante a considerar en la generación de la historia:
             // TODO: REVISAR ESTO SI CONSIDERAR CIUDAD O PROVINCIA
-            "${_titleController.text.trim().isEmpty ? "" : _titleController.text}. ${_prompt.trim().isEmpty ? "" : _prompt}. ${getCountryAndProvince?.country ?? ""}, ${getCountryAndProvince?.province ?? ""}",
+            "Contexto: ${_titleController.text.trim().isEmpty ? "" : _titleController.text}, ${_prompt.trim().isEmpty ? "" : _prompt}. Lugar: ${getCountryAndProvince?.country ?? ""}, ${getCountryAndProvince?.province ?? ""}",
       );
-
-      if (!_isGeneratingText) {
-        Navigator.of(context).pop(); // Cerrar el modal
-      }
 
       chatStream.listen((streamChatCompletion) {
         final newText =
@@ -734,7 +773,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
                   ? () => _showSaveChapterDialog()
                   : null,
               child: Text(
-                "Guardar",
+                widget.edit == true ? "Modificar" : "Guardar",
                 style: TextStyle(
                   color: (_isFormValid() && isEnabled)
                       ? colors.primary

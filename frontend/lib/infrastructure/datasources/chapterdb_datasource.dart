@@ -33,4 +33,18 @@ class ChapterDbDatasource extends ChapterDatasource {
 
     return chapter;
   }
+
+  @override
+  Future<Chapter> editChapter(ChapterForm chapterForm, int chapterId) async {
+    final response = await FetchApi.fetchDio().put(
+      '/v1/chapters/$chapterId',
+      data: chapterForm.toJson(),
+    );
+
+    final chapterDBResponse = ChapterDbResponse.fromJson(response.data);
+
+    final Chapter chapter = ChapterMapper.chapterToEntity(chapterDBResponse);
+
+    return chapter;
+  }
 }

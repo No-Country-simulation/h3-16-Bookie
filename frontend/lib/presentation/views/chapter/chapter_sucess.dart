@@ -1,10 +1,12 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:bookie/presentation/providers/translater_chapter.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
-class ChapterSuccess extends StatefulWidget {
+class ChapterSuccess extends ConsumerStatefulWidget {
   static const String name = 'chapter-success';
   final int storyId;
   final int chapterIndex;
@@ -13,10 +15,10 @@ class ChapterSuccess extends StatefulWidget {
       {super.key, required this.storyId, required this.chapterIndex});
 
   @override
-  State<ChapterSuccess> createState() => _ChapterSuccessState();
+  ConsumerState<ChapterSuccess> createState() => _ChapterSuccessState();
 }
 
-class _ChapterSuccessState extends State<ChapterSuccess> {
+class _ChapterSuccessState extends ConsumerState<ChapterSuccess> {
   final ConfettiController _confettiController =
       ConfettiController(duration: const Duration(seconds: 2));
 
@@ -112,8 +114,38 @@ class _ChapterSuccessState extends State<ChapterSuccess> {
                 ),
                 const SizedBox(height: 40),
                 // Botones mágicos
-                ButtonColumn(context,
-                    storyId: widget.storyId, chapterIndex: widget.chapterIndex),
+
+                Column(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        // limpiar la vista del capitulo
+                        ref.read(pageContentProvider.notifier).reset();
+
+                        // Acción para vista previa
+                        context.push(
+                            '/chapters/view/${widget.storyId}/${widget.chapterIndex}');
+                      },
+                      child: const Text('Vista Previa'),
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Acción para añadir capítulo
+                        context.pop();
+                      },
+                      child: const Text('Añadir Otro Capítulo'),
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Acción para ir al home
+                        context.push('/home/2');
+                      },
+                      child: const Text('Ir a mis historias'),
+                    ),
+                  ],
+                )
               ],
             ),
           ),
@@ -174,33 +206,36 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
 }
 
 // Botones mágicos
-Widget ButtonColumn(BuildContext context,
-    {required int storyId, required int chapterIndex}) {
-  return Column(
-    children: [
-      ElevatedButton(
-        onPressed: () {
-          // Acción para vista previa
-          context.push('/chapters/view/$storyId/$chapterIndex');
-        },
-        child: const Text('Vista Previa'),
-      ),
-      const SizedBox(height: 10),
-      ElevatedButton(
-        onPressed: () {
-          // Acción para añadir capítulo
-          context.pop();
-        },
-        child: const Text('Añadir Otro Capítulo'),
-      ),
-      const SizedBox(height: 10),
-      ElevatedButton(
-        onPressed: () {
-          // Acción para ir al home
-          context.push('/home/2');
-        },
-        child: const Text('Ir a mis historias'),
-      ),
-    ],
-  );
-}
+// Widget ButtonColumn(BuildContext context,
+//     {required int storyId, required int chapterIndex, Ref ref}) {
+//   return Column(
+//     children: [
+//       ElevatedButton(
+//         onPressed: () {
+//           // limpiar la vista del capitulo
+//           ref.read(pageContentProvider.notifier).reset();
+
+//           // Acción para vista previa
+//           context.push('/chapters/view/$storyId/$chapterIndex');
+//         },
+//         child: const Text('Vista Previa'),
+//       ),
+//       const SizedBox(height: 10),
+//       ElevatedButton(
+//         onPressed: () {
+//           // Acción para añadir capítulo
+//           context.pop();
+//         },
+//         child: const Text('Añadir Otro Capítulo'),
+//       ),
+//       const SizedBox(height: 10),
+//       ElevatedButton(
+//         onPressed: () {
+//           // Acción para ir al home
+//           context.push('/home/2');
+//         },
+//         child: const Text('Ir a mis historias'),
+//       ),
+//     ],
+//   );
+// }

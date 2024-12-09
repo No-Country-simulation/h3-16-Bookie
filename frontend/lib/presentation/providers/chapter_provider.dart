@@ -13,14 +13,19 @@ final chapterProvider =
   final fetchStories =
       ref.watch(chapterRepositoryProvider).getChaptersByStoryId;
   final createChapter = ref.watch(chapterRepositoryProvider).createChapter;
+  final editChapter = ref.watch(chapterRepositoryProvider).editChapter;
 
   return ChapterNotifier(
-      fetchChapter: fetchStories, createChapter: createChapter, ref: ref);
+      fetchChapter: fetchStories,
+      createChapter: createChapter,
+      modChapter: editChapter,
+      ref: ref);
 });
 
 class ChapterNotifier extends StateNotifier<List<Chapter>> {
   final Future<List<Chapter>> Function(int storyId) fetchChapter;
   final Future<Chapter> Function(ChapterForm) createChapter;
+  final Future<Chapter> Function(ChapterForm, int chapterId) modChapter;
 
   // Agregamos una referencia a StoriesAllNotifier y StoriesUserNotifier
   final Ref ref;
@@ -28,6 +33,7 @@ class ChapterNotifier extends StateNotifier<List<Chapter>> {
   ChapterNotifier({
     required this.fetchChapter,
     required this.createChapter,
+    required this.modChapter,
     required this.ref,
   }) : super([]);
 
@@ -35,7 +41,12 @@ class ChapterNotifier extends StateNotifier<List<Chapter>> {
     try {
       final List<Chapter> chapters =
           await fetchChapter(storyId); // Obtén los capítulos por `storyId`
-      state = chapters; // Actualiza el estado con los capítulos obtenidos
+
+      // ordenaos por orden ascendente
+      final sortedChapters = chapters.toList()
+        ..sort((a, b) => a.id.compareTo(b.id));
+
+      state = sortedChapters; // Actualiza el estado con los capítulos obtenidos
     } catch (e) {
       // Manejo de errores
       state = [];
@@ -51,9 +62,6 @@ class ChapterNotifier extends StateNotifier<List<Chapter>> {
         newChapter
       ]; // Actualiza el estado con el nuevo capítulo
 
-      print(
-          "CHAPTERINDEX STADO LISTA CHAPTERS addChapter: ${state.toString()}");
-
       // Actualizamos el estado de la historia del usuario
       ref.read(storiesUserProvider.notifier).updateStory(newChapter);
 
@@ -65,10 +73,27 @@ class ChapterNotifier extends StateNotifier<List<Chapter>> {
     }
   }
 
-  int currentChapter(int chapterId) {
-    print(
-        "CHAPTERINDEX STADO LISTA CHAPTERS currentChapter: ${state.toString()}");
+  Future<Chapter> editChapter(ChapterForm chapter, int chapterId) async {
+    try {
+      final Chapter newChapter =
+          await modChapter(chapter, chapterId); // Edita el capítulo
+      state = [
+        ...state.where((chapter) => chapter.id != chapterId),
+        newChapter
+      ]; // Actualiza el estado con el nuevo capítulo
 
+      // // Actualizamos el estado de la historia del usuario
+      // ref.read(storiesUserProvider.notifier).updateStory(newChapter);
+
+      return newChapter;
+    } catch (e) {
+      // Manejo de errores al editar el capítulo
+      print('Error al editar el capítulo: $e');
+      throw Exception('Error al editar el capítulo');
+    }
+  }
+
+  int currentChapter(int chapterId) {
     return state.indexWhere((chapter) => chapter.id == chapterId);
   }
 

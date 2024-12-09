@@ -1,6 +1,7 @@
 import 'package:bookie/config/helpers/get_image_final.dart';
 import 'package:bookie/presentation/providers/favorite_provider.dart';
 import 'package:bookie/presentation/widgets/cards/close_stories_card.dart';
+import 'package:bookie/presentation/widgets/cards/favorite_card.dart';
 import 'package:bookie/presentation/widgets/shared/show_not_favorites.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -103,12 +104,12 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                         child: child,
                       );
                     },
-                    child: CloseStoriesCard(
+                    child: FavoriteCard(
                       id: card.story.id,
                       imageUrl: getImageUrl(
                           isDarkmode, card.story.img ?? "sin-imagen"),
                       title: card.story.title,
-                      distance: card.story.quantityChapters,
+                      quantityChapters: card.story.quantityChapters,
                       onCardPress: () {
                         context.push('/story/${card.story.id}');
                       },
