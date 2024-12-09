@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:bookie/presentation/providers/chapter_provider.dart';
+import 'package:bookie/presentation/providers/location_provider.dart';
 import 'package:bookie/presentation/views/map/google_maps_dark.dart';
 import 'package:bookie/presentation/widgets/cards/chapter/map/card_chapter_map.dart';
 import 'package:bookie/presentation/widgets/shared/message_empty_chapter.dart';
@@ -103,7 +104,9 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
             'assets/images/marker_chapter.webp')
         .then(
       (value) {
-        customChapterIcon = value;
+        setState(() {
+          customChapterIcon = value;
+        });
       },
     );
   }
@@ -113,9 +116,9 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
             'assets/images/marker_user_location.webp')
         .then(
       (value) {
-        // setState(() {
-        customUserIcon = value;
-        // });
+        setState(() {
+          customUserIcon = value;
+        });
       },
     );
   }
@@ -200,6 +203,7 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
     final isDarkmode = Theme.of(context).brightness == Brightness.dark;
     final colors = Theme.of(context).colorScheme;
     final chapters = ref.watch(chapterProvider);
+    final currentPosition = ref.watch(locationProvider);
 
     return SafeArea(
       child: Stack(
@@ -234,6 +238,20 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
                     ),
                     onTap: () {
                       locationUser();
+                    }),
+
+              if (isLoadingLocationUser)
+                Marker(
+                    markerId: const MarkerId('user-location-temporal'),
+                    position: LatLng(
+                        currentPosition.latitude, currentPosition.longitude),
+                    icon: customUserIcon,
+                    infoWindow: InfoWindow(
+                      title: "Ubicación actual",
+                      // snippet: 'Ubicación del usuario',
+                    ),
+                    onTap: () {
+                      // locationUser();
                     }),
 
               // MARKER chapter

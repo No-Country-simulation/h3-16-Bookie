@@ -11,6 +11,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
@@ -135,9 +136,9 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
             'assets/images/marker_story.webp')
         .then(
       (value) {
-        // setState(() {
-        customStoryIcon = value;
-        // });
+        setState(() {
+          customStoryIcon = value;
+        });
       },
     );
   }
@@ -147,9 +148,9 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
             'assets/images/marker_user_location.webp')
         .then(
       (value) {
-        // setState(() {
-        customUserIcon = value;
-        // });
+        setState(() {
+          customUserIcon = value;
+        });
       },
     );
   }
@@ -240,9 +241,9 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
             'assets/images/marker_chapter.webp')
         .then(
       (value) {
-        // setState(() {
-        customChapterIcon = value;
-        // });
+        setState(() {
+          customChapterIcon = value;
+        });
       },
     );
   }
@@ -391,6 +392,20 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                           ),
                           onTap: () {
                             locationUser();
+                          }),
+
+                    if (isLoadingMap)
+                      Marker(
+                          markerId: const MarkerId('user-location-temporal'),
+                          position: LatLng(currentPosition.latitude,
+                              currentPosition.longitude),
+                          icon: customUserIcon,
+                          infoWindow: InfoWindow(
+                            title: "Usuario actual",
+                            // snippet: 'Ubicación del usuario',
+                          ),
+                          onTap: () {
+                            // locationUser();
                           }),
                     // ...Set.from(_markers),
                     ...nearbyPlaces.asMap().entries.map((entry) {
