@@ -1,9 +1,7 @@
-import 'package:bookie/config/constants/environment.dart';
 import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:bookie/config/helpers/format_distance.dart';
 import 'package:bookie/config/helpers/get_country_province.dart';
 import 'package:bookie/config/helpers/short_name.dart';
-import 'package:dio/dio.dart';
 
 Future<int> getDistanceFromOriginToDestination(
   double destinationLatitude,

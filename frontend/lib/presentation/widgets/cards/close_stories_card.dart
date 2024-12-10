@@ -1,6 +1,7 @@
 // import 'package:bookie/presentation/providers/favorites_provider.dart';
 import 'package:bookie/config/helpers/format_distance.dart';
 import 'package:bookie/config/helpers/get_image_final.dart';
+import 'package:bookie/config/helpers/short_name.dart';
 import 'package:bookie/presentation/providers/favorite_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -162,9 +163,7 @@ class _CloseStoriesCardState extends ConsumerState<CloseStoriesCard> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          widget.title.length >= 12
-                              ? widget.title.substring(0, 10)
-                              : widget.title,
+                          shortenName2(widget.title),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,

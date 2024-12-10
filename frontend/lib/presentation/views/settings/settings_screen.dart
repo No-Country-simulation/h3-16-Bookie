@@ -1,5 +1,7 @@
 import 'package:bookie/config/auth/auth0.dart';
 import 'package:bookie/config/menu/settings_menu.dart';
+import 'package:bookie/presentation/providers/favorite_provider.dart';
+import 'package:bookie/presentation/providers/stories_user_provider.dart';
 import 'package:bookie/presentation/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +12,14 @@ class SettingsScreen extends ConsumerWidget {
   final AuthService authService = AuthService();
 
   SettingsScreen({super.key});
+
+  // Al cerrar sesión
+  void logout(BuildContext context, WidgetRef ref) {
+    ref.read(usersProvider.notifier).setIsLoaded();
+    ref.read(storiesUserProvider.notifier).clearStoriesOnLogout();
+    ref.read(favoriteProvider.notifier).clearStoriesOnLogout();
+    authService.logout(context); // Lógica adicional para cerrar sesión
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,8 +38,7 @@ class SettingsScreen extends ConsumerWidget {
                   leading: Icon(e.icon),
                   onTap: () {
                     if (e.title == "Cerrar sesión") {
-                      ref.read(usersProvider.notifier).setIsLoaded();
-                      authService.logout(context);
+                      logout(context, ref);
                     } else {
                       context.push(e.link ?? '');
                     }

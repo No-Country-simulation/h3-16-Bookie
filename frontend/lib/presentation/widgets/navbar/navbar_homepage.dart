@@ -1,5 +1,3 @@
-import 'package:bookie/config/helpers/get_image_gender_person.dart';
-import 'package:bookie/config/intl/i18n.dart';
 import 'package:bookie/config/persistent/shared_preferences.dart';
 import 'package:flutter/material.dart';
 

@@ -24,6 +24,8 @@ class StoryPreviewMaps extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final isDarkmode = Theme.of(context).brightness == Brightness.dark;
 
+    print("PORQUE SE ME ROMPER: $latitude $longitude");
+
     // final markersImageView = chapters
     //     .asMap()
     //     .map((index, chapter) {

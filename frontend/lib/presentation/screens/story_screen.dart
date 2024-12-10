@@ -52,7 +52,6 @@ class _StoryScreenState extends ConsumerState<StoryScreen> {
   Widget build(BuildContext context) {
     final stories = ref.watch(storiesAllProvider);
     final colors = Theme.of(context).colorScheme;
-    final isDarkmode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       body: SafeArea(

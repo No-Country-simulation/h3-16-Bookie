@@ -9,7 +9,6 @@ import 'package:bookie/presentation/widgets/shared/message_empty_chapter.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -147,21 +146,21 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
     super.initState();
     customMarkerChapters();
     customMarkerUser();
-    initFunctions();
+    locationUser();
+    // initFunctions();
     // Inicializa las variables en 0 o en un valor predeterminado
     latitude = widget.latitudeFromRouter;
     longitude = widget.longitudeFromRouter;
     currentChapterChange = widget.currentChapter;
     _loadChapters();
-    // locationUser();
     startTrackingUser();
     // title = widget.titleFromRouter;
   }
 
-  Future<void> initFunctions() async {
-    await locationUser();
-    startTrackingUser();
-  }
+  // Future<void> initFunctions() async {
+  //   await locationUser();
+  //   startTrackingUser();
+  // }
 
   void changePositionChapter({
     required double latitude,
@@ -177,10 +176,10 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
   void startTrackingUser() {
     positionStream = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10, // Notificar cambios después de 10 metros
+        accuracy: LocationAccuracy.bestForNavigation,
+        distanceFilter: 0, // Notificar cambios después de 10 metros
       ),
-    ).listen((Position position) {
+    ).distinct().listen((Position position) {
       setState(() {
         latitudeUser = position.latitude;
         longitudeUser = position.longitude;

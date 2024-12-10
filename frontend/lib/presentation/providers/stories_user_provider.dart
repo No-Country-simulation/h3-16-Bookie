@@ -144,4 +144,9 @@ class StoriesUserNotifier extends StateNotifier<StoriesUserState> {
       rethrow;
     }
   }
+
+  // Método para limpiar el estado de las historias al cerrar sesión
+  void clearStoriesOnLogout() {
+    state = StoriesUserState(); // Reinicia el estado a su valor inicial
+  }
 }

@@ -42,6 +42,11 @@ class FavoriteNotifier extends StateNotifier<List<Favorite>> {
     }
   }
 
+  // Método para limpiar el estado de las historias al cerrar sesión
+  void clearStoriesOnLogout() {
+    state = []; // Reinicia el estado a su valor inicial
+  }
+
   Future<void> addFavorite(int storyId) async {
     try {
       final userId = await SharedPreferencesKeys.getCredentials()

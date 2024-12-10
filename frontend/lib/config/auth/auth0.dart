@@ -39,7 +39,8 @@ class AuthService {
       }
 
       if (context.mounted) {
-        context.go('/login'); // Redirigir a la pantalla de login
+        await loginOrRegisterWithAuth0(context);
+        // context.go('/login'); // Redirigir a la pantalla de login
       }
       // Si no hay credenciales válidas, proceder al login con Auth0
       // await loginOrRegisterWithAuth0(context);

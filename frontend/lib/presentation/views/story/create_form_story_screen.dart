@@ -7,7 +7,6 @@ import 'package:bookie/config/persistent/shared_preferences.dart';
 import 'package:bookie/domain/entities/genre_entity.dart';
 import 'package:bookie/domain/entities/story_entity.dart';
 import 'package:bookie/infrastructure/mappers/genredb_mapper.dart';
-import 'package:bookie/presentation/providers/chapter_provider.dart';
 import 'package:bookie/presentation/providers/genres_provider.dart';
 import 'package:bookie/presentation/providers/stories_user_provider.dart';
 import 'package:dio/dio.dart';

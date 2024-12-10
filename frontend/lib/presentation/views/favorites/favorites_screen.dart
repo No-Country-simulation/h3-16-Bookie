@@ -1,6 +1,5 @@
 import 'package:bookie/config/helpers/get_image_final.dart';
 import 'package:bookie/presentation/providers/favorite_provider.dart';
-import 'package:bookie/presentation/widgets/cards/close_stories_card.dart';
 import 'package:bookie/presentation/widgets/cards/favorite_card.dart';
 import 'package:bookie/presentation/widgets/shared/show_not_favorites.dart';
 import 'package:flutter/material.dart';

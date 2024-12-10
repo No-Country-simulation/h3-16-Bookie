@@ -4,7 +4,6 @@ import 'package:bookie/presentation/providers/chapter_provider.dart';
 import 'package:bookie/presentation/providers/translater_chapter.dart';
 import 'package:bookie/presentation/views/chapter/view/chapters_view_story_page.dart';
 import 'package:bookie/presentation/widgets/shared/message_empty_chapter.dart';
-import 'package:bookie/presentation/widgets/shared/show_error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -111,18 +110,16 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
 
       // Escucha el estado traducido y repagina
       final translatedContent = ref.read(pageContentProvider);
-      if (translatedContent != null) {
-        final screenSize = MediaQuery.of(context).size;
-        final textStyle = TextStyle(
-          fontSize: 17,
-          color: Theme.of(context).brightness == Brightness.dark
-              ? Colors.white
-              : Colors.black,
-          height: 1.75,
-        );
-        pages = paginateContent(translatedContent, textStyle, screenSize);
-      }
-    } catch (e) {
+      final screenSize = MediaQuery.of(context).size;
+      final textStyle = TextStyle(
+        fontSize: 17,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? Colors.white
+            : Colors.black,
+        height: 1.75,
+      );
+      pages = paginateContent(translatedContent, textStyle, screenSize);
+        } catch (e) {
       print("Error al traducir el contenido: $e");
     } finally {
       setState(() => isLoading = false);
@@ -328,7 +325,6 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                   ),
                 ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.translate),
         onPressed: () {
           final chapterContent = chapters[widget.chapterIndex].content;
           _showLanguageSelector(chapterContent);
@@ -336,6 +332,7 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
         backgroundColor: isDarkmode
             ? Colors.black.withOpacity(0.6)
             : Colors.white.withOpacity(0.6),
+        child: const Icon(Icons.translate),
       ),
     );
   }

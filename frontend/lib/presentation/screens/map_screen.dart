@@ -1,17 +1,14 @@
 import 'dart:async';
 
-import 'package:bookie/config/constants/environment.dart';
 import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:bookie/presentation/providers/location_provider.dart';
 import 'package:bookie/presentation/views/map/google_maps_dark.dart';
 import 'package:bookie/presentation/widgets/cards/story/map/card_chapter_map.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
@@ -251,10 +248,17 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
   void startTrackingUser() {
     positionStream = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10, // Notificar cambios después de 10 metros
+        accuracy: LocationAccuracy.bestForNavigation,
+        distanceFilter: 0, // Notificar cambios después de 10 metros
       ),
-    ).listen((Position position) {
+    ).distinct().listen((Position position) {
+      // Mueve la cámara suavemente
+      _mapController?.animateCamera(
+        CameraUpdate.newLatLng(
+          LatLng(position.latitude, position.longitude),
+        ),
+      );
+
       setState(() {
         latitudeUser = position.latitude;
         longitudeUser = position.longitude;

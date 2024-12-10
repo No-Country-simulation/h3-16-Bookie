@@ -1,7 +1,5 @@
-import 'package:bookie/config/constants/environment.dart';
 import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:bookie/domain/entities/story_entity.dart';
-import 'package:dio/dio.dart';
 import 'package:geolocator/geolocator.dart';
 
 class GetSortedStories {

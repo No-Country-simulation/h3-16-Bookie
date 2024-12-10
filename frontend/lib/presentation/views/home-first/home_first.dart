@@ -1,6 +1,3 @@
-import 'package:bookie/config/intl/get_location_for_intl.dart';
-import 'package:bookie/config/intl/i18n.dart';
-import 'package:bookie/presentation/providers/favorite_provider.dart';
 import 'package:bookie/presentation/providers/genres_provider.dart';
 import 'package:bookie/presentation/providers/stories_all_provider.dart';
 import 'package:bookie/presentation/providers/user_provider.dart';
@@ -15,7 +12,6 @@ import 'package:bookie/presentation/widgets/section/home_first/close_stories_sec
 import 'package:bookie/presentation/widgets/section/home_first/writers_section.dart';
 import 'package:bookie/shared/data/histories.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class HomeFirstScreen extends ConsumerStatefulWidget {
   static const String name = 'first-screen';

@@ -1,3 +1,4 @@
+import 'package:bookie/config/auth/auth0.dart';
 import 'package:bookie/config/constants/general.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -18,6 +19,12 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     _showSplash();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final authService = AuthService();
+    await authService.checkLoginWithPreferencesAndDB(
+        context); // Verificar y loguear si es necesario
   }
 
   // Función que maneja el flujo de la splash screen
@@ -43,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     // Cambiar la opacidad para el fade-out
     setState(() {
-      _opacity = 0.0; // Iniciar fade-out
+      _opacity = 1.0; // Iniciar fade-out
     });
 
     // Esperar 1 segundo para completar el fade-out
@@ -51,7 +58,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
     // Comprobar si el widget sigue montado antes de navegar
     if (mounted) {
-      context.go('/login');
+      // context.go('/login');
+      _checkLoginStatus();
     }
   }
 
