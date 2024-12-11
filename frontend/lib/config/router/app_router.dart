@@ -30,9 +30,18 @@ final appRouter = GoRouter(
       },
       routes: [
         GoRoute(
-            path: 'profile',
-            name: SettingsProfileScreen.name,
-            builder: (context, state) => const SettingsProfileScreen()),
+          path: 'profile',
+          name: SettingsProfileScreen.name,
+          builder: (context, state) {
+            final extra = state.extra as Map?;
+
+            final userId = extra?['userId'] ?? 0;
+
+            return SettingsProfileScreen(
+              writerId: userId,
+            );
+          },
+        ),
         GoRoute(
           path: 'theme',
           name: SettingsThemeScreen.name,

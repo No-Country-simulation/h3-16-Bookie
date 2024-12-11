@@ -1,19 +1,23 @@
+import 'package:bookie/config/helpers/capitalize.dart';
 import 'package:bookie/config/helpers/get_image_final.dart';
+import 'package:bookie/config/helpers/short_name.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class StoriesReadCard extends StatefulWidget {
   final String imageUrl;
   final String title;
-  final String chapter;
+  final int indexChapter;
   final VoidCallback onCardPress;
+  final bool isCompleteStory;
 
   const StoriesReadCard({
     super.key,
     required this.imageUrl,
     required this.title,
-    required this.chapter,
+    required this.indexChapter,
     required this.onCardPress,
+    required this.isCompleteStory,
   });
 
   @override
@@ -126,10 +130,10 @@ class _StoriesReadCardState extends State<StoriesReadCard> {
                           ),
                         )
                       : Text(
-                          widget.title,
+                          capitalizeFirstWord(shortenName2(widget.title)),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: 12,
                             color: colors.primary,
                           ),
                           textAlign: TextAlign.center,
@@ -149,17 +153,17 @@ class _StoriesReadCardState extends State<StoriesReadCard> {
                           ),
                         )
                       : Text(
-                          widget.chapter,
+                          "Capítulo ${widget.indexChapter + 1}",
                           style: TextStyle(
                             fontSize: 12,
                           ),
                         ),
                   SizedBox(height: 1),
                   Text(
-                    "Continuar",
+                    widget.isCompleteStory ? "Completado" : "Continuar",
                     style: TextStyle(
                       color: colors.primary.withOpacity(0.8),
-                      fontSize: 14,
+                      fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

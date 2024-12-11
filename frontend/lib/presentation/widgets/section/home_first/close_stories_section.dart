@@ -28,6 +28,7 @@ class _CloseStoriesSectionState extends ConsumerState<CloseStoriesSection> {
   @override
   Widget build(BuildContext context) {
     final favorites = ref.watch(favoriteProvider);
+    final colors = Theme.of(context).colorScheme;
 
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
@@ -46,6 +47,7 @@ class _CloseStoriesSectionState extends ConsumerState<CloseStoriesSection> {
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
+                color: colors.primary,
               ),
             ),
           ),

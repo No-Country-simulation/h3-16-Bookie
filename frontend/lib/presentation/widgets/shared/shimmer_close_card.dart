@@ -11,6 +11,7 @@ class ShimmerCardContent extends StatelessWidget {
     final shimmerHighlightColor =
         isDarkmode ? Colors.grey[800]! : Colors.grey[100]!;
     final containerShimmer = isDarkmode ? Colors.black : Colors.white;
+    final colors = Theme.of(context).colorScheme;
 
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
@@ -26,6 +27,7 @@ class ShimmerCardContent extends StatelessWidget {
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
+                color: colors.primary,
               ),
             ),
           ),

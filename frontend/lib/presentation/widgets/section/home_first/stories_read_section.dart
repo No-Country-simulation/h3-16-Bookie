@@ -1,14 +1,19 @@
+import 'package:bookie/config/helpers/get_image_final.dart';
+import 'package:bookie/domain/entities/read_entity.dart';
 import 'package:bookie/presentation/widgets/cards/stories_read_card.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class StoriesReadSection extends StatelessWidget {
-  final List<Map<String, dynamic>> readStories;
+  final List<Read> readStories;
 
   const StoriesReadSection({super.key, required this.readStories});
 
   @override
   Widget build(BuildContext context) {
+    final isDarkmode = Theme.of(context).brightness == Brightness.dark;
+    final colors = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
       child: Column(
@@ -23,6 +28,7 @@ class StoriesReadSection extends StatelessWidget {
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
+                color: colors.primary,
               ),
             ),
           ),
@@ -34,21 +40,59 @@ class StoriesReadSection extends StatelessWidget {
               children: List.generate(
                 readStories.length,
                 (index) {
-                  final story = readStories[index];
+                  final readStory = readStories[index];
+
+                  final lastCompleteChapter = readStory.readChapters.lastWhere(
+                    (chapter) => chapter.completeChapter,
+                    orElse: () {
+                      return ReadChapterComplete(
+                          readChapter: ReadChapter(
+                            id: 0,
+                            title: '',
+                            image: getImageUrl(isDarkmode, "sin-imagen"),
+                          ),
+                          completeChapter: false);
+                    },
+                  );
+
+                  // final indexLastCompleteChapter = readStory.story.chapters
+                  //     .indexOf(lastCompleteChapter.readChapter);
+
+                  final indexLastCompleteChapter =
+                      readStory.story.chapters.indexWhere(
+                    (chapter) =>
+                        chapter.id == lastCompleteChapter.readChapter.id,
+                  );
+
+                  if (!lastCompleteChapter.completeChapter) {
+                    return Center(
+                      child: Text(
+                        "",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: isDarkmode ? Colors.grey : Colors.black,
+                        ),
+                      ),
+                    );
+                  }
+
                   return Padding(
                     padding: const EdgeInsets.only(right: 4.0),
                     // Ajusta el espacio entre cards
                     child: SizedBox(
                       width: 120, // Reduce el ancho del card
                       child: StoriesReadCard(
-                        imageUrl: story['imageUrl']!,
-                        title: story['title']!,
-                        chapter: story['chapter']!,
+                        imageUrl: getImageUrl(
+                            isDarkmode,
+                            lastCompleteChapter.readChapter.image ??
+                                "sin-imagen"),
+                        title: lastCompleteChapter.readChapter.title,
+                        indexChapter: indexLastCompleteChapter,
                         onCardPress: () {
-                          // Aquí es donde agregarías la lógica para navegar al card
-                          context.push('/chapters/view/259/${index + 1}');
+                          context.push('/story/${readStory.story.id}');
                           // print('Navegando a ${story['title']}');
                         },
+                        isCompleteStory: readStory.story.completeStory,
                       ),
                     ),
                   );

@@ -1,4 +1,5 @@
 // import 'package:bookie/presentation/providers/favorites_provider.dart';
+import 'package:bookie/config/helpers/capitalize.dart';
 import 'package:bookie/config/helpers/format_distance.dart';
 import 'package:bookie/config/helpers/get_image_final.dart';
 import 'package:bookie/config/helpers/short_name.dart';
@@ -163,7 +164,7 @@ class _CloseStoriesCardState extends ConsumerState<CloseStoriesCard> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          shortenName2(widget.title),
+                          capitalizeFirstWord(shortenName2(widget.title)),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,

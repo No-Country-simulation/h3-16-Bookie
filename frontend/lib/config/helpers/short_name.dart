@@ -11,7 +11,7 @@ String shortenName(String name) {
   String shortenedName = words.join(' ');
 
   // Si el nombre tiene más de 20 caracteres, lo cortamos a 20
-  if (shortenedName.length > 20) {
+  if (shortenedName.length > 16) {
     shortenedName = shortenedName.substring(0, 16);
   }
 
@@ -43,8 +43,8 @@ String shortenName2(String name) {
   String shortenedName = words.join(' ');
 
   // Si el nombre tiene más de 16 caracteres, lo cortamos a 16
-  if (shortenedName.length > 16) {
-    shortenedName = shortenedName.substring(0, 16);
+  if (shortenedName.length > 14) {
+    shortenedName = shortenedName.substring(0, 14);
   }
 
   return shortenedName;

@@ -1,6 +1,8 @@
 import 'package:bookie/config/auth/auth0.dart';
 import 'package:bookie/config/menu/settings_menu.dart';
+import 'package:bookie/config/persistent/shared_preferences.dart';
 import 'package:bookie/presentation/providers/favorite_provider.dart';
+import 'package:bookie/presentation/providers/read_provider.dart';
 import 'package:bookie/presentation/providers/stories_user_provider.dart';
 import 'package:bookie/presentation/providers/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,7 @@ class SettingsScreen extends ConsumerWidget {
     ref.read(usersProvider.notifier).setIsLoaded();
     ref.read(storiesUserProvider.notifier).clearStoriesOnLogout();
     ref.read(favoriteProvider.notifier).clearStoriesOnLogout();
+    ref.read(readProvider.notifier).clearReadersOnLogout();
     authService.logout(context); // Lógica adicional para cerrar sesión
   }
 
@@ -36,7 +39,16 @@ class SettingsScreen extends ConsumerWidget {
                   title: Text(e.title),
                   subtitle: e.subTitle != null ? Text(e.subTitle ?? '') : null,
                   leading: Icon(e.icon),
-                  onTap: () {
+                  onTap: () async {
+                    if (e.title == "Perfil de usuario") {
+                      final userId =
+                          await SharedPreferencesKeys.getCredentials()
+                              .then((value) => int.parse(value.id ?? '0'));
+
+                      context.push(e.link ?? '', extra: {'userId': userId});
+                      return;
+                    }
+
                     if (e.title == "Cerrar sesión") {
                       logout(context, ref);
                     } else {

@@ -1,4 +1,5 @@
 import 'package:bookie/presentation/providers/genres_provider.dart';
+import 'package:bookie/presentation/providers/read_provider.dart';
 import 'package:bookie/presentation/providers/stories_all_provider.dart';
 import 'package:bookie/presentation/providers/user_provider.dart';
 import 'package:bookie/presentation/views/home-first/home_first_search.dart';
@@ -39,6 +40,7 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
     ref.read(storiesAllProvider.notifier).loadAllStories();
     ref.read(getGenresProvider.notifier).loadGenres();
     ref.read(usersProvider.notifier).loadWriters();
+    ref.read(readProvider.notifier).getReaders();
   }
 
   // void changeLanguage(String locale) async {
@@ -60,6 +62,7 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
     // simular carga de datos
     await ref.read(storiesAllProvider.notifier).loadAllStories();
     await ref.read(usersProvider.notifier).reloadWriters();
+    await ref.read(readProvider.notifier).getReaders();
 
     if (!isMounted) return;
     isLoading = false;
@@ -78,8 +81,11 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
   Widget build(BuildContext context) {
     final stories = ref.watch(storiesAllProvider);
     final writers = ref.watch(usersProvider);
+    final readers = ref.watch(readProvider);
 
-    // final colors = Theme.of(context).colorScheme;
+    final isDarkmode = Theme.of(context).brightness == Brightness.dark;
+
+    final colors = Theme.of(context).colorScheme;
 
     // if (stories.isEmpty || writers.isEmpty) {
     //   return Center(
@@ -110,14 +116,54 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
                     // localizations: localizations,
                     // changeLanguage: changeLanguage
                   ),
-                  HeroSection(unreadStories: unreadStories),
+                  HeroSection(unreadStories: heroSectionTemporal),
                   stories.isEmpty
                       ? ShimmerCardContent()
                       : CloseStoriesSection(
                           stories: stories,
                           // localizations: localizations
                         ),
-                  StoriesReadSection(readStories: readStories),
+                  readers.isEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.only(
+                              top: 16.0, left: 16.0, right: 16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment
+                                .start, // Cambié a start para alinearlo a la izquierda
+                            children: [
+                              Container(
+                                alignment: Alignment.center,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Text(
+                                  "Historias leidas",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                    color: colors.primary,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              SizedBox(
+                                height: 100,
+                                child: Center(
+                                  child: Text(
+                                    "Ingresa a cualquier historia, necesitas estar cerca para empezar a leer.",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: isDarkmode
+                                          ? Colors.grey
+                                          : Colors.black,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : StoriesReadSection(readStories: readers),
                   writers.isEmpty
                       ? ShimmerWidgetWritterCard()
                       : WritersSection(writers: writers),

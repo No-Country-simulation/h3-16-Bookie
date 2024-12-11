@@ -54,6 +54,7 @@ class _StoryChaptersState extends State<StoryChapters> {
 
             return ChapterCard(
               index: index,
+              chapterId: chapter.id,
               latitude: chapter.latitude,
               longitude: chapter.longitude,
               title: chapter.title,

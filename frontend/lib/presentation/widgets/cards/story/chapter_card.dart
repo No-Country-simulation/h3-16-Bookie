@@ -1,15 +1,19 @@
 import 'package:bookie/config/geolocator/geolocator.dart';
+import 'package:bookie/domain/entities/read_entity.dart';
+import 'package:bookie/presentation/providers/read_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 
-class ChapterCard extends StatefulWidget {
+class ChapterCard extends ConsumerStatefulWidget {
   final int index;
   final String title;
   final String imageUrl;
   final double latitude;
   final double longitude;
   final int storyId;
+  final int chapterId;
 
   const ChapterCard({
     super.key,
@@ -19,13 +23,14 @@ class ChapterCard extends StatefulWidget {
     required this.latitude,
     required this.longitude,
     required this.storyId,
+    required this.chapterId,
   });
 
   @override
-  State<ChapterCard> createState() => _ChapterCardState();
+  ConsumerState<ChapterCard> createState() => _ChapterCardState();
 }
 
-class _ChapterCardState extends State<ChapterCard> {
+class _ChapterCardState extends ConsumerState<ChapterCard> {
   late final Future<bool> isBlocked;
   bool enableGoToMapOrChapter = false;
   bool? showMessageGoToMapOrChapter;
@@ -71,7 +76,7 @@ class _ChapterCardState extends State<ChapterCard> {
         borderRadius: BorderRadius.circular(12.0), // Esquinas redondeadas
       ),
       child: InkWell(
-        onTap: () {
+        onTap: () async {
           if (enableGoToMapOrChapter) {
             // Acción para navegar a la historia
             // context
@@ -87,6 +92,11 @@ class _ChapterCardState extends State<ChapterCard> {
                       'storyId': widget.storyId,
                     });
               } else {
+                // añadiendo a leido el capitulo
+                ref
+                    .read(readProvider.notifier)
+                    .completeReaderChapter(widget.storyId, widget.chapterId);
+
                 context
                     .push('/chapters/view/${widget.storyId}/${widget.index}');
               }

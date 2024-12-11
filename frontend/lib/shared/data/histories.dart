@@ -1,3 +1,59 @@
+final heroSectionTemporal = [
+  {
+    'id': '1',
+    'imageUrl':
+        'https://res.cloudinary.com/dlixnwuhi/image/upload/v1733878708/skbd1nvjqziku8ydxvsh.webp',
+    'title': 'Descubre Historias a Tu Alrededor',
+    'synopsis': 'Explora historias cerca de ti.',
+    'rating': 4.5,
+    'reads': 10000,
+    'distance': 'a 2 km',
+    'isFavorite': false,
+    "latitud": -8.079058,
+    "longitud": -79.121091,
+  },
+  {
+    'id': '2',
+    'imageUrl':
+        'https://res.cloudinary.com/dlixnwuhi/image/upload/v1733878793/yrut6wrzigfqhwburzoc.webp',
+    'title': 'Tu Rastro de Lectura',
+    'synopsis': 'Revive las historias que ya has explorado.',
+    'rating': 4.5,
+    'reads': 10000,
+    'distance': 'a 2 km',
+    'isFavorite': false,
+    "latitud": -8.079058,
+    "longitud": -79.121091,
+  },
+  {
+    'id': '3',
+    'imageUrl':
+        'https://res.cloudinary.com/dlixnwuhi/image/upload/v1733879005/lxverngjetmvt7qibhlc.webp',
+    'title': 'Un Mapa de Historias',
+    'synopsis': 'Ubica relatos fascinantes.',
+    'rating': 3.5,
+    'reads': 20000,
+    'distance': 'a 4 km',
+    'isFavorite': false,
+    "latitud": -8.014978,
+    "longitud": -78.832017,
+  },
+  {
+    'id': '4',
+    'imageUrl':
+        'https://res.cloudinary.com/dlixnwuhi/image/upload/v1733878512/y5yyeoqio5tzv2ahijt6.webp',
+    'title': 'Comparte Tu Aventura',
+    'synopsis': 'Escribe y publica tu primera historia.',
+    'rating': 4.0,
+    'reads': 30000,
+    'distance': 'a 6 km',
+    'isFavorite': false,
+    "latitud": -8.120568,
+    "longitud": -79.045331,
+  },
+  // Más historias no leídas
+];
+
 final readStories = [
   {
     'id': '1',

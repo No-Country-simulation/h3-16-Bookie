@@ -119,7 +119,7 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
         height: 1.75,
       );
       pages = paginateContent(translatedContent, textStyle, screenSize);
-        } catch (e) {
+    } catch (e) {
       print("Error al traducir el contenido: $e");
     } finally {
       setState(() => isLoading = false);
@@ -294,7 +294,7 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                             pageContent: pageContent,
                             textStyle: TextStyle(
                               fontSize:
-                                  pages.indexOf(pageContent) == 0 ? 16 : 17,
+                                  pages.indexOf(pageContent) == 0 ? 15.5 : 17,
                               color: isDarkmode ? Colors.white : Colors.black,
                               height: 1.75,
                               // pages.indexOf(pageContent) == 0 ? 1.5 : 1.75,

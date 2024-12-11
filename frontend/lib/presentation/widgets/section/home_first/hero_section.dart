@@ -37,7 +37,15 @@ class _HeroSectionState extends State<HeroSection> {
                 distance: story['distance']!,
                 isFavorite: story['isFavorite'],
                 onCardPress: () {
-                  context.push('/story/${story['id']}');
+                  if (story['id'] == '1') {
+                    context.push('/story/274');
+                  } else if (story['id'] == '2') {
+                    // context.push('/story/2');
+                  } else if (story['id'] == '3') {
+                    context.push('/home/1');
+                  } else if (story['id'] == '4') {
+                    context.push('/home/2');
+                  }
                 },
               ),
             );
