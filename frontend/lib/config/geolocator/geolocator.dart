@@ -1,3 +1,4 @@
+import 'package:bookie/config/constants/general.dart';
 import 'package:geolocator/geolocator.dart';
 
 Future<Position> determinePosition() async {
@@ -25,5 +26,55 @@ Future<Position> determinePosition() async {
   }
 
   // Devuelve la posición actual
-  return await Geolocator.getCurrentPosition();
+  return await Geolocator.getCurrentPosition(
+    locationSettings: const LocationSettings(
+      // accuracy: LocationAccuracy.bestForNavigation,
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 10, // Actualiza cada 100 metros
+    ),
+  );
+}
+
+double distanceFromGeolocator(
+  Position currentPosition,
+  double latitude,
+  double longitude,
+) {
+  final distance = Geolocator.distanceBetween(
+    currentPosition.latitude,
+    currentPosition.longitude,
+    latitude,
+    longitude,
+  );
+
+  return distance;
+}
+
+bool isWithinRadius(Position userPosition, double targetLat, double targetLon) {
+  final distance = distanceFromGeolocator(
+    userPosition,
+    targetLat,
+    targetLon,
+  );
+
+  return distance >= GeneralConstants.radius;
+}
+
+Future<bool> isBlockedFuture(
+  double latitude,
+  double longitude,
+) async {
+  try {
+    final userPosition = await determinePosition();
+
+    final isLocked = isWithinRadius(
+      userPosition,
+      latitude,
+      longitude,
+    );
+
+    return isLocked;
+  } catch (e) {
+    return false;
+  }
 }

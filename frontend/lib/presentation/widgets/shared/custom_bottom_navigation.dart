@@ -7,7 +7,7 @@ class CustomBottomNavigation extends StatelessWidget {
   const CustomBottomNavigation({super.key, required this.currentIndex});
 
   void _onItemTapped(BuildContext context, int index) {
-    context.go('/home/$index');
+    context.push('/home/$index');
   }
 
   @override
@@ -17,18 +17,19 @@ class CustomBottomNavigation extends StatelessWidget {
     return BottomNavigationBar(
         currentIndex: currentIndex,
         onTap: (value) => _onItemTapped(context, value),
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
         elevation: 0,
         selectedItemColor: colors.primary,
         unselectedItemColor: colors.secondary,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Map'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
+          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Mapa'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.history_edu_sharp), label: 'History'),
+              icon: Icon(Icons.history_edu_sharp), label: 'Historia'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.favorite), label: 'Favorites'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings), label: 'Settings'),
+              icon: Icon(Icons.favorite), label: 'Favoritos'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
           // BottomNavigationBarItem(
           //     icon: Icon(Icons.settings), label: 'Settings'),
         ]);

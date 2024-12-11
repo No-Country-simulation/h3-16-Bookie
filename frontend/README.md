@@ -5,7 +5,6 @@ Before running the project, you need to configure the following environment vari
 1. **OPEN_AI_API_KEY**: Your OpenAI API key.
 2. **AUTH0_DOMAIN**: The domain from your Auth0 configuration.
 3. **AUTH0_CLIENT_ID**: The client ID from your Auth0 configuration.
-4. **SDK_REGISTRY_TOKEN**: The token for your Mapbox SDK registry.
 
 Make sure to add these variables to your `.env` file or configure them in your development environment.
 

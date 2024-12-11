@@ -39,6 +39,7 @@ class _SettingsChangerTheme extends ConsumerWidget {
 
     // Mapa de colores a sus nombres
     final colorNames = <Color, String>{
+      Colors.amber: 'Ámbar',
       Colors.blue: 'Azul',
       Colors.red: 'Rojo',
       Colors.green: 'Verde',
