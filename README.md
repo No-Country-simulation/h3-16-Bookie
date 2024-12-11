@@ -47,11 +47,15 @@
 <p align="center"> <a href="https://dart.dev" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/dartlang/dartlang-icon.svg" alt="dart" width="40" height="40"/> </a> <a href="https://www.docker.com/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original-wordmark.svg" alt="docker" width="40" height="40"/> </a> <a href="https://www.figma.com/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/figma/figma-icon.svg" alt="figma" width="40" height="40"/> </a> <a href="https://flutter.dev" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/flutterio/flutterio-icon.svg" alt="flutter" width="40" height="40"/> </a> <a href="https://git-scm.com/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg" alt="git" width="40" height="40"/> </a> <a href="https://www.java.com" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg" alt="java" width="40" height="40"/> </a> <a href="https://postman.com" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/getpostman/getpostman-icon.svg" alt="postman" width="40" height="40"/> </a> <a href="https://spring.io/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/springio/springio-icon.svg" alt="spring" width="40" height="40"/> </a> </p>
 
 <div style="font-family: 'Courier New'; color: #3498db; text-shadow: 1px 1px">
-  <h2 style="color: #3498db; text-shadow: 1px 1px">UX / UI<h2>
+  <h2 style="color: #3498db; text-shadow: 1px 1px">UX / UI Product Designer<h2>
 </div>
 
 <ul>
     <li><strong>Figma</strong></li>
+    <li><strong>Fig Jam</strong></li>
+    <li><strong> Google Workspace</strong></li>
+    <li><strong>Discord</strong></li>
+    <li><strong>Slack</strong></li>
     
 </ul>
 
@@ -126,7 +130,7 @@
     <hr/>
   </li>
   <li>
-    <a><img src="https://media.licdn.com/dms/image/v2/D4E35AQFZA4i6DFRHIg/profile-framedphoto-shrink_800_800/profile-framedphoto-shrink_800_800/0/1718649750555?e=1734454800&v=beta&t=erzplmoxhCowpWgfOEY6Hg2q2gUK-_sOelswZAEtuaM" alt="Diego Alexander" width="70" height="70"/></a> Diego Alexander - UX / UI <br/>
+    <a><img src="https://media.licdn.com/dms/image/v2/D4E35AQFZA4i6DFRHIg/profile-framedphoto-shrink_800_800/profile-framedphoto-shrink_800_800/0/1718649750555?e=1734454800&v=beta&t=erzplmoxhCowpWgfOEY6Hg2q2gUK-_sOelswZAEtuaM" alt="Diego Alexander" width="70" height="70"/></a> Diego Alexander - UX / UI Product Manager <br/>
     https://www.linkedin.com/in/diego-alexander-918a62210
     <hr/>
   </li>
