@@ -72,27 +72,9 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
     });
   }
 
-// TODO REVISAR SI MEJOR CARGAR LOS ICONOS DEL MAPA DE FORMA ASINCRONA
-//   Future<void> customMarkerStories() async {
-//    customStoryIcon = await BitmapDescriptor.fromAssetImage(
-//      const ImageConfiguration(size: Size(65, 65)),
-//      'assets/images/marker_story.webp',
-//    );
-// }
-
   Future<void> _loadChapters() async {
-    try {
-      // Obtener los capítulos usando el provider
-      // await ref.read(chapterProvider.notifier).getChapters(widget.storyId);
-
-      // final chapters = ref.watch(chapterProvider);
-
-      // if (chapters.isNotEmpty) {
-      //   isUnlockedFuture = isChapterUnlocked();
-      // }
-    } catch (e) {
+    try {} catch (e) {
       // Manejo de errores
-      print("Error al cargar los capítulos: $e");
     } finally {
       setState(() {
         isLoading =
@@ -113,7 +95,6 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
         });
       }
     } catch (e) {
-      print('Error al determinar la posición: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error al determinar la posición')),
@@ -152,87 +133,6 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
     );
   }
 
-  // Future<List<LatLng>> fetchPolylinePoints({
-  //   required double latitudeDestination,
-  //   required double longitudeDestination,
-  // }) async {
-  //   try {
-  //     final polylinePoints = PolylinePoints();
-
-  //     final result = await polylinePoints.getRouteBetweenCoordinates(
-  //         googleApiKey: Environment.theGoogleMapsApiKey,
-  //         request: PolylineRequest(
-  //           origin: PointLatLng(latitudeUser, longitudeUser),
-  //           destination: PointLatLng(latitudeDestination, longitudeDestination),
-  //           mode: TravelMode.driving,
-  //         ));
-
-  //     if (result.points.isNotEmpty) {
-  //       final points = result.points
-  //           .map((point) => LatLng(point.latitude, point.longitude))
-  //           .toList();
-
-  //       return points;
-  //     } else {
-  //       throw Exception("No se encontraron puntos");
-  //     }
-  //   } catch (e) {
-  //     print("Error al obtener los puntos del polyline: $e");
-  //     return [];
-  //   }
-  // }
-
-  void _showDistance() {
-    // TODO FALTA MOSTRAR LA DISTANCIA Y PONER EN UN TEXTO QUE APARECE TU ME ENTIENDES ESTA FACIL
-  }
-
-  // Future<void> generatePolylineFromPoints(
-  //     {required List<LatLng> polylineCoordinates}) async {
-  //   try {
-  //     const id = PolylineId("polyline");
-  //     final colors = Theme.of(context).colorScheme;
-
-  //     final polyline = Polyline(
-  //       polylineId: id,
-  //       points: polylineCoordinates,
-  //       color: colors.primary,
-  //       width: 5,
-  //       consumeTapEvents: true,
-  //       onTap: () {
-  //         _showDistance(); // Método para manejar el mensaje
-  //       },
-  //     );
-
-  //     setState(() {
-  //       polylinesStory[id] = polyline;
-  //     });
-  //   } catch (e) {
-  //     throw Exception("Error al generar el polyline");
-  //   }
-  // }
-
-  // Future<void> initializePolyline(
-  //     {required double latitudeDestination,
-  //     required double longitudeDestination}) async {
-  //   try {
-  //     // update de la posición del usuario
-  //     await locationUser();
-
-  //     final coordinates = await fetchPolylinePoints(
-  //       latitudeDestination: latitudeDestination,
-  //       longitudeDestination: longitudeDestination,
-  //     );
-
-  //     await generatePolylineFromPoints(polylineCoordinates: coordinates);
-  //   } catch (e) {
-  //     print("Error al inicializar el polyline: $e");
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text('Error al generar el recorrido')),
-  //     );
-  //   }
-  // }
-
-// TODO REVISAR SI CAMBIAR DE ICONO DE LOS CHAPTERS
   void customMarkerStoryChapters() {
     BitmapDescriptor.asset(const ImageConfiguration(size: Size(50, 50)),
             'assets/images/marker_chapter.webp')
@@ -293,13 +193,9 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
   ];
 
   void _addMarkersChapters(int index) {
-    print("INDEX: $index");
-
     setState(() {
-      print("AÑADIENDO MARKERS DE LOS CHAPTERS");
       showMarkerChapters = true;
       _markersChapters.clear();
-      // TODO CAMBIAR LOGICA PERO ESTA SENCILLO PARA QUE SE AÑADA LOS CHAPTERS DE LOS STORIES
       _markersChapters.addAll(index == 0 ? listChapters : listChapters2);
     });
   }
@@ -332,19 +228,6 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
     return SafeArea(
       child: Stack(
         children: [
-          // Center(
-          //     child: SizedBox(
-          //       height: 120,
-          //       width: 200,
-          //       child: lottie.Lottie.asset(
-          //         'assets/lottie/loading_map_general.json',
-          //         frameRate: lottie.FrameRate(60), // Ajusta la fluidez.
-          //         repeat: true,
-          //         animate: true,
-          //       ),
-          //     ),
-          //   )
-          // isLoadingMap
           currentPosition.latitude == 0.0 && currentPosition.longitude == 0.0
               ? Center(
                   child: SpinKitFadingCircle(
@@ -425,18 +308,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                             if (!isCardVisible) {
                               toggleCard();
                             }
-                            // TODO GUIA PARA MOSTRAR DETALLE DE LA STORY
-                            // _selectedPlace = placeInfos[i];
                           });
-                          // TODO PARA MOSTRAR EL SWIPER DE STORY O STORIES
-                          // _showMarkerStories();
-
-                          // TODO RECORRIDO DESDE EL USUARIO AL INICIO DE LA STORY
-                          // initializePolyline(
-                          //     latitudeDestination: e.latitude,
-                          //     longitudeDestination: e.longitude);
-
-                          // TODO AÑADIR MARKER DE LOS CHAPTERS DE LA STORY
                           _addMarkersChapters(i);
                         },
                       );
@@ -451,18 +323,6 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                             infoWindow:
                                 InfoWindow(title: 'Title ${e.hashCode}'),
                             onTap: () {
-                              // setState(() {
-                              // if (!isCardVisible) {
-                              //   toggleCard();
-                              // } else if (!isSwiperVisible) {
-                              //   toggleSwiper();
-                              // }
-                              // _selectedPlace = placeInfos[i];
-                              // });
-                              // _showMarkerStories();
-                              // initializePolyline(
-                              //     latitudeDestination: e.latitude,
-                              //     longitudeDestination: e.longitude);
                             },
                           )),
                   }, //
@@ -536,9 +396,6 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                                   if (!isSwiperVisible) {
                                     toggleSwiper();
                                   }
-                                  // Aquí puedes colocar la lógica para ejecutar cuando el icono sea presionado
-                                  print('Buscar: ${_controller.text}');
-                                  // Puedes hacer una búsqueda o cualquier otra acción que desees
                                 },
                               ),
                             ),
@@ -570,7 +427,6 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                                         if (!isSwiperVisible) {
                                           toggleSwiper();
                                         }
-                                        print('Opción seleccionada: $option');
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: isDarkmode
@@ -606,7 +462,6 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
           Align(
             alignment: Alignment.bottomCenter,
             child: SizedBox(
-              // TODO ESTO PUEDES QUITAR PORQUE CUANDO SCROLEAS Y ESTA ESTO VISIBLE NO SE PUEDE HACER ZOOM ETC EN ESA PARTE. PREUBA BAJANDO EL PADDING , ESTE HEIGHT TU ME ENTIENDES
               height: !isCardVisible ? 0 : 230,
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 60),
@@ -625,32 +480,9 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
             ),
           ),
 
-          //     ? Center(
-          //         child:
-          //             CircularProgressIndicator()) // Muestra cargando
-          //     // : chapters.isEmpty
-          //     : 1 != 1
-          //         ? MessageEmptyChapter()
-          //         : isCardVisible
-          //             ? FadeInUp(
-          //                 duration: Duration(
-          //                     milliseconds:
-          //                         300), // Duración del fade in
-          //                 child: CardStoryMap(
-          //                   index: 1,
-          //                 ))
-          //             : null
-          // :
-          //
-          //
-          //
-          //
-
-          // SWIPER CARD DE LAS STORIES RESULTADO DE LA BÚSQUEDA
           Align(
             alignment: Alignment.bottomCenter,
             child: SizedBox(
-              // TODO ESTO PUEDES QUITAR PORQUE CUANDO SCROLEAS Y ESTA ESTO VISIBLE NO SE PUEDE HACER ZOOM ETC EN ESA PARTE. PREUBA BAJANDO EL PADDING , ESTE HEIGHT TU ME ENTIENDES
               height: !isSwiperVisible ? 0 : 230,
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 60),
@@ -697,24 +529,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
             left: 12,
             child: Column(
               children: [
-                // IconButton(
-                //   style: IconButton.styleFrom(
-                //     padding: const EdgeInsets.all(10),
-                //     shape: const RoundedRectangleBorder(
-                //       borderRadius: BorderRadius.all(Radius.circular(10)),
-                //     ),
-                //     backgroundColor: isDarkmode ? Colors.black38 : Colors.white,
-                //   ),
-                //   icon: Icon(
-                //     Icons.sync,
-                //     color: colors.primary,
-                //     size: 32,
-                //   ),
-                //   onPressed: () {
-                //     // refreshLocation();
-                //   },
-                // ),
-                // const SizedBox(height: 10),
+             
                 IconButton(
                   style: IconButton.styleFrom(
                     padding: const EdgeInsets.all(10),

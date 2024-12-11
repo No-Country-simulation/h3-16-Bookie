@@ -57,8 +57,6 @@ bool isWithinRadius(Position userPosition, double targetLat, double targetLon) {
     targetLon,
   );
 
-  print("DISTANCIA DE $distance");
-
   return distance >= GeneralConstants.radius;
 }
 
@@ -69,10 +67,6 @@ Future<bool> isBlockedFuture(
   try {
     final userPosition = await determinePosition();
 
-    print(
-        "POSICION ACTUAL : ${userPosition.latitude}, ${userPosition.longitude}");
-    print("POSICION DESTINO : $latitude, $longitude");
-
     final isLocked = isWithinRadius(
       userPosition,
       latitude,
@@ -81,7 +75,6 @@ Future<bool> isBlockedFuture(
 
     return isLocked;
   } catch (e) {
-    print('Error al determinar la posición: $e');
     return false;
   }
 }

@@ -108,6 +108,7 @@ class _WriterProfileScreenState extends ConsumerState<WriterProfileScreen> {
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                         ),
                         const SizedBox(height: 8),

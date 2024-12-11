@@ -76,11 +76,6 @@ class _StoryViewMapState extends State<StoryViewMap> {
                 markerId: const MarkerId('selected-location'),
                 position: LatLng(widget.latitude, widget.longitude),
                 icon: customIcon,
-                // draggable: true,
-                // onDragEnd: (value) {
-                //   // Actualiza la ubicación seleccionada
-                //   print('DragEnd: ${value.latitude}, ${value.longitude}');
-                // },
                 infoWindow: InfoWindow(
                   title: 'Seleccionado',
                   snippet: 'Ubicación de la historia',

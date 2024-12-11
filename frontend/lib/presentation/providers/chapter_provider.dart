@@ -68,7 +68,6 @@ class ChapterNotifier extends StateNotifier<List<Chapter>> {
       return newChapter;
     } catch (e) {
       // Manejo de errores al crear el capítulo
-      print('Error al crear el capítulo: $e');
       throw Exception('Error al crear el capítulo');
     }
   }
@@ -88,7 +87,6 @@ class ChapterNotifier extends StateNotifier<List<Chapter>> {
       return newChapter;
     } catch (e) {
       // Manejo de errores al editar el capítulo
-      print('Error al editar el capítulo: $e');
       throw Exception('Error al editar el capítulo');
     }
   }

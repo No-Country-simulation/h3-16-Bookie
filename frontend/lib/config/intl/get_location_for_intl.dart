@@ -25,7 +25,6 @@ Future<String> detectLanguage() async {
 
     throw Exception("Error al obtener idioma por geolocalización");
   } catch (e) {
-    print("Error al obtener idioma por geolocalización: $e");
     return "en";
   }
 }

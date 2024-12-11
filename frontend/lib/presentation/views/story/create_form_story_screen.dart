@@ -80,8 +80,6 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
       final Dio dio = Dio();
       String? image;
 
-      // TODO REVISAR PARA VER SI SE PUEDE QUITAR ESTA PARTE O SOLO BASE64
-      // generar url de imagen con cloudinary
       final String url =
           "https://api.cloudinary.com/v1_1/dlixnwuhi/image/upload";
 
@@ -100,7 +98,6 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
           // Obtener la URL de la imagen subida
           image = response.data['secure_url'];
         } catch (e) {
-          print("Error al subir la imagen: $e");
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
                 content: Text(
@@ -114,12 +111,6 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
         }
       }
 
-      // TODO DESCOMENTAR ESTA PARTE SI SE USA BASE64
-      // Convertir la imagen a base64 - no se hara porque se usa cloudinary
-      // image =
-      //     imagePath != null ? await convertImageToBase64(imagePath) : null;
-
-      // Obtener el nombre del género para enviarlo al backend
       final String genreString =
           GenreToStringExtension(_selectedGenre!).toBackendString;
 

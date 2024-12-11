@@ -22,7 +22,6 @@ class PageContentNotifier extends StateNotifier<String> {
           language: targetLanguage, text: originalContent);
       state = translation.text;
     } catch (e) {
-      print("Error al traducir: $e");
       // Aquí puedes manejar el error según tus necesidades
     }
   }

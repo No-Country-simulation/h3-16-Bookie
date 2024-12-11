@@ -82,7 +82,6 @@ class _HomeFirstSearchState extends State<HomeFirstSearch> {
                     Text(story.containsKey('chapter') ? story['chapter'] : ''),
                 onTap: () {
                   // Acción al seleccionar una historia
-                  // print("Seleccionaste: ${story['title']}");
                   context.push('/story/${story['id']}');
                 },
               );

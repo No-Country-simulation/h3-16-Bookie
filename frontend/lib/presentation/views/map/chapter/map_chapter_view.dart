@@ -46,10 +46,8 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
   double? latitudeUser;
   double? longitudeUser;
   late StreamSubscription<Position> positionStream;
-  final List<LatLng> _markersChapters = [];
   final SwiperController _controllerSwiper = SwiperController();
 
-// TODO: MEJORAR CUANDO CARGA EL MAPA PORQUE SE PODRIA CARGAR EL MAPA POR MIENTRAS HASTA ENCONTRAR LA UBICACION DEL USUARIO U OTROS ELEMENTOS CREO REVISARLO
   Future<void> locationUser() async {
     try {
       final userPosition = await determinePosition();
@@ -62,7 +60,6 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
         });
       }
     } catch (e) {
-      print('Error al determinar la posición: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error al determinar la posición')),
@@ -89,7 +86,6 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
       // }
     } catch (e) {
       // Manejo de errores
-      print("Error al cargar los capítulos: $e");
     } finally {
       setState(() {
         isLoading =
@@ -122,27 +118,8 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
     );
   }
 
-  // void addMarker() async {
-  //   customMarker();
-  //   Marker marker = Marker(
-  //     markerId: const MarkerId('custom_marker'),
-  //     position: LatLng(latitude, longitude),
-  //     icon: customIcon,
-  //     infoWindow: const InfoWindow(
-  //       title: 'Marcador Personalizado',
-  //       snippet: 'Este es un marcador con un ícono cargado dinámicamente.',
-  //     ),
-  //   );
-
-  //   setState(() {
-  //     _markers.add(marker);
-  //   });
-  // }
-
   @override
   void initState() {
-    print("ISCURRENTCHAPTER MAP: ${widget.currentChapter}");
-
     super.initState();
     customMarkerChapters();
     customMarkerUser();
@@ -279,17 +256,6 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
                         });
                       }),
                 ),
-
-              // Marker(
-              //   markerId: const MarkerId('selected-location'),
-              //   position: LatLng(
-              //       latitude, longitude), // Posición inicial del marcador
-              //   icon: customChapterIcon,
-              //   infoWindow: InfoWindow(
-              //     title: title,
-              //     snippet: 'Ubicación del capítulo',
-              //   ),
-              // ),
             }, // Selecciona el tipo de mapa
             zoomControlsEnabled: true, // Activa los botones de zoom
             myLocationButtonEnabled: true, // Activa el botón de ubicación
@@ -358,6 +324,7 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 70, vertical: 25),
                                 child: CardChapterMap(
+                                  chapterId: chapter.id,
                                   index: index,
                                   title: chapter.title,
                                   latitude: chapter.latitude,

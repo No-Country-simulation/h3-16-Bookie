@@ -30,12 +30,9 @@ class UserNotifier extends StateNotifier<List<User>> {
     try {
       final List<User> writers = await getWriters();
 
-      // TODO se filtrara solo escritores que tengan capitulos creados
-
       state = writers;
       _isLoaded = true; // Marcar como cargado
     } catch (e) {
-      print("Error al obtener los escritores: $e");
       rethrow;
     }
   }

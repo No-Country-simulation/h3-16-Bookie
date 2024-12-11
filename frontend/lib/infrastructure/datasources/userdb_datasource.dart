@@ -39,7 +39,6 @@ class UserDbDatasource extends UserDatasource {
 
       return writersWithImageUrl;
     } catch (e) {
-      print("Error al obtener las historias: $e");
       return [];
     }
   }

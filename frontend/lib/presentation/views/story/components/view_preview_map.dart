@@ -24,21 +24,6 @@ class StoryPreviewMaps extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final isDarkmode = Theme.of(context).brightness == Brightness.dark;
 
-    print("PORQUE SE ME ROMPER: $latitude $longitude");
-
-    // final markersImageView = chapters
-    //     .asMap()
-    //     .map((index, chapter) {
-    //       // Asignar un número como etiqueta para cada marcador
-    //       String label =
-    //           (index + 1).toString(); // Etiqueta como "1", "2", "3", ...
-
-    //       return MapEntry(index,
-    //           'icon:https://res.cloudinary.com/dlixnwuhi/image/upload/w_50,h_50,c_scale/v1733415545/wcqq4dl23cpcx6cslcgr.png|label:$label|${chapter.latitude},${chapter.longitude}');
-    //     })
-    //     .values
-    //     .join('&markers=');
-
     final markersImageView = chapters
         .asMap()
         .map((index, chapter) {
@@ -52,10 +37,6 @@ class StoryPreviewMaps extends StatelessWidget {
         })
         .values
         .join('&markers=');
-
-    // final pathImageView = chapters.map((chapter) {
-    //   return '${chapter.latitude},${chapter.longitude}';
-    // }).join('|');
 
     Future<void> openGoogleMaps() async {
       try {
@@ -77,7 +58,6 @@ class StoryPreviewMaps extends StatelessWidget {
         }
       } catch (e) {
         if (context.mounted) {
-          print('Error al obtener la ubicación: $e');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error al obtener la ubicación')),
           );

@@ -15,13 +15,8 @@ class StoriesDbDatasource extends StoriesDatasource {
       final List<Story> stories =
           storiesDBResponse.map(StoryMapper.storyDbToEntity).toList();
 
-      // TODO Ordenar las historias por la distancia PERO ANTES QUE LOS CAPITULOS SE ORDENEN POR ID DEL MENOR AL MAYOR POR SIACASO
-      // final List<Story> sortedStories = await getSortedStories(
-      //     stories); // Ordenar las historias por la distancia
-
       return stories;
     } catch (e) {
-      print("Error al obtener las historias: $e");
       return [];
     }
   }
@@ -50,8 +45,6 @@ class StoriesDbDatasource extends StoriesDatasource {
 
   @override
   Future<Story> createStory(StoryForm storyForm) async {
-    // print("Datos de la historia a crear: ${storyForm.toJson()}");
-
     final response = await FetchApi.fetchDio().post(
       '/v1/history',
       data: storyForm.toJson(),
@@ -67,15 +60,10 @@ class StoriesDbDatasource extends StoriesDatasource {
   @override
   Future<void> deleteStory(int storyId) async {
     try {
-      print("Eliminando historia con id: $storyId");
-
-      final response = await FetchApi.fetchDio().delete(
+      await FetchApi.fetchDio().delete(
         '/v1/history/$storyId',
       );
-
-      print("Respuesta de la API: ${response.data}");
     } catch (e) {
-      print("Error al eliminar historia: $e");
       throw Exception("Error al eliminar historia");
     }
   }

@@ -237,13 +237,9 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
 
   Future<Position> getCurrentPosition() async {
     try {
-      // Usa tu lógica de geolocalización aquí
-      // Ejemplo:
       var position = await determinePosition();
       return position;
     } catch (e) {
-      // Maneja el error de geolocalización
-      print('Error al obtener la ubicación: $e');
       rethrow;
     }
   }
@@ -322,7 +318,6 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
 
           image = response.data['secure_url'];
         } catch (e) {
-          print("Error al subir la imagen: $e");
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
                 content: Text(
@@ -376,7 +371,6 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
         final chapterIndex =
             ref.read(chapterProvider.notifier).currentChapter(chapter.id);
 
-        // TODO ESTA LIMPIEZA NO FUNCION VER OTRA FORMA
         _titleController.clear();
         _contentController.clear();
         _formKey.currentState?.reset(); // Resetea el estado del formulario
@@ -384,14 +378,6 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
         if (context.mounted) {
           context.push("/chapter/success/${widget.storyId}/$chapterIndex");
         }
-        // ).catchError((e) {
-        //   print("Error: $e");
-        //   ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(
-        //         content: Text('No se pudo crear el capítulo'),
-        //         backgroundColor: Colors.red),
-        //   );
-        // });
 
         // await Future.delayed(const Duration(seconds: 1));
         isLoading = false;
@@ -539,7 +525,6 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
       final chatStream = await generateStory(
         contextStory:
             // Este título es importante a considerar en la generación de la historia:
-            // TODO: REVISAR ESTO SI CONSIDERAR CIUDAD O PROVINCIA
             "Contexto: ${_titleController.text.trim().isEmpty ? "" : _titleController.text}, ${_prompt.trim().isEmpty ? "" : _prompt}. Lugar: ${getCountryAndProvince?.country ?? ""}, ${getCountryAndProvince?.province ?? ""}",
       );
 
@@ -565,7 +550,6 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
       if (!_isGeneratingText) {
         Navigator.of(context).pop(); // Cerrar el modal
       }
-      print("Error al generar texto: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error al generar texto'),
@@ -625,7 +609,6 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
       if (!_isGeneratingText) {
         Navigator.of(context).pop(); // Cerrar el modal
       }
-      print("Error al modificar texto: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error al modificar texto'),
@@ -743,7 +726,6 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
         );
       }
     } catch (e) {
-      print("Error al traducir texto: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error al traducir texto'),
@@ -789,7 +771,6 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
               padding: EdgeInsets.zero,
               onSelected: (value) {
                 if (value == 'preview') {
-                  print("Vista previa seleccionada");
                 }
               },
               itemBuilder: (BuildContext context) => [

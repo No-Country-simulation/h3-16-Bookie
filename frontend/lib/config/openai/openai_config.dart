@@ -4,15 +4,9 @@ import 'package:dart_openai/dart_openai.dart';
 void modelsOpenai() async {
   try {
     // Obtener la lista de modelos de OpenAI
-    List<OpenAIModelModel> models = await OpenAI.instance.model.list();
-
-    // Obtener el primer modelo
-    // OpenAIModelModel firstModel = models.first;
-
-    print("OPENAIIIIIIIIIIIIIIIIIIIIIIIIIIII: $models");
-    // print("OPENAIIIIIIIIIIIIIIIIIIIIIIIIIIII: ${firstModel.permission}");
+    // List<OpenAIModelModel> models = await OpenAI.instance.model.list();
   } catch (e) {
-    print("OPEANIERRORRRRRRRRRRRRRRRRRRR: $e");
+    // error models
   }
 }
 
@@ -44,7 +38,6 @@ Future<Stream<OpenAIStreamChatCompletionModel>> generateStory(
 
     return chatStream;
   } catch (e) {
-    print("Error al generar historia con OpenAI: $e");
     rethrow;
   }
 }
@@ -77,7 +70,6 @@ Future<Stream<OpenAIStreamChatCompletionModel>> modifyStory(
 
     return chatStream;
   } catch (e) {
-    print("Error al modificar historia con OpenAI: $e");
     rethrow;
   }
 }

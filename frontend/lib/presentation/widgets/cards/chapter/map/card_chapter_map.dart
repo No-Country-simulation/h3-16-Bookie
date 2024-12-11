@@ -1,16 +1,19 @@
 import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:bookie/config/helpers/get_image_final.dart';
+import 'package:bookie/presentation/providers/read_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 
-class CardChapterMap extends StatefulWidget {
+class CardChapterMap extends ConsumerStatefulWidget {
   final String title;
   final int index;
   final double latitude;
   final double longitude;
   final int storyId;
   final String imageUrl;
+  final int chapterId;
 
   const CardChapterMap({
     super.key,
@@ -20,13 +23,14 @@ class CardChapterMap extends StatefulWidget {
     required this.longitude,
     required this.storyId,
     required this.imageUrl,
+    required this.chapterId,
   });
 
   @override
-  State<CardChapterMap> createState() => CardChapterMapState();
+  ConsumerState<CardChapterMap> createState() => CardChapterMapState();
 }
 
-class CardChapterMapState extends State<CardChapterMap> {
+class CardChapterMapState extends ConsumerState<CardChapterMap> {
   late Future<bool> isBlocked;
   bool enableGoToMapOrChapter = false;
 
@@ -64,6 +68,9 @@ class CardChapterMapState extends State<CardChapterMap> {
             // context
             isBlocked.then((value) {
               if (!value) {
+                ref
+                    .read(readProvider.notifier)
+                    .completeReaderChapter(widget.storyId, widget.chapterId);
                 // es decir si esta desbloqueado
                 context
                     .push('/chapters/view/${widget.storyId}/${widget.index}');

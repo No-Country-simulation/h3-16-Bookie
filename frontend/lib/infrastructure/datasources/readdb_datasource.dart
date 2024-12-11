@@ -27,7 +27,6 @@ class ReadDbDatasource extends ReadDatasource {
 
       return reads;
     } catch (e) {
-      print("Error al obtener las historias: $e");
       return [];
     }
   }
@@ -42,9 +41,7 @@ class ReadDbDatasource extends ReadDatasource {
 
       return response.data?['id'];
 
-      // print("RESPONSE ADD READER: ${response.data.toString()}");
     } catch (e) {
-      print("Error al agregar el lector: $e");
       throw Exception("Error al agregar la lectura");
     }
   }
@@ -59,7 +56,6 @@ class ReadDbDatasource extends ReadDatasource {
 
       return response.data?['id'];
     } catch (e) {
-      print("Error al agregar el capítulo del lector: $e");
       throw Exception("Error al agregar el capítulo del lector");
     }
   }
@@ -71,7 +67,6 @@ class ReadDbDatasource extends ReadDatasource {
         '/v1/reader-chapter/$readerId',
       );
     } catch (e) {
-      print("Error al completar el capítulo del lector: $e");
       throw Exception("Error al completar el capítulo del lector");
     }
   }

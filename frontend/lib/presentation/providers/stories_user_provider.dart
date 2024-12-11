@@ -81,7 +81,6 @@ class StoriesUserNotifier extends StateNotifier<StoriesUserState> {
     }
   }
 
-  // TODO: TBM SI CREA UNA HISTORIA NO SE PUEDE ENVIAR A LA HOME O ADD AL ESTADO ALL STORIES PORQUE TODAVIA NO TIENE CAPITULOS Y NO SEPUEDE ORDENAR POR DISTANCIAS, EN EL UPDATE RECIEN AÑADIRLO A LA LISTA DE HISTORIAS DEL ESTADO ALL STORIES
   // actualizamos la historia del userStories y del allStories
   Future<void> updateStory(Chapter newChapter) async {
     try {

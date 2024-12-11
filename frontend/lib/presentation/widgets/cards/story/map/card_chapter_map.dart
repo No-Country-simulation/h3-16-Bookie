@@ -19,7 +19,6 @@ class CardStoryMap extends StatelessWidget {
     return InkWell(
       onTap: () {
         // Acción al pulsar el card
-        //TODO REVISAR
         context.push('/story/1');
       },
       splashColor: colors.primary.withAlpha(30),

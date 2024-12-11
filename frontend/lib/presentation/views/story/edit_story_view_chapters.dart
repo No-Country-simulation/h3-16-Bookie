@@ -37,11 +37,9 @@ class _StoryEditDetailChaptersPageState
   Future<void> _loadChapters() async {
     try {
       // Obtener los capítulos usando el provider
-      // TODO: REVISAR SI SE PUEDE QUITAR ESTA PARTE TAL VEZ SE CAMBIE EN EL BACKEND PARA TRAERSE LOS CAPÍTULOS
       await ref.read(chapterProvider.notifier).getChapters(widget.storyId);
     } catch (e) {
       // Manejo de errores
-      print("Error al cargar los capítulos: $e");
     } finally {
       setState(() {
         isLoading =
@@ -140,13 +138,10 @@ class _StoryEditDetailChaptersPageState
             onSelected: (value) {
               switch (value) {
                 case 'preview':
-                  print('Vista previa seleccionada');
                   break;
                 case 'share':
-                  print('Compartir seleccionado');
                   break;
                 case 'delete':
-                  print('Eliminar seleccionado');
                   showDeleteConfirmationDialog(context);
                   break;
               }

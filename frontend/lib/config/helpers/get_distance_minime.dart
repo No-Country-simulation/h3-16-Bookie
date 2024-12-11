@@ -11,41 +11,14 @@ Future<int> getDistanceFromOriginToDestination(
     // Obtener la posición actual
     final currentPosition = await determinePosition();
 
-    // final origin = "${currentPosition.latitude},${currentPosition.longitude}";
-
-    // // Convertir las coordenadas a formato de texto para la URL
-    // final destination = "$destinationLatitude,$destinationLongitude";
-
-    // // Llamar a la API de Google Maps Distance Matrix
-    // final url =
-    //     "https://maps.googleapis.com/maps/api/distancematrix/json?origins=$origin&destinations=$destination&mode=walking&key=${Environment.theGoogleMapsApiKey}";
-
-    // final response = await Dio().get(url);
-
-    // // Verificar que la respuesta contiene los datos correctamente
-    // final rows = response.data['rows'][0]['elements'];
-    // final distance = rows[0]['distance']['value'] as int;
-
-    // final distanceFinal = distance;
-
-    // TODO REVISAR SI SE TENDRÍA EL GEOLOCATOR O SI SE TENDRÍA QUE SE USAN LOS DATOS DE LA API GOOGLE MAPS
-    // Si ocurre un error, podemos usar la distancia del geolocator (comentado)
     final distance = distanceFromGeolocator(
       currentPosition,
       destinationLatitude,
       destinationLongitude,
     ).toInt();
 
-    // if (distance - distanceFromGeolocator > 100) {
-    // distanceFinal = distanceFromGeolocator;
-    // } else {
-    // distanceFinal = distance;
-    // }
-
-    // return distanceFromGeolocator; // Esto sería la alternativa con geolocator
     return distance;
   } catch (e) {
-    print("Error al obtener la distancia: $e");
 
     return 10; // En caso de error, devolvemos 0 o un valor adecuado
   }
@@ -80,7 +53,6 @@ Future<String> getCountryAndProvinceAndDistance(
 
     return "$stringLocation. $distanceString";
   } catch (e) {
-    print("Error al obtener la distancia: $e");
     return "10 m";
   }
 }

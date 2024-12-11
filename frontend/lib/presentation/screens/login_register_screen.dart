@@ -1,10 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:bookie/config/auth/auth0.dart';
-import 'package:bookie/presentation/views/chapter/chapter_sucess.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-
-// TODO MOSTRAR UNA MEJOR Pantalla de inicio de sesión
 class LoginOrRegisterScreen extends StatefulWidget {
   const LoginOrRegisterScreen({super.key});
 

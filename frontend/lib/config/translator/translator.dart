@@ -9,7 +9,6 @@ Future<Translation> translateGoogle(
 
     return translation;
   } catch (e) {
-    print("Error al traducir con GoogleTranslator: $e");
     rethrow;
   }
 }

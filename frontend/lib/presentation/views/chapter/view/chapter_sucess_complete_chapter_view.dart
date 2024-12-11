@@ -1,11 +1,13 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:bookie/config/geolocator/geolocator.dart';
+import 'package:bookie/presentation/providers/read_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
-class ChapterSuccessCompleteChapterView extends StatefulWidget {
+class ChapterSuccessCompleteChapterView extends ConsumerStatefulWidget {
   static const String name = 'chapter-success-chapter-view';
   final String pageContent;
   final int isCurrentChapter;
@@ -15,6 +17,7 @@ class ChapterSuccessCompleteChapterView extends StatefulWidget {
   final int currentChapter;
   final String title;
   final int storyId;
+  final int chapterId;
 
   const ChapterSuccessCompleteChapterView(
       {super.key,
@@ -25,15 +28,16 @@ class ChapterSuccessCompleteChapterView extends StatefulWidget {
       required this.randomNumber,
       required this.currentChapter,
       required this.title,
-      required this.storyId});
+      required this.storyId,
+      required this.chapterId});
 
   @override
-  State<ChapterSuccessCompleteChapterView> createState() =>
+  ConsumerState<ChapterSuccessCompleteChapterView> createState() =>
       _ChapterSuccessCompleteChapterViewState();
 }
 
 class _ChapterSuccessCompleteChapterViewState
-    extends State<ChapterSuccessCompleteChapterView> {
+    extends ConsumerState<ChapterSuccessCompleteChapterView> {
   late Future<bool> isBlocked;
 
   @override
@@ -140,8 +144,6 @@ class _ChapterSuccessCompleteChapterViewState
                   ),
                 const SizedBox(height: 10),
 
-                // Botón para ir al siguiente capítulo (bloqueado)
-                // TODO: AQUI FALTA LA LOGICA CUANDO EL CAPITULO ES DESBLOQUEADO CUANDO EL LECTOR YA LO DESBLOQUEO ANTES QUE SON DE HISTORIAS LEIDAS.
                 FutureBuilder<bool>(
                   future: isBlocked,
                   builder: (context, snapshot) {
@@ -163,16 +165,12 @@ class _ChapterSuccessCompleteChapterViewState
                         style: TextStyle(color: Colors.red),
                       );
                     } else {
-                      print("ISBLOCKEDVALUE: ${snapshot.data}");
                       final blocked = snapshot.data ?? true;
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ElevatedButton.icon(
                             onPressed: () {
-                              print(
-                                  "ISCURRENTCHAPTER: ${widget.isCurrentChapter}");
-
                               // Acción para ir al siguiente capítulo
                               !blocked
                                   ? context.push(

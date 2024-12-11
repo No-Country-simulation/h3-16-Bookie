@@ -1,5 +1,4 @@
 import 'package:bookie/config/geolocator/geolocator.dart';
-import 'package:bookie/domain/entities/read_entity.dart';
 import 'package:bookie/presentation/providers/read_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -44,30 +43,13 @@ class _ChapterCardState extends ConsumerState<ChapterCard> {
     );
   }
 
-// TODO VER SI INCORPORAR SINO YA FUE
-  // void refreshLocation() {
-  //   setState(() {
-  //   });
-  // }
-
   @override
   void dispose() {
     super.dispose();
   }
 
-  // Future<String> getLocation() async {
-  //   return await getCountryAndProvinceAndDistance(
-  //     widget.latitude,
-  //     widget.longitude,
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
-    // Color de fondo oscuro y ajustes para el diseño
-    // final lockIcon = isUnlocked ? Icons.lock_open : Icons.lock;
-    // final iconColor = isUnlocked ? Colors.green : Colors.red;
-
     final colors = Theme.of(context).colorScheme;
 
     return Card(
@@ -197,43 +179,10 @@ class _ChapterCardState extends ConsumerState<ChapterCard> {
                         ),
                       ),
 
-                      // Distancia
-                      // afecta el redimiento ESTO LO CAMBIAMOS DESPUES ES FACIL CALCULAR LA DISTANCIA DESDE EL USUARIO AL CAPÍTULO
                       const SizedBox(height: 4.0),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            // Row(children: [
-                            //   Icon(Icons.route,
-                            //       size: 16, color: colors.primary),
-                            //   const SizedBox(width: 4),
-                            //   FutureBuilder(
-                            //     future: getLocation(),
-                            //     builder: (context, snapshot) {
-                            //       if (snapshot.hasData) {
-                            //         return Text(
-                            //           snapshot.data ?? "10 m",
-                            //           style: TextStyle(
-                            //             fontSize: 12.0,
-                            //           ),
-                            //         );
-                            //       } else {
-                            //         return Text(
-                            //           "10 m",
-                            //           style: TextStyle(
-                            //             fontSize: 12.0,
-                            //           ),
-                            //         );
-                            //       }
-                            //     },
-                            //   ),
-                            //   // const Text(
-                            //   //   "A 10 m",
-                            //   //   style: TextStyle(
-                            //   //     fontSize: 12.0,
-                            //   //   ),
-                            //   // ),
-                            // ]),
                             Text(
                               showMessageGoToMapOrChapter != null
                                   ? showMessageGoToMapOrChapter == true

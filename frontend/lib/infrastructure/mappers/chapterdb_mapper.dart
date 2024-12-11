@@ -9,7 +9,7 @@ class ChapterMapper {
       content: chapter.content,
       latitude: chapter.latitude,
       longitude: chapter.longitude,
-      historyId: chapter.historyId ?? 1, // TODO REVISAR SI SE PUEDE ELIMINAR ESTE FALLBACK 1
+      historyId: chapter.historyId ?? 1, 
       image: _resolveImageUrl(chapter.image),
     );
   }

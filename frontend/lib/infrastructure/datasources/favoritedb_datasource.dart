@@ -23,7 +23,6 @@ class FavoritedbDatasource extends FavoriteDatasource {
 
       return favorites;
     } catch (e) {
-      print("Error al obtener las historias: $e");
       return [];
     }
   }
@@ -43,7 +42,6 @@ class FavoritedbDatasource extends FavoriteDatasource {
 
       return favorite;
     } catch (e) {
-      print("Error al agregar favorito: $e");
       throw Exception("Error al agregar favorito");
     }
   }
@@ -54,7 +52,6 @@ class FavoritedbDatasource extends FavoriteDatasource {
       await FetchApi.fetchDio().delete(
         '/v1/wishlist/$favoriteId',
       );
-      // print("RESPONSE REMOVE FAVORITE 2: ${response.data.toString()}");
     } catch (e) {
       throw Exception("Error al quitar el favorito $e");
     }

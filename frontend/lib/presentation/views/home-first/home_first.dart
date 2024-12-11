@@ -17,8 +17,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class HomeFirstScreen extends ConsumerStatefulWidget {
   static const String name = 'first-screen';
 
-  // TODO: aqui se traera la informacion desde las apis con clean architecture(dentro habra un caso de uso donde se implemntara el filtrado de historias por distancia)
-
   const HomeFirstScreen({super.key});
 
   @override
@@ -71,7 +69,6 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     isMounted = false;
     _pageController.dispose();

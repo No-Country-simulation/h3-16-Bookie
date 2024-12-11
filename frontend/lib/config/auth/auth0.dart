@@ -87,15 +87,6 @@ class AuthService {
       }
     } catch (e) {
       print("Error en el flujo de inicio de sesión con Auth0: $e");
-      // TODO MOSTRAR MENSAJE DE ERROR, REVISA QUE SE HAGA BIEN PORQUE AVECES SALE EN CASOS QUE NO CORRESPONDE PRUEBA VARIAS VECES Y TE DARAS CUENTA.
-      // if (context.mounted) {
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     SnackBar(
-      //       content: Text('Error al iniciar sesión'),
-      //       backgroundColor: Colors.red,
-      //     ),
-      //   );
-      // }
     }
   }
 

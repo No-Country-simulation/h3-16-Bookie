@@ -18,6 +18,7 @@ class ChaptersViewStoryWithPage extends ConsumerStatefulWidget {
   final int currentChapter;
   final int storyId;
   final String imageUrl;
+  final int chapterId;
 
   const ChaptersViewStoryWithPage({
     super.key,
@@ -34,6 +35,7 @@ class ChaptersViewStoryWithPage extends ConsumerStatefulWidget {
     this.randomNumber,
     required this.storyId,
     required this.imageUrl,
+    required this.chapterId,
   });
 
   @override
@@ -158,6 +160,7 @@ class _ChaptersViewStoryWithPageState
                         currentChapter: widget.currentChapter,
                         title: widget.titleChapter,
                         storyId: widget.storyId,
+                        chapterId: widget.chapterId,
                       )
                     : Padding(
                         padding: const EdgeInsets.symmetric(

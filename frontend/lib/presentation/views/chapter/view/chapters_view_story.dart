@@ -42,7 +42,6 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
       await ref.read(chapterProvider.notifier).getChapters(widget.storyId);
     } catch (e) {
       // Manejo de errores
-      print("Error al cargar los capítulos: $e");
     } finally {
       setState(() {
         isLoading =
@@ -78,7 +77,6 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
       final lineHeight = textPainter.height;
 
       // Verificar si el texto cabe en la página actual
-      // TODO REVISAR EL -350 PORQUE NO ME OCUPABA TODA LA ALTURA DEL DISPOSITIVO REVISAR EN OTROS DISPOSITIVOS
       if (currentHeight + lineHeight - 300 > maxHeight) {
         // Guardamos la página actual y empezamos una nueva
         pages.add(currentPage.toString());
@@ -228,29 +226,6 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
               : SafeArea(
                   child: Builder(
                     builder: (context) {
-                      // final screenSize = MediaQuery.of(context).size;
-                      // List<String> pages = [];
-
-                      // pages.addAll(paginateContent(
-                      //   // TODO REVISAR ESTO PORQUE SE ROMPEEE CUANDO SE AÑADEN CAPÍTULOS o cuando voy a mis capitulos de una historia que cree
-                      //   chapters[widget.chapterIndex].content,
-                      //   textStyle,
-                      //   screenSize,
-                      // ));
-
-                      // if (widget.chapterIndex < chapters.length) {
-                      //   pages.addAll(paginateContent(
-                      //     chapters[widget.chapterIndex].content,
-                      //     textStyle,
-                      //     screenSize,
-                      //   ));
-                      // } else {
-                      //   // Manejar error de índice fuera de rango
-                      //   return ShowError(
-                      //       message:
-                      //           "El capítulo se esta procesando, por favor regresa más tarde");
-                      // }
-
                       if (pages.isEmpty) {
                         final screenSize = MediaQuery.of(context).size;
                         pages = paginateContent(
@@ -272,6 +247,7 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                           isEndOfStory:
                               chapters.length - 1 == widget.chapterIndex,
                           isCurrentChapter: widget.chapterIndex,
+                          chapterId: chapters[widget.chapterIndex].id,
                           // es mas 1 porque necestiamos saber la posicion del capitulo siguiente
                           latitude: chapters[widget.chapterIndex +
                                   (widget.chapterIndex == chapters.length - 1
@@ -301,6 +277,7 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                             ),
                             // si es la primera pagina
                             isFirstPage: pages.indexOf(pageContent) == 0,
+                            chapterId: chapters[widget.chapterIndex].id,
                             chapterIndex: widget.chapterIndex,
                             titleChapter: chapters[widget.chapterIndex].title,
                             // es mas 1 porque necestiamos saber la posicion del capitulo siguiente

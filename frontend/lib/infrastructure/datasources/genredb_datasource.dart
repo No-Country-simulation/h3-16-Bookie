@@ -22,7 +22,6 @@ class GenreDbDatasource extends GenreDatasource {
         throw Exception("La respuesta no es una lista");
       }
     } catch (e) {
-      print("Error al obtener géneros: $e");
       rethrow;
     }
   }

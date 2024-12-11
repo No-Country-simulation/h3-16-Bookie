@@ -56,21 +56,12 @@ class _StoryScreenState extends ConsumerState<StoryScreen> {
     return Scaffold(
       body: SafeArea(
         child:
-            // ValueListenableBuilder<double>(
-            // valueListenable: _notifierScroll,
-            // builder: (context, value, _) {
-            // return
             PageView.builder(
           controller:
               _pageController, // Asegúrate de usar el PageController aquí
           itemCount: stories.length,
           itemBuilder: (context, index) {
             final story = stories[index];
-            // final percentage = index - value;
-            // final rotation = percentage.clamp(0.0, 1.0);
-            // final fixRotation = pow(rotation, 0.35);
-
-            // print("ESTADO STORY: ${story.toString()}");
 
             return Consumer(builder: (context, ref, child) {
               final asyncStory =
@@ -87,28 +78,10 @@ class _StoryScreenState extends ConsumerState<StoryScreen> {
                   } else {
                     return _StoryScreenDetail(
                       story: snapshot.data!,
-                      // rotation: rotation,
-                      // fixRotation: fixRotation,
                     );
                   }
                 },
               );
-
-              //   return asyncStory.when(
-              //     data: (story) {
-              //       print("ESTADO STORY DATA: ${story.toString()}");
-
-              //       return _StoryScreenDetail(
-              //         story: story,
-              //         // rotation: rotation,
-              //         // fixRotation: fixRotation,
-              //       );
-              //     },
-              //     loading: () => const Center(child: CircularProgressIndicator()),
-              //     error: (error, stack) =>
-              //         ShowError(message: "No se encontró la historia."),
-              //   );
-              // },
             });
           },
           // ),
@@ -120,12 +93,7 @@ class _StoryScreenState extends ConsumerState<StoryScreen> {
 
 class _StoryScreenDetail extends ConsumerWidget {
   final Story story;
-  // final double rotation;
-  // final num fixRotation;
-
   const _StoryScreenDetail({
-    // required this.rotation,
-    // required this.fixRotation,
     required this.story,
   });
 
@@ -146,10 +114,6 @@ class _StoryScreenDetail extends ConsumerWidget {
 
     return RefreshIndicator(
       onRefresh: () async {
-        // Obtener los capítulos usando el provider
-        // TODO REVISAR PARA ACTULIAZAR INFO TALVEZ YA SE CREARON OTROS CAPITULOS Y TBM PARA REFRESCAR LA UBICACION
-        // ref.read(storiesAllProvider.notifier).loadAllStories();
-        // return true;
       },
       child: SingleChildScrollView(
           child: Padding(
@@ -172,9 +136,7 @@ class _StoryScreenDetail extends ConsumerWidget {
             ),
 
             const SizedBox(height: 16),
-            // Mapa y botón de Google Maps
-            // TODO: CREO QUE SI SE PUEDE COLOCAR LOS CAPÍTULOS EN EL MAPA, PROBAR
-            // TODO: AQUI SE ROMPE CUANDO AÑADES CAPITULOS AL PROVIDER , TE FALTA ESA PARTE CUANDO SE AÑADEN CAPÍTULOS ADD CHAPTER EN LA STORY DEL ALL PROVIDER SINO SE ROMPE, O NOSE AVIRIGUAR BIEN ESTO
+
             StoryPreviewMaps(
               latitude: story.chapters[0].latitude,
               longitude: story.chapters[0].longitude,
@@ -249,22 +211,6 @@ class _StoryScreenDetail extends ConsumerWidget {
                           }
                         },
                       ),
-                      // // TODO ESTOS LUGARES LO PUEDES SACAR DELA API DE GOOGLE POR CAPITULOS AVER Q SALE
-                      // Text(
-                      //   '- Museo del Oro Bogotá Cra. 6 #15-88',
-                      //   style: TextStyle(fontSize: 14),
-                      // ),
-                      // const SizedBox(height: 4),
-                      // Text(
-                      //   '- Address 2 chapter 2',
-                      //   style: TextStyle(fontSize: 14),
-                      // ),
-                      // const SizedBox(height: 4),
-                      // Text(
-                      //   '- Address 3 chapter 3',
-                      //   style: TextStyle(fontSize: 14),
-                      // ),
-                      // const SizedBox(height: 4),
                     ]),
               ],
             ),

@@ -6,23 +6,7 @@ class ImageGenderPerson {
   static final dio = Dio();
 
   static String getGenderFromNameWritter(String name) {
-    // try {
-    //   final response = await dio.get('https://api.genderize.io?name=$name');
-
-    //   if (response.statusCode == 200) {
-    //     if (response.data['gender'] == null ||
-    //         response.data['gender'] == 'male') {
-    //       return 'men';
-    //     } else {
-    //       return 'women';
-    //     }
-    //   } else {
-    //     throw Exception('Error al consumir la API');
-    //   }
-    // } catch (e) {
-    //   print("Error al obtener el género del escritor: $e");
     return detectGenderByRules(name);
-    // }
   }
 
   static Future<String> getImageFromNameWritter(String name) async {
@@ -44,7 +28,6 @@ class ImageGenderPerson {
             : "https://res.cloudinary.com/dlixnwuhi/image/upload/v1733600879/oirnznnu2cnppqjmgn6o.webp"; // Aquí pones tu URL de fallback
       }
     } catch (e) {
-      print("Error al obtener la imagen: $e");
       // URL de fallback si ocurre algún error
       final randomNumber = _randomNumber();
 
@@ -62,7 +45,6 @@ class ImageGenderPerson {
       return response.statusCode ==
           200; // Si el código de estado es 200, la imagen existe
     } catch (e) {
-      print("Error al verificar la imagen: $e");
       return false; // Si ocurre un error, asumimos que la imagen no existe
     }
   }
