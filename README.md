@@ -89,8 +89,7 @@
     <li><strong>Java</strong></li>
     <li><strong>Postgre SQL</strong></li>
     <li><strong>Docker</strong></li>
-    <li><strong>image_picker: ^1.1.2</strong></li>
-    <li><strong>translator: ^1.0.3+1</strong></li>
+    
 </ul>
 
 <br/>
