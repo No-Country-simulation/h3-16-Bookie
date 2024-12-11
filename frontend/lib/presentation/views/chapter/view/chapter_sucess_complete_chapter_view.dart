@@ -1,6 +1,5 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:bookie/config/geolocator/geolocator.dart';
-import 'package:bookie/presentation/providers/read_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
