@@ -11,10 +11,9 @@
 <h3 align="center">Bookie es una aplicación Android desarrollada con Flutter que permite a los usuarios sumergirse en relatos de una manera única mediante su dispositivo movil, la particularidad de Bookie es que cada cápitulo de los relatos estarán asociados a una locación específica a la cual el lector debe concurrir para desbloquear, lo que permite al usuario experimentar el entorno real del texto, y de esta manera sumergirse plenamente en la historia. A su vez, escritores aficionados podrán crear sus propios relatos vinculados con escenarios de su elección, tambien podrán contar con la asistencia de IA para el desarrollo de historias.</h3>
 
 
-
-[https://github.com/user-attachments/assets/15d05d23-9517-4ef2-abc7-d9b770a2a15a](https://github.com/user-attachments/assets/589863c7-9a37-45cc-a145-f2cc3ba5267c
-)
-
+<div align="center">
+[https://github.com/user-attachments/assets/15d05d23-9517-4ef2-abc7-d9b770a2a15a](https://github.com/user-attachments/assets/589863c7-9a37-45cc-a145-f2cc3ba5267c ) 
+</div>
 
 
 
