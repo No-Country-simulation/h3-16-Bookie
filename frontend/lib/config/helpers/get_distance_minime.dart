@@ -1,6 +1,7 @@
 import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:bookie/config/helpers/format_distance.dart';
 import 'package:bookie/config/helpers/get_country_province.dart';
+import 'package:bookie/config/helpers/remove_accent.dart';
 import 'package:bookie/config/helpers/short_name.dart';
 
 Future<int> getDistanceFromOriginToDestination(
@@ -19,7 +20,6 @@ Future<int> getDistanceFromOriginToDestination(
 
     return distance;
   } catch (e) {
-
     return 10; // En caso de error, devolvemos 0 o un valor adecuado
   }
 }
@@ -40,8 +40,8 @@ Future<String> getCountryAndProvinceAndDistance(
     if (location == null) {
       stringLocation = "";
     }
-    stringLocation =
-        shortenName2("${location?.province}, ${location?.country}");
+    stringLocation = removeAccents(
+        shortenName2("${location?.province}, ${location?.country}"));
 
     // Obtener la distancia
     final distance = await getDistanceFromOriginToDestination(

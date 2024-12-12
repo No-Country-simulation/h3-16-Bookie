@@ -1,5 +1,4 @@
 import 'package:bookie/config/helpers/get_image_final.dart';
-import 'package:bookie/config/helpers/short_name.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -119,12 +118,14 @@ class _WriterCardState extends State<WriterCard> {
                           ),
                         )
                       : Text(
-                          shortenName(widget.name),
+                          widget.name,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
                           ),
                           textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                 ],
               ),

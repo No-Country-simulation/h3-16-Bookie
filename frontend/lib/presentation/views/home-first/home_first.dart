@@ -84,15 +84,6 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
 
     final colors = Theme.of(context).colorScheme;
 
-    // if (stories.isEmpty || writers.isEmpty) {
-    //   return Center(
-    //     child: SpinKitFadingCircle(
-    //       color: colors.primary,
-    //       size: 50.0,
-    //     ),
-    //   );
-    // }
-
     return SafeArea(
       child: PageView(
         controller: _pageController,

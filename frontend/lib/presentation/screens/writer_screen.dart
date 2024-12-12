@@ -172,7 +172,7 @@ class _WriterProfileScreenState extends ConsumerState<WriterProfileScreen> {
                                           '${story.chapters.length} ${getChaptersLabel(story.chapters.length)}'),
                                       onTap: () {
                                         // Acción para navegar a la historia
-                                        context.push('/story/${story.id}');
+                                        context.push('/story-only/${story.id}');
                                       },
                                     ),
                                   );

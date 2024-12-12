@@ -89,7 +89,7 @@ class StoriesReadSection extends StatelessWidget {
                         title: lastCompleteChapter.readChapter.title,
                         indexChapter: indexLastCompleteChapter,
                         onCardPress: () {
-                          context.push('/story/${readStory.story.id}');
+                          context.push('/story-only/${readStory.story.id}');
                         },
                         isCompleteStory: readStory.story.completeStory,
                       ),

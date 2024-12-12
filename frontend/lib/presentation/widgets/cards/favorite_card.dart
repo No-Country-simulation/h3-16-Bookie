@@ -151,20 +151,15 @@ class _CloseStoriesCardState extends ConsumerState<FavoriteCard> {
                         ),
                       ),
                     )
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          widget.title.length >= 12
-                              ? widget.title.substring(0, 10)
-                              : widget.title,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: colors.primary,
-                          ),
-                        ),
-                      ],
+                  : Text(
+                      widget.title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: colors.primary,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
             ),
 

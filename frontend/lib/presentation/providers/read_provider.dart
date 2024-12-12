@@ -2,6 +2,7 @@ import 'package:bookie/config/persistent/shared_preferences.dart';
 import 'package:bookie/domain/entities/read_entity.dart';
 import 'package:bookie/infrastructure/datasources/readdb_datasource.dart';
 import 'package:bookie/infrastructure/repositories/read_repository.dart';
+import 'package:bookie/presentation/providers/stories_all_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final readRepositoryProvider = Provider((ref) {
@@ -16,6 +17,7 @@ final readProvider = StateNotifierProvider<ReadNotifier, List<Read>>((ref) {
     addReaderNotifier: repository.addReader,
     addReaderChapterNotifier: repository.addReaderChapter,
     completeReaderChapterNotifier: repository.completeReaderChapter,
+    ref: ref,
   );
 });
 
@@ -25,13 +27,15 @@ class ReadNotifier extends StateNotifier<List<Read>> {
   final Future<int> Function(ReadChapterForm readChapterForm)
       addReaderChapterNotifier;
   final Future<void> Function(int readerId) completeReaderChapterNotifier;
+  Ref ref;
 
-  ReadNotifier(
-      {required this.getReadNotifier,
-      required this.addReaderNotifier,
-      required this.addReaderChapterNotifier,
-      required this.completeReaderChapterNotifier})
-      : super([]);
+  ReadNotifier({
+    required this.getReadNotifier,
+    required this.addReaderNotifier,
+    required this.addReaderChapterNotifier,
+    required this.completeReaderChapterNotifier,
+    required this.ref,
+  }) : super([]);
 
   // Método para obtener todos los favoritos
   Future<List<Read>> getReaders() async {
@@ -139,5 +143,53 @@ class ReadNotifier extends StateNotifier<List<Read>> {
     } catch (e) {
       throw Exception("Error al completar el capítulo del lector");
     }
+  }
+
+  bool isRead(int storyId, int chapterId) {
+    final readerFind =
+        state.firstWhere((element) => element.story.id == storyId,
+            orElse: () => Read(
+                  id: -1,
+                  story: ReadStory(
+                    id: storyId,
+                    title: '',
+                    completeStory: false,
+                    chapters: [],
+                  ),
+                  readChapters: [],
+                ));
+
+    if (readerFind.id != -1) {
+      final readerChapterFind = readerFind.readChapters.firstWhere(
+          (element) =>
+              element.readChapter.id == chapterId && element.completeChapter,
+          orElse: () => ReadChapterComplete(
+              readChapter: ReadChapter(id: -1, title: '', image: ""),
+              completeChapter: false));
+
+      return readerChapterFind.completeChapter;
+    } else {
+      return false;
+    }
+  }
+
+  bool isAfterBlocked(int storyId, int chapterId) {
+    final storiesAll = ref.read(storiesAllProvider);
+
+    final story = storiesAll.firstWhere((element) => element.id == storyId);
+
+    final chapterIndex =
+        story.chapters.indexWhere((element) => element.id == chapterId);
+
+    if (chapterIndex == 0) {
+      return false;
+    }
+
+    // Verificar si el capítulo anterior está leído
+    final chapterBefore = story.chapters[chapterIndex - 1];
+
+    final isReadChapterBefore = isRead(storyId, chapterBefore.id);
+
+    return !isReadChapterBefore;
   }
 }

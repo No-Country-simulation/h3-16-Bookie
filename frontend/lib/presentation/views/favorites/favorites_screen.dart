@@ -110,7 +110,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                       title: card.story.title,
                       quantityChapters: card.story.quantityChapters,
                       onCardPress: () {
-                        context.push('/story/${card.story.id}');
+                        context.push('/story-only/${card.story.id}');
                       },
                       isFavorite: favorites
                           .any((element) => element.story.id == card.story.id),

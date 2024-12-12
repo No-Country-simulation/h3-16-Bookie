@@ -1,5 +1,6 @@
 import 'package:bookie/presentation/screens/login_register_screen.dart';
 import 'package:bookie/presentation/screens/story_map_screen.dart';
+import 'package:bookie/presentation/screens/story_only_screen.dart';
 import 'package:bookie/presentation/screens/story_screen.dart';
 import 'package:bookie/presentation/screens/home_screen.dart';
 import 'package:bookie/presentation/screens/splash_screen.dart';
@@ -156,6 +157,17 @@ final appRouter = GoRouter(
           builder: (context, state) => const StoryMapScreen(),
         ),
       ],
+    ),
+
+    // Ruta para ver la información de una historia específica
+    GoRoute(
+      path: '/story-only/:id', // Ruta dinámica con el parámetro 'id'
+      name: StoryOnlyScreen.name,
+      builder: (context, state) {
+        final storyId = state.pathParameters['id'] ?? '';
+        return StoryOnlyScreen(
+            storyId: int.parse(storyId)); // Pasa el id al HistoryScreen
+      },
     ),
 
     // Ruta para ver la información de un writer específico

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:bookie/config/helpers/get_country_province.dart';
+import 'package:bookie/config/helpers/remove_accent.dart';
 import 'package:bookie/config/permissions/image.dart';
 import 'package:bookie/config/persistent/shared_preferences.dart';
 import 'package:bookie/domain/entities/genre_entity.dart';
@@ -131,22 +132,17 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
         genre: genreString,
         creatorId: int.parse(credentials.id ?? '1'),
         image: image,
-        country: countryAndProvince?.country ?? "TEMPORAL",
-        province: countryAndProvince?.province ?? "TEMPORAL",
+        country: removeAccents(countryAndProvince?.country ?? "TEMPORAL"),
+        province: removeAccents(countryAndProvince?.province ?? "TEMPORAL"),
       );
 
       // Crear el historia en el backend
       final storyCreated =
           await ref.read(storiesUserProvider.notifier).createStory(storyForm);
 
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(
       _titleController.clear();
       _synopsisController.clear();
       _formKey.currentState?.reset();
-      //       content: Text('Historia creada'), backgroundColor: Colors.green),
-      // );
-      //Navegar a la ruta `/form-chapter` con GoRouter
 
       if (context.mounted) {
         context.push(

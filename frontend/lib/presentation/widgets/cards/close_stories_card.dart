@@ -88,7 +88,7 @@ class _CloseStoriesCardState extends ConsumerState<CloseStoriesCard> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Stack(
               children: [
@@ -160,43 +160,20 @@ class _CloseStoriesCardState extends ConsumerState<CloseStoriesCard> {
                         ),
                       ),
                     )
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          capitalizeFirstWord(shortenName2(widget.title)),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: colors.primary,
-                          ),
-                        ),
-                      ],
+                  : Text(
+                      widget.title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: colors.primary,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
             ),
 
-            // synopsis
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            //   child: isLoading
-            //       ? Shimmer.fromColors(
-            //           baseColor: Colors.grey[300]!,
-            //           highlightColor: Colors.grey[100]!,
-            //           child: Container(
-            //             width: 150,
-            //             height: 14,
-            //             color: Colors.white,
-            //           ),
-            //         )
-            //       : Text(
-            //           widget.synopsis ?? '',
-            //           style: TextStyle(fontSize: 14, color: Colors.grey),
-            //           maxLines: 2,
-            //           overflow: TextOverflow.ellipsis,
-            //         ),
-            // ),
-
-            //rating - reads - distance
+            //distance
             Padding(
               padding: const EdgeInsets.only(
                   top: 2.0, right: 8.0, left: 8.0, bottom: 8.0),

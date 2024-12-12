@@ -33,11 +33,50 @@ class CardChapterMap extends ConsumerStatefulWidget {
 class CardChapterMapState extends ConsumerState<CardChapterMap> {
   late Future<bool> isBlocked;
   bool enableGoToMapOrChapter = false;
+  bool isReadMessage = false;
 
   @override
   void initState() {
     super.initState();
     calculateBlockedStatus();
+  }
+
+  Future<bool> isBlockedFuture(
+    double latitude,
+    double longitude,
+  ) async {
+    try {
+      final isRead = ref
+          .read(readProvider.notifier)
+          .isRead(widget.storyId, widget.chapterId);
+
+      if (isRead) {
+        setState(() {
+          isReadMessage = true;
+        });
+        return false;
+      }
+
+      final isAfter = ref
+          .read(readProvider.notifier)
+          .isAfterBlocked(widget.storyId, widget.chapterId);
+
+      if (isAfter) {
+        return true;
+      }
+
+      final userPosition = await determinePosition();
+
+      final isLocked = isWithinRadius(
+        userPosition,
+        latitude,
+        longitude,
+      );
+
+      return isLocked;
+    } catch (e) {
+      return true;
+    }
   }
 
   void calculateBlockedStatus() {
@@ -137,11 +176,6 @@ class CardChapterMapState extends ConsumerState<CardChapterMap> {
                               color: colors.primary,
                             ),
                           ),
-                          // Text(
-                          //   'Capítulo ${widget.index + 1}',
-                          //   style: TextStyle(
-                          //       fontSize: 10, color: Colors.grey.shade600),
-                          // ),
                         ],
                       ),
                     ),
@@ -182,29 +216,57 @@ class CardChapterMapState extends ConsumerState<CardChapterMap> {
                   ),
                 ),
                 Positioned(
-                  bottom: -10,
+                  bottom: -14,
                   right: -12,
-                  child: IconButton(
-                    style: IconButton.styleFrom(
-                      // shape: null,
-                      // const RoundedRectangleBorder(
-                      //   borderRadius: BorderRadius.all(Radius.circular(10)),
-                      // ),
-                      backgroundColor: Colors.transparent,
-                      // isDarkmode ? Colors.black38 : Colors.white,
-                    ),
-                    icon: Icon(
-                      Icons.sync,
-                      color: colors.primary,
-                      size: 18,
-                    ),
-                    onPressed: () {
-                      calculateBlockedStatus(); // Llamada para refrescar el estado
-                    },
-                    splashColor: Colors.transparent, // Elimina el efecto splash
-                    highlightColor:
-                        Colors.transparent, // Elimina el efecto highlight
-                    enableFeedback: false, // Desactiva el feedback háptico
+                  child: Row(
+                    children: [
+                      if (isReadMessage)
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 0.5),
+                          decoration: BoxDecoration(
+                            color: colors.primary.withOpacity(
+                                0.1), // Color de fondo con opacidad
+                            borderRadius:
+                                BorderRadius.circular(12), // Bordes redondeados
+                            border: Border.all(
+                                color:
+                                    colors.primary), // Borde con color primario
+                          ),
+                          child: Text(
+                            "Leído",
+                            style: TextStyle(
+                              color: colors.primary, // Color del texto
+                              fontSize: 12,
+                              fontWeight: FontWeight
+                                  .bold, // Opcional: estilo más destacado
+                            ),
+                          ),
+                        ),
+                      IconButton(
+                        style: IconButton.styleFrom(
+                          // shape: null,
+                          // const RoundedRectangleBorder(
+                          //   borderRadius: BorderRadius.all(Radius.circular(10)),
+                          // ),
+                          backgroundColor: Colors.transparent,
+                          // isDarkmode ? Colors.black38 : Colors.white,
+                        ),
+                        icon: Icon(
+                          Icons.sync,
+                          color: colors.primary,
+                          size: 18,
+                        ),
+                        onPressed: () {
+                          calculateBlockedStatus(); // Llamada para refrescar el estado
+                        },
+                        splashColor:
+                            Colors.transparent, // Elimina el efecto splash
+                        highlightColor:
+                            Colors.transparent, // Elimina el efecto highlight
+                        enableFeedback: false, // Desactiva el feedback háptico
+                      ),
+                    ],
                   ),
                 ),
               ],

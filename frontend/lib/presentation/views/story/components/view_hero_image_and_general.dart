@@ -60,9 +60,12 @@ class _StoryHeroImageAndGeneralState
     _rotationAnimation =
         Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
     Future.delayed(const Duration(milliseconds: 100), () {
-      setState(() {
-        _opacity = 1.0;
-      });
+      if (mounted) {
+        // Comprobamos si el widget está montado
+        setState(() {
+          _opacity = 1.0;
+        });
+      }
     });
   }
 

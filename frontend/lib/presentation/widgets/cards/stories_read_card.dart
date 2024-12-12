@@ -130,13 +130,15 @@ class _StoriesReadCardState extends State<StoriesReadCard> {
                           ),
                         )
                       : Text(
-                          capitalizeFirstWord(shortenName2(widget.title)),
+                          widget.title,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
                             color: colors.primary,
                           ),
                           textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                   SizedBox(height: 1),
                   isLoading
@@ -162,7 +164,9 @@ class _StoriesReadCardState extends State<StoriesReadCard> {
                   Text(
                     widget.isCompleteStory ? "Completado" : "Continuar",
                     style: TextStyle(
-                      color: colors.primary.withOpacity(0.8),
+                      color: widget.isCompleteStory
+                          ? Colors.green
+                          : colors.primary.withOpacity(0.8),
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),

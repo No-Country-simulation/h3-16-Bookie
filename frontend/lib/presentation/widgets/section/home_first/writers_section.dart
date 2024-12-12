@@ -33,7 +33,7 @@ class WritersSection extends StatelessWidget {
           SizedBox(height: 16),
           SizedBox(
             // Tamaño del slider
-            height: 130, // Altura del slider
+            height: 110, // Altura del slider
             child: Swiper(
               itemCount: writers.length,
               itemBuilder: (BuildContext context, int index) {

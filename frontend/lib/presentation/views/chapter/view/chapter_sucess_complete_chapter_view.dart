@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:bookie/config/geolocator/geolocator.dart';
+import 'package:bookie/presentation/providers/read_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -38,6 +39,45 @@ class ChapterSuccessCompleteChapterView extends ConsumerStatefulWidget {
 class _ChapterSuccessCompleteChapterViewState
     extends ConsumerState<ChapterSuccessCompleteChapterView> {
   late Future<bool> isBlocked;
+  bool isReadMessage = false;
+
+  Future<bool> isBlockedFuture(
+    double latitude,
+    double longitude,
+  ) async {
+    try {
+      final isRead = ref
+          .read(readProvider.notifier)
+          .isRead(widget.storyId, widget.chapterId);
+
+      if (isRead) {
+        setState(() {
+          isReadMessage = true;
+        });
+        return false;
+      }
+
+      final isAfter = ref
+          .read(readProvider.notifier)
+          .isAfterBlocked(widget.storyId, widget.chapterId);
+
+      if (isAfter) {
+        return true;
+      }
+
+      final userPosition = await determinePosition();
+
+      final isLocked = isWithinRadius(
+        userPosition,
+        latitude,
+        longitude,
+      );
+
+      return isLocked;
+    } catch (e) {
+      return true;
+    }
+  }
 
   @override
   void initState() {
@@ -171,20 +211,27 @@ class _ChapterSuccessCompleteChapterViewState
                           ElevatedButton.icon(
                             onPressed: () {
                               // Acción para ir al siguiente capítulo
-                              !blocked
-                                  ? context.push(
-                                      '/chapters/view/${widget.storyId}/${widget.isCurrentChapter + 1}')
-                                  : context.push(
-                                      '/chapters/view/${widget.storyId}/${widget.isCurrentChapter + 1}/map',
-                                      extra: {
-                                        'latitude': widget.latitude,
-                                        'longitude': widget.longitude,
-                                        'currentChapter':
-                                            widget.isCurrentChapter + 1,
-                                        // 'title': widget.title,
-                                        'storyId': widget.storyId
-                                      },
-                                    );
+                              if (!blocked) {
+                                ref
+                                    .read(readProvider.notifier)
+                                    .completeReaderChapter(
+                                        widget.storyId, widget.chapterId);
+
+                                context.push(
+                                    '/chapters/view/${widget.storyId}/${widget.isCurrentChapter + 1}');
+                              } else {
+                                context.push(
+                                  '/chapters/view/${widget.storyId}/${widget.isCurrentChapter + 1}/map',
+                                  extra: {
+                                    'latitude': widget.latitude,
+                                    'longitude': widget.longitude,
+                                    'currentChapter':
+                                        widget.isCurrentChapter + 1,
+                                    // 'title': widget.title,
+                                    'storyId': widget.storyId
+                                  },
+                                );
+                              }
                             },
                             icon: Icon(!blocked ? Icons.lock_open : Icons.lock,
                                 color: !blocked

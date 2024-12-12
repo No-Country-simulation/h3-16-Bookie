@@ -243,12 +243,18 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                           pageContent:
                               'Esperamos que la hayas disfrutado. Para continuar al siguiente capítulo tienes que estar cerca.',
                           textStyle: textStyle,
+                          // aqui se rompe no se porque
                           titleChapter: chapters[widget.chapterIndex].title,
                           isEndOfStory:
                               chapters.length - 1 == widget.chapterIndex,
                           isCurrentChapter: widget.chapterIndex,
-                          chapterId: chapters[widget.chapterIndex].id,
-                          // es mas 1 porque necestiamos saber la posicion del capitulo siguiente
+                          // es mas 1 porque vamos a acceder al capitulo siguiente
+                          chapterIdNextChapterComplete: chapters[
+                                  widget.chapterIndex != chapters.length - 1
+                                      ? widget.chapterIndex + 1
+                                      : 0]
+                              .id,
+                          // es mas 1 porque vamos a acceder al capitulo siguiente, para evitar que se rompa colocamos el 0
                           latitude: chapters[widget.chapterIndex +
                                   (widget.chapterIndex == chapters.length - 1
                                       ? 0
@@ -277,7 +283,12 @@ class _ChaptersViewStoryState extends ConsumerState<ChaptersViewStory> {
                             ),
                             // si es la primera pagina
                             isFirstPage: pages.indexOf(pageContent) == 0,
-                            chapterId: chapters[widget.chapterIndex].id,
+                            // es mas 1 porque vamos a acceder al capitulo siguiente, para evitar que se rompa colocamos el 0
+                            chapterIdNextChapterComplete: chapters[
+                                    widget.chapterIndex != chapters.length - 1
+                                        ? widget.chapterIndex + 1
+                                        : 0]
+                                .id,
                             chapterIndex: widget.chapterIndex,
                             titleChapter: chapters[widget.chapterIndex].title,
                             // es mas 1 porque necestiamos saber la posicion del capitulo siguiente

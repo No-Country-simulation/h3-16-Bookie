@@ -33,6 +33,45 @@ class _ChapterCardState extends ConsumerState<ChapterCard> {
   late final Future<bool> isBlocked;
   bool enableGoToMapOrChapter = false;
   bool? showMessageGoToMapOrChapter;
+  bool isReadMessage = false;
+
+  Future<bool> isBlockedFuture(
+    double latitude,
+    double longitude,
+  ) async {
+    try {
+      final isRead = ref
+          .read(readProvider.notifier)
+          .isRead(widget.storyId, widget.chapterId);
+
+      if (isRead) {
+        setState(() {
+          isReadMessage = true;
+        });
+        return false;
+      }
+
+      final isAfter = ref
+          .read(readProvider.notifier)
+          .isAfterBlocked(widget.storyId, widget.chapterId);
+
+      if (isAfter) {
+        return true;
+      }
+
+      final userPosition = await determinePosition();
+
+      final isLocked = isWithinRadius(
+        userPosition,
+        latitude,
+        longitude,
+      );
+
+      return isLocked;
+    } catch (e) {
+      return true;
+    }
+  }
 
   @override
   void initState() {
@@ -60,8 +99,9 @@ class _ChapterCardState extends ConsumerState<ChapterCard> {
       child: InkWell(
         onTap: () async {
           if (enableGoToMapOrChapter) {
+            // saber si el usuario ya leyo el capítulo
+
             // Acción para navegar a la historia
-            // context
             isBlocked.then((value) {
               if (value) {
                 context.push(
@@ -189,7 +229,30 @@ class _ChapterCardState extends ConsumerState<ChapterCard> {
                                       ? "Ver Mapa"
                                       : "Ver Capítulo"
                                   : "",
-                            )
+                            ),
+                            if (isReadMessage)
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: colors.primary.withOpacity(
+                                      0.1), // Color de fondo con opacidad
+                                  borderRadius: BorderRadius.circular(
+                                      12), // Bordes redondeados
+                                  border: Border.all(
+                                      color: colors
+                                          .primary), // Borde con color primario
+                                ),
+                                child: Text(
+                                  "Leído",
+                                  style: TextStyle(
+                                    color: colors.primary, // Color del texto
+                                    fontSize: 12,
+                                    fontWeight: FontWeight
+                                        .bold, // Opcional: estilo más destacado
+                                  ),
+                                ),
+                              ),
                           ]),
                     ],
                   ),
