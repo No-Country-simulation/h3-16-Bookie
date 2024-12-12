@@ -18,7 +18,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     List<UserEntity> findUsersWithHistories();
 
 
-    @Query("SELECT h FROM HistoryEntity h LEFT JOIN FETCH h.chapters WHERE h.creator.id = :userId")
-    List<HistoryEntity> findHistoriesWithChapters(@Param("userId") Long userId);
+    /*@Query("SELECT h FROM HistoryEntity h LEFT JOIN FETCH h.chapters WHERE h.creator.id = :userId")
+    List<HistoryEntity> findHistoriesWithChapters(@Param("userId") Long userId);*/
 
 }
