@@ -1,0 +1,18 @@
+enum Genre {
+  novela,
+  cuento,
+  cienciaFiccion,
+  fantasia,
+  romance,
+  misterio,
+  suspenso,
+  terror,
+  historico,
+  distopico,
+  utopia,
+  western,
+  gotico,
+  epico,
+  realismoMagico,
+  surrealismo,
+}

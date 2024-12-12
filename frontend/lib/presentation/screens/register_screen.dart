@@ -1,5 +1,6 @@
 import 'package:bookie/config/constants/general.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -76,10 +77,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final isDarkmode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Crear cuenta", style: TextStyle(color: Colors.white)),
+        title: Text("Crear cuenta",
+            style: TextStyle(color: isDarkmode ? Colors.black : Colors.white)),
         backgroundColor: colors.primary, // Icono de la barra de navegación
       ),
       body: Stack(
@@ -95,8 +98,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           BorderRadius.circular(16), // Bordes redondeados
                       child: Image.asset(
                         GeneralConstants.logo, // Cambia por la URL de tu imagen
-                        width: 150, // Ancho de la imagen
-                        height: 150, // Alto de la imagen
+                        width: 240, // Ancho de la imagen
+                        height: 120, // Alto de la imagen
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -177,7 +180,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             child: Text("Crear cuenta",
                                 style: TextStyle(
-                                    fontSize: 18, color: Colors.white)),
+                                    fontSize: 18,
+                                    color: isDarkmode
+                                        ? Colors.black
+                                        : Colors.white)),
                           ),
                         ],
                       ),
@@ -206,7 +212,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 color: Colors.black.withOpacity(
                     0.5), // Fondo oscuro para hacer opaco el formulario
                 child: Center(
-                  child: CircularProgressIndicator(), // Loader
+                  child: SpinKitFadingCircle(
+                    color: colors.primary,
+                    size: 50.0,
+                  ), // Loader
                 ),
               ),
             ),

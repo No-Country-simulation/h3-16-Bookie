@@ -61,25 +61,15 @@ class HistoryControllerTest {
     void crateHistory() throws JsonProcessingException {
 
         HistoryDtoRequest HistoryDtoRequest = new HistoryDtoRequest("La leyenda del MAGO 2",
-                "Una aventura épica sobre un MAGO y su MAGIA divivna.", 2L, GenreLiterary.FANTASIA, "http://imagen-del-dragon.jpg/","ARGENTINA","BUENOS AIRES");
+                "Una aventura épica sobre un MAGO y su MAGIA divivna.", 2L, GenreLiterary.FANTASIA, "http://imagen-del-dragon.jpg/", "ARGENTINA", "BUENOS AIRES");
 
-        String json = """
-                {
-                  "title": "La leyenda del MAGO 2",
-                  "synopsis": "Una aventura épica sobre un MAGO y su MAGIA divivna.",
-                  "creator_id": 3,
-                  "genre": "FANTASIA",
-                  "img": "http://imagen-del-dragon.jpg/",
-                  "country": "san andres",
-                  "province": "isla"
-                }
-                            
-                """;
+        String json = "{" + "\"title\": \"" + HistoryDtoRequest.title() + "\"," + "\"synopsis\": \"" + HistoryDtoRequest.synopsis() + "\"," + "\"creator_id\": " + HistoryDtoRequest.creator_id() + "," + "\"genre\": \"" + HistoryDtoRequest.genre() + "\"," + "\"img\": \"" + HistoryDtoRequest.img() + "\"," + "\"country\": \"" + HistoryDtoRequest.country() + "\"," + "\"province\": \"" + HistoryDtoRequest.province() + "\"" + "}";
+
         HttpEntity<String> request = new HttpEntity<>(json, headers);
         ResponseEntity<HistoryDtoResponse> crateHistoryResult = testRestTemplate.exchange("/api/v1/history", HttpMethod.POST, request, HistoryDtoResponse.class);
 
         System.out.println("HistoryDtoRequest = " + json);
-        JsonUtil.toJsonPrint("crateHistoryResult",crateHistoryResult);
+        JsonUtil.toJsonPrint("crateHistoryResult", crateHistoryResult);
 
 
         assertAll(
@@ -143,13 +133,13 @@ class HistoryControllerTest {
 
         HttpEntity<String> request = new HttpEntity<>(headers);
         ResponseEntity<HistoryDtoResponse> crateHistoryResult = testRestTemplate.exchange("/api/v1/history/74", HttpMethod.GET, request, HistoryDtoResponse.class);
-        JsonUtil.toJsonPrint("crateHistoryResult = " , crateHistoryResult);
+        JsonUtil.toJsonPrint("crateHistoryResult = ", crateHistoryResult);
 
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK, crateHistoryResult.getStatusCode()),
                 () -> assertEquals(200, crateHistoryResult.getStatusCode().value()),
-                () -> assertEquals(crateHistoryResult.getBody().id(),74)
+                () -> assertEquals(crateHistoryResult.getBody().id(), 74)
 
         );
     }
@@ -161,7 +151,7 @@ class HistoryControllerTest {
         HttpEntity<String> request = new HttpEntity<>(headers);
         ResponseEntity<JsonNode> result = testRestTemplate.exchange("/api/v1/history/user/3", HttpMethod.GET, request, JsonNode.class);
 
-        JsonUtil.toJsonPrint("List<history> historybyuser",result);
+        JsonUtil.toJsonPrint("List<history> historybyuser", result);
 
 
         assertAll(
@@ -171,7 +161,6 @@ class HistoryControllerTest {
 
         );
     }
-
 
 
 }

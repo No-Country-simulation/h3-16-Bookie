@@ -9,25 +9,10 @@ buildscript {
     }
 }
 
-def localProperties = new Properties()
-def localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.withInputStream {
-        localProperties.load(it)
-    }
-}
-
 allprojects {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url "https://api.mapbox.com/downloads/v2/releases/maven"
-            credentials {
-                username = "mapbox"
-                password = localProperties.getProperty("MAPBOX_DOWNLOADS_TOKEN")
-            }
-        }
     }
 }
 

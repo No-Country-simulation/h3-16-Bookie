@@ -1,14 +1,12 @@
-import 'package:bookie/presentation/views/create_history/create_history_screen.dart';
+import 'package:bookie/presentation/screens/map_screen.dart';
+import 'package:bookie/presentation/views/story/create_story_screen.dart';
 import 'package:bookie/presentation/views/favorites/favorites_screen.dart';
-import 'package:bookie/presentation/views/feed/feed_screen.dart';
-import 'package:bookie/presentation/views/map_histories/map3.dart';
-// import 'package:bookie/presentation/views/map_histories/map_histories_screen.dart';
-// import 'package:bookie/presentation/views/map_histories/map_histories_screen2.dart';
+import 'package:bookie/presentation/views/home-first/home_first.dart';
 import 'package:bookie/presentation/views/settings/settings_screen.dart';
 import 'package:bookie/presentation/widgets/shared/custom_bottom_navigation.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   static const name = 'home-screen';
 
   final int pageIndex;
@@ -16,22 +14,49 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, required this.pageIndex});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late PageController _pageController;
+  late int _currentPageIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentPageIndex = widget.pageIndex;
+    _pageController = PageController(initialPage: _currentPageIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        // Contenedor de pantalla de inicio
-        index: pageIndex, // Índice de la página actual
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            // Actualiza el estado con el índice de la página actual
+            _currentPageIndex = index;
+          });
+        },
+        physics:
+            NeverScrollableScrollPhysics(), // Desactiva el desplazamiento por gestos
         children: [
-          FeedScreen(),
-          // MapHistoriesScreen(),
-          ModelLayerWidget(),
+          HomeFirstScreen(),
+          MapScreen(),
           CreateHistoryScreen(),
           FavoritesScreen(),
           SettingsScreen(),
-          // RouteLine(),
         ],
-      ), // Contenedor de pantalla de inicio
-      bottomNavigationBar: CustomBottomNavigation(currentIndex: pageIndex),
+      ),
+      bottomNavigationBar:
+          CustomBottomNavigation(currentIndex: _currentPageIndex),
     );
   }
 }

@@ -50,7 +50,8 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-                manifestPlaceholders = [auth0Domain: "dev-jg38qnooi6s5i87e.us.auth0.com", auth0Scheme: "https"]
+        manifestPlaceholders += [auth0Domain: "dev-tqsnmrvr4avtmihp.us.auth0.com", auth0Scheme: "demo"]
+                
     }
 
     buildTypes {
@@ -65,7 +66,6 @@ android {
 }
 
 dependencies {
-    implementation 'com.mapbox.maps:android:11.8.0'  // Agregamos la dependencia de Mapbox
 }
 
 flutter {

@@ -38,8 +38,13 @@ public class ChapterService {
                 .build();
 
         ChapterEntity savedChapter = chapterRepository.save(chapter);
+
+        //setear la distancia total entre capitulos en metros
+        if (history.getChapters().size() > 1) setdistanceOFChapter(history);
+
         return new ChapterDtoResponse(savedChapter);
     }
+
 
     public List<ChapterDtoResponse> getChaptersByHistoryId(Long historyId) {
         List<ChapterEntity> chapters = chapterRepository.findByHistoryId(historyId);
@@ -70,5 +75,56 @@ public class ChapterService {
 
         chapterRepository.deleteById(chapterId);
         return "Chapter deleted successfully";
+    }
+
+    /**
+     * Arregla la ligica entre la distancia de cada capitulo en la historia en metros
+     *
+     * @param history
+     */
+    private void setdistanceOFChapter(HistoryEntity history) {
+        HistoryEntity historyDb = history;
+        Double latitude = 0D;
+        Double longitude = 0D;
+        Double totalKlometros = 0D;
+        List<ChapterEntity> chapters = historyDb.getChapters();
+
+
+        for (ChapterEntity chapter : chapters) {
+
+            if (latitude != 0 && longitude != 0) {
+
+                totalKlometros += calcularDistanciaPuntosSuperficieTierra(latitude, longitude, chapter.getLatitude(), chapter.getLongitude());
+
+            }
+            latitude = chapter.getLatitude();
+            longitude = chapter.getLongitude();
+        }
+
+        historyDb.setDistance(totalKlometros);
+        historyRepository.save(historyDb);
+    }
+
+    /**
+     * <p>Funcion para calcular la diferencia de puntos cardinales en kilometros</p>
+     *
+     * @param latitud1
+     * @param longitud1
+     * @param latitud2
+     * @param longitud2
+     * @return
+     */
+    public static Double calcularDistanciaPuntosSuperficieTierra(Double latitud1, Double longitud1, Double latitud2, Double longitud2) {
+        final Double tierra = 6371.01;;
+        latitud1 = Math.toRadians(latitud1);
+        longitud1 = Math.toRadians(longitud1);
+        latitud2 = Math.toRadians(latitud2);
+        longitud2 = Math.toRadians(longitud2);
+
+        Double diferencia = tierra * Math.acos(Math.sin(latitud1) * Math.sin(latitud2)
+                + Math.cos(latitud1) * Math.cos(latitud2) * Math.cos(longitud1 - longitud2)
+        );
+        //convertir los kilometros a metros 1 kilometro son 1000 metros
+        return diferencia * 1000;
     }
 }
