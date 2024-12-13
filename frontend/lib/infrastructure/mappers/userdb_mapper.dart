@@ -1,4 +1,5 @@
 import 'package:bookie/domain/entities/user_entity.dart';
+import 'package:bookie/infrastructure/datasources/writtersdb_datasource.dart';
 import 'package:bookie/infrastructure/models/user_db.dart';
 
 class UserMapper {
@@ -10,6 +11,18 @@ class UserMapper {
     return User(
       id: userDbResponse.id,
       name: name,
+    );
+  }
+
+  static User writterDbToEntity(WritterDb userDbResponse) {
+    final String name = userDbResponse.name.contains('@')
+        ? userDbResponse.name.split('@').first // Toma la parte antes del '@'
+        : userDbResponse.name; // Si no contiene '@', usa el nombre completo
+
+    return User(
+      id: userDbResponse.id,
+      name: name,
+      isWriter: userDbResponse.email.isNotEmpty,
     );
   }
 }

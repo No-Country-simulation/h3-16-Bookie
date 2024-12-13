@@ -122,6 +122,7 @@ class StoryPreviewMaps extends StatelessWidget {
                       );
                     },
                     errorBuilder: (context, error, stackTrace) {
+                      print("error mapa: $error");
                       return const Center(
                           child: Text('Error al cargar el mapa'));
                     },

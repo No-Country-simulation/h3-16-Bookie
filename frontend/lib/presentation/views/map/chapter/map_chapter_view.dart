@@ -295,10 +295,9 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
           Align(
             alignment: Alignment.bottomCenter,
             child: SizedBox(
-              height: 370,
+              height: 250,
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 90, horizontal: 10),
+                padding: const EdgeInsets.only(bottom: 60, left: 10, right: 10),
                 child: isLoading
                     ? Center(
                         child:
@@ -363,7 +362,7 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
           Positioned(
             bottom: 24,
             left: 12,
-            child: Column(
+            child: Row(
               children: [
                 IconButton(
                   style: IconButton.styleFrom(
@@ -395,7 +394,7 @@ class _MapChapterViewState extends ConsumerState<MapChapterView> {
                     }
                   },
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(width: 10),
                 IconButton(
                   style: IconButton.styleFrom(
                     padding: const EdgeInsets.all(10),

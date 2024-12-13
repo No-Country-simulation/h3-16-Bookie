@@ -1,3 +1,4 @@
+import 'package:bookie/presentation/providers/country_provider.dart';
 import 'package:bookie/presentation/providers/genres_provider.dart';
 import 'package:bookie/presentation/providers/read_provider.dart';
 import 'package:bookie/presentation/providers/stories_all_provider.dart';
@@ -39,6 +40,7 @@ class _HomeFirstScreenState extends ConsumerState<HomeFirstScreen> {
     ref.read(getGenresProvider.notifier).loadGenres();
     ref.read(usersProvider.notifier).loadWriters();
     ref.read(readProvider.notifier).getReaders();
+    ref.read(countryProvinceProvider.notifier).loadCountriesProvinces();
   }
 
   // void changeLanguage(String locale) async {

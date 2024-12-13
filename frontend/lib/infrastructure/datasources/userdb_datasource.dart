@@ -4,8 +4,8 @@ import 'package:bookie/config/helpers/get_image_gender_person.dart';
 import 'package:bookie/config/persistent/shared_preferences.dart';
 import 'package:bookie/domain/datasources/user_datasource.dart';
 import 'package:bookie/domain/entities/user_entity.dart';
+import 'package:bookie/infrastructure/datasources/writtersdb_datasource.dart';
 import 'package:bookie/infrastructure/mappers/userdb_mapper.dart';
-import 'package:bookie/infrastructure/models/user_db.dart';
 
 class UserDbDatasource extends UserDatasource {
   @override
@@ -13,10 +13,12 @@ class UserDbDatasource extends UserDatasource {
     try {
       final response = await FetchApi.fetchDio().get('/auth/users');
 
-      final userDBResponse = UserDb.fromJsonList(response.data);
+      final userDBResponse = WritterDb.fromJsonList(response.data);
+
+      print("userDBResponse: $userDBResponse");
 
       final List<User> writers =
-          userDBResponse.map(UserMapper.userDbToEntity).toList();
+          userDBResponse.map(UserMapper.writterDbToEntity).toList();
 
       // Obtener la imagen de los escritores
       final writersWithImageUrl = await Future.wait(
@@ -39,6 +41,8 @@ class UserDbDatasource extends UserDatasource {
 
       return writersWithImageUrl;
     } catch (e) {
+      print("error getWriters: $e");
+
       return [];
     }
   }

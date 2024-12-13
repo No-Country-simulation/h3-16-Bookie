@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:bookie/config/geolocator/geolocator.dart';
+import 'package:bookie/config/helpers/capitalize.dart';
+import 'package:bookie/domain/entities/country_province_entity.dart';
+import 'package:bookie/presentation/providers/country_provider.dart';
 import 'package:bookie/presentation/providers/location_provider.dart';
 import 'package:bookie/presentation/views/map/google_maps_dark.dart';
 import 'package:bookie/presentation/widgets/cards/story/map/card_chapter_map.dart';
@@ -30,22 +33,6 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
   BitmapDescriptor customChapterIcon = BitmapDescriptor.defaultMarker;
 
   final TextEditingController _controller = TextEditingController();
-  List<String> countries = [
-    'Argentina',
-    'Brasil',
-    'Chile',
-    'Colombia',
-    'Perú',
-    'México'
-  ];
-  List<String> cities = [
-    'Buenos Aires',
-    'São Paulo',
-    'Santiago',
-    'Lima',
-    'Bogotá',
-    'Ciudad de México'
-  ];
 
   late Future<bool> isUnlockedFuture;
   bool isLoading = true;
@@ -223,6 +210,11 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
     final isDarkmode = Theme.of(context).brightness == Brightness.dark;
     final colors = Theme.of(context).colorScheme;
     final currentPosition = ref.watch(locationProvider);
+    final countries =
+        ref.watch(countryProvinceProvider.notifier).getCountries();
+    final provinces =
+        ref.watch(countryProvinceProvider.notifier).getProvinces();
+
     // final chapters = ref.watch(chapterProvider);
 
     return SafeArea(
@@ -322,8 +314,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                             icon: customChapterIcon,
                             infoWindow:
                                 InfoWindow(title: 'Title ${e.hashCode}'),
-                            onTap: () {
-                            },
+                            onTap: () {},
                           )),
                   }, //
                 ),
@@ -416,41 +407,80 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                           child: ListView(
                             scrollDirection: Axis.horizontal,
                             children: [
-                              ...[...countries, ...cities].map((option) {
-                                return Padding(
-                                    padding: const EdgeInsets.only(right: 4.0),
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        if (isCardVisible) {
-                                          toggleCard();
-                                        }
-                                        if (!isSwiperVisible) {
-                                          toggleSwiper();
-                                        }
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: isDarkmode
-                                            ? Colors.black
-                                            : Colors.white,
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 2.0, horizontal: 8.0),
-                                        shadowColor: Colors
-                                            .transparent, // Eliminar sombra
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              8.0), // Opcional, para bordes redondeados
+                              if (countries.isNotEmpty)
+                                ...countries.map((option) {
+                                  return Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 4.0),
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          if (isCardVisible) {
+                                            toggleCard();
+                                          }
+                                          if (!isSwiperVisible) {
+                                            toggleSwiper();
+                                          }
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: isDarkmode
+                                              ? Colors.black
+                                              : Colors.white,
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 2.0, horizontal: 8.0),
+                                          shadowColor: Colors
+                                              .transparent, // Eliminar sombra
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                8.0), // Opcional, para bordes redondeados
+                                          ),
                                         ),
-                                      ),
-                                      child: Text(
-                                        option,
-                                        style: TextStyle(
-                                          color: isDarkmode
-                                              ? colors.primary
-                                              : Colors.black,
+                                        child: Text(
+                                          capitalizeAllWords(option.name),
+                                          style: TextStyle(
+                                            color: isDarkmode
+                                                ? colors.primary
+                                                : Colors.black,
+                                          ),
                                         ),
-                                      ),
-                                    ));
-                              }),
+                                      ));
+                                }),
+                              if (provinces.isNotEmpty)
+                                ...provinces.map((option) {
+                                  return Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 4.0),
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          if (isCardVisible) {
+                                            toggleCard();
+                                          }
+                                          if (!isSwiperVisible) {
+                                            toggleSwiper();
+                                          }
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: isDarkmode
+                                              ? Colors.black
+                                              : Colors.white,
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 2.0, horizontal: 8.0),
+                                          shadowColor: Colors
+                                              .transparent, // Eliminar sombra
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                8.0), // Opcional, para bordes redondeados
+                                          ),
+                                        ),
+                                        child: Text(
+                                          capitalizeAllWords(option.name),
+                                          style: TextStyle(
+                                            color: isDarkmode
+                                                ? colors.primary
+                                                : Colors.black,
+                                          ),
+                                        ),
+                                      ));
+                                }),
                             ],
                           ),
                         ),
@@ -529,7 +559,6 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
             left: 12,
             child: Column(
               children: [
-             
                 IconButton(
                   style: IconButton.styleFrom(
                     padding: const EdgeInsets.all(10),

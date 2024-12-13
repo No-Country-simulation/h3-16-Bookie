@@ -12,6 +12,7 @@ import 'package:bookie/presentation/providers/genres_provider.dart';
 import 'package:bookie/presentation/providers/stories_user_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
@@ -132,8 +133,12 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
         genre: genreString,
         creatorId: int.parse(credentials.id ?? '1'),
         image: image,
-        country: removeAccents(countryAndProvince?.country ?? "TEMPORAL"),
-        province: removeAccents(countryAndProvince?.province ?? "TEMPORAL"),
+        country: removeAccents(countryAndProvince?.country == ""
+            ? "TEMPORAL"
+            : countryAndProvince?.country ?? "TEMPORAL"),
+        province: removeAccents(countryAndProvince?.province == ""
+            ? "TEMPORAL"
+            : countryAndProvince?.province ?? "TEMPORAL"),
       );
 
       // Crear el historia en el backend
@@ -325,24 +330,39 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
                       },
                       onChanged: (_) => setState(() {}),
                     ),
-                    const SizedBox(height: 16),
-
+                    const SizedBox(height: 8),
                     // Input de sinopsis
-                    TextFormField(
-                      controller: _synopsisController,
-                      maxLines: 1,
-                      decoration: const InputDecoration(
-                        labelText: "Agregar Sinopsis",
-                        floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height *
+                            0.09, // Máximo 50% de la altura de la pantalla
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Campo obligatorio";
-                        }
-                        return null;
-                      },
-                      onChanged: (_) => setState(() {}),
+                      child: TextFormField(
+                        controller: _synopsisController,
+                        maxLines: null,
+                        decoration: const InputDecoration(
+                          labelText: "Agregar Sinopsis",
+                          floatingLabelBehavior: FloatingLabelBehavior.auto,
+                          // border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Campo obligatorio";
+                          }
+                          if (value.length > 200) {
+                            return "No puedes ingresar más de 200 caracteres";
+                          }
+                          return null;
+                        },
+                        keyboardType: TextInputType.multiline,
+                        textInputAction: TextInputAction.newline,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(
+                              200), // Límite de 200 caracteres
+                        ],
+                      ),
                     ),
+
                     const SizedBox(height: 16),
 
                     // Géneros literarios
@@ -415,7 +435,7 @@ class _CreateFormStoryScreenState extends ConsumerState<CreateFormStoryScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    "Iniciando historia...",
+                    "Creando historia...",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,

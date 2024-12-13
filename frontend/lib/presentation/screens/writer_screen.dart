@@ -153,29 +153,35 @@ class _WriterProfileScreenState extends ConsumerState<WriterProfileScreen> {
                                   final imageMod =
                                       getImageUrl(isDarkmode, story.imageUrl);
 
-                                  return Card(
-                                    elevation: 2,
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 8),
-                                    child: ListTile(
-                                      leading: ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: Image.network(
-                                          imageMod,
-                                          width: 50,
-                                          height: 50,
-                                          fit: BoxFit.cover,
+                                  if (story.chapters.isNotEmpty) {
+                                    return Card(
+                                      elevation: 2,
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 8),
+                                      child: ListTile(
+                                        leading: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: Image.network(
+                                            imageMod,
+                                            width: 50,
+                                            height: 50,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
+                                        title: Text(story.title),
+                                        subtitle: Text(
+                                            '${story.chapters.length} ${getChaptersLabel(story.chapters.length)}'),
+                                        onTap: () {
+                                          // Acción para navegar a la historia
+                                          context
+                                              .push('/story-only/${story.id}');
+                                        },
                                       ),
-                                      title: Text(story.title),
-                                      subtitle: Text(
-                                          '${story.chapters.length} ${getChaptersLabel(story.chapters.length)}'),
-                                      onTap: () {
-                                        // Acción para navegar a la historia
-                                        context.push('/story-only/${story.id}');
-                                      },
-                                    ),
-                                  );
+                                    );
+                                  } else {
+                                    return Container();
+                                  }
                                 },
                               )
                             : Card(
