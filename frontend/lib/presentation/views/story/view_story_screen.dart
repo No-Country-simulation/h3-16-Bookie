@@ -44,6 +44,7 @@ class ViewStoryScreen extends ConsumerWidget {
               storyId: story.id,
               imageUrl: story.imageUrl,
               title: story.title,
+              genre: story.genre,
               lenChapters: story.chapters.length,
               nameWriter: story.writer?.name ?? "Autor desconocido",
               latitudeStory: story.chapters[0].latitude,

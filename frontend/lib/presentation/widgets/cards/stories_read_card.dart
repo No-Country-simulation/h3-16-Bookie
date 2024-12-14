@@ -1,6 +1,4 @@
-import 'package:bookie/config/helpers/capitalize.dart';
 import 'package:bookie/config/helpers/get_image_final.dart';
-import 'package:bookie/config/helpers/short_name.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 

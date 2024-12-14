@@ -111,8 +111,10 @@ class CardChapterMapState extends ConsumerState<CardChapterMap> {
                     .read(readProvider.notifier)
                     .completeReaderChapter(widget.storyId, widget.chapterId);
                 // es decir si esta desbloqueado
-                context
-                    .push('/chapters/view/${widget.storyId}/${widget.index}');
+                if (context.mounted) {
+                  context
+                      .push('/chapters/view/${widget.storyId}/${widget.index}');
+                }
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

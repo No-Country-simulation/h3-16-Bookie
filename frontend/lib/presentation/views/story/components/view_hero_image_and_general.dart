@@ -1,7 +1,11 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:bookie/config/helpers/capitalize.dart';
 import 'package:bookie/config/helpers/get_distance_minime.dart';
 import 'package:bookie/config/helpers/word_plural.dart';
+import 'package:bookie/domain/entities/genre_entity.dart';
+import 'package:bookie/infrastructure/mappers/genredb_mapper.dart';
 import 'package:bookie/presentation/providers/favorite_provider.dart';
+import 'package:bookie/presentation/providers/read_provider.dart';
 import 'package:bookie/presentation/widgets/shared/image_3d.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +19,7 @@ class StoryHeroImageAndGeneral extends ConsumerStatefulWidget {
   final String nameWriter;
   final double latitudeStory;
   final double longitudeStory;
+  final Genre genre;
 
   const StoryHeroImageAndGeneral({
     super.key,
@@ -25,6 +30,7 @@ class StoryHeroImageAndGeneral extends ConsumerStatefulWidget {
     required this.nameWriter,
     required this.latitudeStory,
     required this.longitudeStory,
+    required this.genre,
   });
 
   @override
@@ -80,6 +86,10 @@ class _StoryHeroImageAndGeneralState
     final shimmerHighlightColor =
         isDarkmode ? Colors.grey[800]! : Colors.grey[100]!;
     final containerShimmer = isDarkmode ? Colors.black : Colors.white;
+    final genreStory = GenreExtension(widget.genre).displayName;
+    final readers = ref.watch(readProvider);
+    final isComplete = readers.any((element) =>
+        element.story.id == widget.storyId && element.story.completeStory);
 
     return Center(
       child: Column(children: [
@@ -117,6 +127,61 @@ class _StoryHeroImageAndGeneralState
                   isFavoriteStory ? Icons.favorite : Icons.favorite_border,
                   color: isFavoriteStory ? Colors.red : Colors.white,
                   size: 24,
+                ),
+              ),
+            ),
+          ),
+
+          // si el usuario leyó la historia, mostrar completado
+          if (isComplete)
+            Positioned(
+              top: 16,
+              left: 16,
+              child: FadeIn(
+                delay: const Duration(milliseconds: 2000),
+                duration: const Duration(milliseconds: 300),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.8),
+                    borderRadius:
+                        BorderRadius.circular(12), // Bordes redondeados
+                    // border: Border.all(
+                    //   color: Colors.green, // Color del borde
+                    // ),
+                  ),
+                  child: Text(
+                    "Completado",
+                    style: TextStyle(
+                      color: Colors.green, // Color del texto
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold, // Estilo destacado
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+          // genre
+          Positioned(
+            bottom: 20,
+            right: 12,
+            child: FadeIn(
+              delay: const Duration(milliseconds: 2000),
+              duration: const Duration(milliseconds: 300),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.8),
+                  borderRadius: BorderRadius.circular(12), // Bordes redondeados
+                ),
+                child: Text(
+                  genreStory,
+                  style: TextStyle(
+                    color: colors.primary, // Color del texto
+                    fontSize: 10,
+                  ),
                 ),
               ),
             ),
