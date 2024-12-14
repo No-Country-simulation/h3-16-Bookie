@@ -16,12 +16,6 @@ final getStoryByIdProvider =
   return repository.getStory(storyId);
 });
 
-// final getStoryByIdProvider2 =
-//     FutureProvider.family<Story, int>((ref, storyId) async {
-//   final repository = ref.watch(storiesAllProvider);
-//   return repository.getStory(storyId);
-// });
-
 // stories de un usuario
 final getStoriesByUserProvider =
     FutureProvider.family<List<Story>, int>((ref, userId) async {

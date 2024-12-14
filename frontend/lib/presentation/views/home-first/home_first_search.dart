@@ -4,8 +4,11 @@ import 'package:bookie/domain/entities/story_entity.dart';
 import 'package:bookie/infrastructure/mappers/genredb_mapper.dart';
 import 'package:bookie/presentation/providers/genres_provider.dart';
 import 'package:bookie/presentation/providers/stories_all_provider.dart';
+import 'package:bookie/presentation/widgets/shared/show_error.dart';
+import 'package:bookie/presentation/widgets/shared/show_not_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 
 class HomeFirstSearch extends ConsumerStatefulWidget {
@@ -18,6 +21,7 @@ class HomeFirstSearch extends ConsumerStatefulWidget {
 
 class _HomeFirstSearchState extends ConsumerState<HomeFirstSearch> {
   final TextEditingController _searchController = TextEditingController();
+  String? selectedGenre; // Aquí guardamos el género seleccionado
 
   List<Story> allStories = [];
   List<Story> filteredStories = [];
@@ -32,6 +36,8 @@ class _HomeFirstSearchState extends ConsumerState<HomeFirstSearch> {
 
   void _onSearch(String query) {
     setState(() {
+      selectedGenre = null;
+      ref.read(filterGenreProvider.notifier).selectProvider(null);
       filteredStories = allStories
           .where((story) =>
               story.title.toLowerCase().contains(query.toLowerCase()))
@@ -47,12 +53,12 @@ class _HomeFirstSearchState extends ConsumerState<HomeFirstSearch> {
   }
 
   @override
-  @override
-  @override
   Widget build(BuildContext context) {
     final genres = ref.watch(getGenresProvider);
     final isDarkmode = Theme.of(context).brightness == Brightness.dark;
     final colors = Theme.of(context).colorScheme;
+    final filterState = ref.watch(filterGenreProvider);
+    final selectedGenreFilterProvider = filterState.provider;
 
     return Column(
       children: [
@@ -92,14 +98,26 @@ class _HomeFirstSearchState extends ConsumerState<HomeFirstSearch> {
                 scrollDirection: Axis.horizontal,
                 children: genres.map((genre) {
                   final genreName = GenreExtension(genre).displayName;
+                  final genreToBackendString = genre.toBackendString;
 
                   return Padding(
                     padding: const EdgeInsets.only(right: 4.0),
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        ref.read(filterGenreProvider.notifier).selectProvider(
+                              getStoriesByGenreNameProvider(
+                                  genreToBackendString),
+                            );
+                        setState(() {
+                          selectedGenre = genreToBackendString;
+                        });
+                      },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            isDarkmode ? Colors.black : Colors.white,
+                        backgroundColor: selectedGenre == genreToBackendString
+                            ? colors.primary
+                            : isDarkmode
+                                ? Colors.black
+                                : Colors.white,
                         padding: const EdgeInsets.symmetric(
                           vertical: 2.0,
                           horizontal: 8.0,
@@ -112,7 +130,11 @@ class _HomeFirstSearchState extends ConsumerState<HomeFirstSearch> {
                       child: Text(
                         genreName,
                         style: TextStyle(
-                          color: isDarkmode ? colors.primary : Colors.black,
+                          color: selectedGenre == genreToBackendString
+                              ? Colors.black
+                              : isDarkmode
+                                  ? colors.primary
+                                  : Colors.black,
                         ),
                       ),
                     ),
@@ -123,107 +145,251 @@ class _HomeFirstSearchState extends ConsumerState<HomeFirstSearch> {
           ),
 
         // Lista de historias
-        Expanded(
-          child: ListView.builder(
-            itemCount: filteredStories.length,
-            itemBuilder: (context, index) {
-              final story = filteredStories[index];
-              final imageMod = getImageUrl(isDarkmode, story.imageUrl);
-              final genreStory = GenreExtension(story.genre).displayName;
+        selectedGenreFilterProvider != null
+            ? ref.watch(selectedGenreFilterProvider).when(
+                  data: (stories) {
+                    if (stories.isEmpty) {
+                      return Expanded(
+                        child: Center(
+                          child: ShowNotSearch(message: "No hay resultados"),
+                        ),
+                      );
+                    }
 
-              return Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                child: InkWell(
-                  onTap: () {
-                    context.push('/story-only/${story.id}');
-                  },
-                  splashColor: colors.primary.withAlpha(30),
-                  highlightColor: colors.primary.withAlpha(50),
-                  borderRadius: BorderRadius.circular(12.0),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    elevation: 2.0,
-                    child: Container(
-                      height: 100, // Altura compacta
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          // Imagen
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: Image.network(
-                              imageMod,
-                              width: 80,
-                              height: 80,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          const SizedBox(width: 8.0),
-                          // Información de la historia
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  story.title,
-                                  style: const TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                    return Expanded(
+                      child: ListView.builder(
+                        itemCount: stories.length,
+                        itemBuilder: (context, index) {
+                          final story = stories[index];
+                          final imageMod =
+                              getImageUrl(isDarkmode, story.imageUrl);
+                          final genreStory =
+                              GenreExtension(story.genre).displayName;
+
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 4.0),
+                            child: InkWell(
+                              onTap: () {
+                                context.push('/story-only/${story.id}');
+                              },
+                              splashColor: colors.primary.withAlpha(30),
+                              highlightColor: colors.primary.withAlpha(50),
+                              borderRadius: BorderRadius.circular(12.0),
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
                                 ),
-                                Text(
-                                  "${story.chapters.length} ${getChaptersLabel(story.chapters.length)}",
-                                  style: const TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.grey,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 8.0),
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 4.0,
-                                      horizontal: 8.0,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: isDarkmode
-                                          ? colors.primary
-                                          : colors.secondary,
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                    child: Text(
-                                      genreStory,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12.0,
-                                        fontWeight: FontWeight.bold,
+                                elevation: 2.0,
+                                child: Container(
+                                  height: 100, // Altura compacta
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      // Imagen
+                                      ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                        child: Image.network(
+                                          imageMod,
+                                          width: 80,
+                                          height: 80,
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                                      const SizedBox(width: 8.0),
+                                      // Información de la historia
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              story.title,
+                                              style: const TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            Text(
+                                              "${story.chapters.length} ${getChaptersLabel(story.chapters.length)}",
+                                              style: const TextStyle(
+                                                fontSize: 14.0,
+                                                color: Colors.grey,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const SizedBox(height: 8.0),
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  vertical: 4.0,
+                                                  horizontal: 8.0,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: isDarkmode
+                                                      ? colors.primary
+                                                      : colors.secondary,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0),
+                                                ),
+                                                child: Text(
+                                                  genreStory,
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12.0,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
-                    ),
+                    );
+                  },
+                  loading: () => Expanded(
+                    child: Center(
+                        child: SpinKitFadingCircle(
+                            color: colors.primary, size: 30.0)),
                   ),
-                ),
-              );
-            },
-          ),
-        ),
+                  error: (_, __) => Expanded(
+                      child:
+                          ShowError(message: "No se encontraron resultados")),
+                )
+            : Expanded(
+                child: filteredStories.isEmpty
+                    ? Center(
+                        child: ShowNotSearch(message: "No hay resultados"),
+                      )
+                    : ListView.builder(
+                        itemCount: filteredStories.length,
+                        itemBuilder: (context, index) {
+                          final story = filteredStories[index];
+                          final imageMod =
+                              getImageUrl(isDarkmode, story.imageUrl);
+                          final genreStory =
+                              GenreExtension(story.genre).displayName;
+
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 4.0),
+                            child: InkWell(
+                              onTap: () {
+                                context.push('/story-only/${story.id}');
+                              },
+                              splashColor: colors.primary.withAlpha(30),
+                              highlightColor: colors.primary.withAlpha(50),
+                              borderRadius: BorderRadius.circular(12.0),
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
+                                elevation: 2.0,
+                                child: Container(
+                                  height: 100, // Altura compacta
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      // Imagen
+                                      ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                        child: Image.network(
+                                          imageMod,
+                                          width: 80,
+                                          height: 80,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8.0),
+                                      // Información de la historia
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              story.title,
+                                              style: const TextStyle(
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            Text(
+                                              "${story.chapters.length} ${getChaptersLabel(story.chapters.length)}",
+                                              style: const TextStyle(
+                                                fontSize: 14.0,
+                                                color: Colors.grey,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const SizedBox(height: 8.0),
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  vertical: 4.0,
+                                                  horizontal: 8.0,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: isDarkmode
+                                                      ? colors.primary
+                                                      : colors.secondary,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0),
+                                                ),
+                                                child: Text(
+                                                  genreStory,
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12.0,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
       ],
     );
   }

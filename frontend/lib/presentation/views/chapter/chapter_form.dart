@@ -639,62 +639,88 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           alignment: Alignment.center,
-          content: Column(
-            mainAxisSize:
-                MainAxisSize.min, // Ajustar el tamaño del modal al contenido
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: colors.primary,
+          content: SizedBox(
+            child: Column(
+              mainAxisSize:
+                  MainAxisSize.min, // Ajustar el tamaño del modal al contenido
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colors.primary,
+                    ),
+                    onPressed: () {
+                      focusNode.unfocus();
+                      _translateStory("es", context);
+                    },
+                    child:
+                        Text('Español', style: TextStyle(color: Colors.black)),
+                  ),
                 ),
-                onPressed: () {
-                  focusNode.unfocus();
-                  _translateStory("es", context);
-                },
-                child: Text('Español', style: TextStyle(color: Colors.black)),
-              ),
-              const SizedBox(height: 10), // Separador entre botones
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: colors.primary,
+                const SizedBox(height: 10), // Separador entre botones
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colors.primary,
+                    ),
+                    onPressed: () {
+                      focusNode.unfocus();
+                      _translateStory("en", context);
+                    },
+                    child:
+                        Text('Inglés', style: TextStyle(color: Colors.black)),
+                  ),
                 ),
-                onPressed: () {
-                  _translateStory("en", context);
-                },
-                child: Text('Inglés', style: TextStyle(color: Colors.black)),
-              ),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: colors.primary,
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colors.primary,
+                    ),
+                    onPressed: () {
+                      focusNode.unfocus();
+                      _translateStory("pt", context);
+                    },
+                    child: Text('Portugués',
+                        style: TextStyle(color: Colors.black)),
+                  ),
                 ),
-                onPressed: () {
-                  _translateStory("pt", context);
-                },
-                child: Text('Portugués', style: TextStyle(color: Colors.black)),
-              ),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: colors.primary,
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colors.primary,
+                    ),
+                    onPressed: () {
+                      focusNode.unfocus();
+                      _translateStory("it", context);
+                    },
+                    child:
+                        Text('Italiano', style: TextStyle(color: Colors.black)),
+                  ),
                 ),
-                onPressed: () {
-                  _translateStory("it", context);
-                },
-                child: Text('Italiano', style: TextStyle(color: Colors.black)),
-              ),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: colors.primary,
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colors.primary,
+                    ),
+                    onPressed: () {
+                      focusNode.unfocus();
+                      _translateStory("fr", context);
+                    },
+                    child:
+                        Text('Francés', style: TextStyle(color: Colors.black)),
+                  ),
                 ),
-                onPressed: () {
-                  _translateStory("fr", context);
-                },
-                child: Text('Francés', style: TextStyle(color: Colors.black)),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -764,23 +790,23 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
               ),
             ),
           ),
-          AbsorbPointer(
-            absorbing: !isEnabled,
-            child: PopupMenuButton<String>(
-              icon: const Icon(Icons.more_vert),
-              padding: EdgeInsets.zero,
-              onSelected: (value) {
-                if (value == 'preview') {
-                }
-              },
-              itemBuilder: (BuildContext context) => [
-                const PopupMenuItem<String>(
-                  value: 'preview',
-                  child: Text('Vista previa'),
-                ),
-              ],
-            ),
-          ),
+          // AbsorbPointer(
+          //   absorbing: !isEnabled,
+          //   child: PopupMenuButton<String>(
+          //     icon: const Icon(Icons.more_vert),
+          //     padding: EdgeInsets.zero,
+          //     onSelected: (value) {
+          //       if (value == 'preview') {
+          //       }
+          //     },
+          //     itemBuilder: (BuildContext context) => [
+          //       const PopupMenuItem<String>(
+          //         value: 'preview',
+          //         child: Text('Vista previa'),
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
       body: Stack(

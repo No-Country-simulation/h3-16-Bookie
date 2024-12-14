@@ -45,6 +45,9 @@ class _ChapterSuccessState extends ConsumerState<ChapterSuccess> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkmode = Theme.of(context).brightness == Brightness.dark;
+    final colors = Theme.of(context).colorScheme;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -115,36 +118,66 @@ class _ChapterSuccessState extends ConsumerState<ChapterSuccess> {
                 const SizedBox(height: 40),
                 // Botones mágicos
 
-                Column(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        // limpiar la vista del capitulo
-                        ref.read(pageContentProvider.notifier).reset();
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // limpiar la vista del capitulo
+                            ref.read(pageContentProvider.notifier).reset();
 
-                        // Acción para vista previa
-                        context.push(
-                            '/chapters/view/${widget.storyId}/${widget.chapterIndex}');
-                      },
-                      child: const Text('Vista Previa'),
-                    ),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Acción para añadir capítulo
-                        context.pop();
-                      },
-                      child: const Text('Añadir Otro Capítulo'),
-                    ),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Acción para ir al home
-                        context.push('/home/2');
-                      },
-                      child: const Text('Ir a mis historias'),
-                    ),
-                  ],
+                            // Acción para vista previa
+                            context.push(
+                                '/chapters/view/${widget.storyId}/${widget.chapterIndex}');
+                          },
+                          child: const Text('Vista Previa'),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Acción para añadir capítulo
+                            context.pop();
+                          },
+                          child: const Text('Añadir Otro Capítulo'),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Acción para ir al home
+                            context.push('/story/edit/${widget.storyId}');
+                          },
+                          child: const Text('Detalles de la Historia'),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      IconButton(
+                        onPressed: () {
+                          // Acción para ir al home
+                          context.push('/home/0');
+                        },
+                        icon: Icon(
+                          Icons.home,
+                          color: colors.primary,
+                        ),
+                        // style: IconButton.styleFrom(
+                        //   padding: const EdgeInsets.all(10),
+                        //   shape: const CircleBorder(),
+                        //   backgroundColor: isDarkmode
+                        //       ? Colors.black.withOpacity(0.8)
+                        //       : Colors.white.withOpacity(0.8),
+                        // ),
+                      ),
+                    ],
+                  ),
                 )
               ],
             ),

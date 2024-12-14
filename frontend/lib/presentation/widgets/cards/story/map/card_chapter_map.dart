@@ -1,25 +1,27 @@
+import 'package:bookie/config/helpers/get_image_final.dart';
+import 'package:bookie/config/helpers/word_plural.dart';
+import 'package:bookie/domain/entities/story_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class CardStoryMap extends StatelessWidget {
-  // final String title;
-  final int index;
+  final Story story;
 
   const CardStoryMap({
     super.key,
-    // required this.title,
-    required this.index,
+    required this.story,
   });
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     final isDarkmode = Theme.of(context).brightness == Brightness.dark;
+    final imageMod = getImageUrl(isDarkmode, story.imageUrl);
 
     return InkWell(
       onTap: () {
         // Acción al pulsar el card
-        context.push('/story/1');
+        context.push('/story-only/${story.id}');
       },
       splashColor: colors.primary.withAlpha(30),
       highlightColor: colors.primary.withAlpha(50),
@@ -47,8 +49,7 @@ class CardStoryMap extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                           image: DecorationImage(
                             image: NetworkImage(
-                              // URL de la imagen (puedes reemplazar con la base de datos en el futuro)
-                              'https://picsum.photos/seed/chapter${index + 1}/100',
+                              imageMod,
                             ),
                             fit: BoxFit.cover,
                           ),
@@ -57,20 +58,22 @@ class CardStoryMap extends StatelessWidget {
                       // ListTile para el título y subtítulo
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 8.0, right: 8.0, top: 24),
+                          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "title story $index",
+                                story.title,
                                 style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     color: colors.primary),
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
                               ),
                               Text(
-                                'Capítulo $index',
+                                "${story.chapters.length} ${getChaptersLabel(story.chapters.length)}",
                                 style: TextStyle(
                                     fontSize: 12, color: Colors.grey.shade600),
                               ),

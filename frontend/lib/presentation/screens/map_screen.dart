@@ -2,11 +2,15 @@ import 'dart:async';
 
 import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:bookie/config/helpers/capitalize.dart';
-import 'package:bookie/domain/entities/country_province_entity.dart';
+import 'package:bookie/domain/entities/chapter_entity.dart';
+import 'package:bookie/domain/entities/genre_entity.dart';
+import 'package:bookie/domain/entities/story_entity.dart';
 import 'package:bookie/presentation/providers/country_provider.dart';
 import 'package:bookie/presentation/providers/location_provider.dart';
+import 'package:bookie/presentation/providers/stories_all_provider.dart';
 import 'package:bookie/presentation/views/map/google_maps_dark.dart';
 import 'package:bookie/presentation/widgets/cards/story/map/card_chapter_map.dart';
+import 'package:bookie/presentation/widgets/shared/show_error.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,9 +47,12 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
   late StreamSubscription<Position> positionStream;
   bool isCardVisible = false;
   bool isSwiperVisible = false;
-  final List<LatLng> _markersChapters = [];
-  bool showMarkerChapters = false;
-  // Map<PolylineId, Polyline> polylinesStory = {};
+  // final List<LatLng> _markersChapters = [];
+  // bool showMarkerChapters = false;
+  Story? currentStory;
+  int? currentChapterChange;
+  final SwiperController _controllerSwiper = SwiperController();
+  String? selectedCountryOrProvince;
 
   void toggleCard() {
     setState(() {
@@ -140,50 +147,16 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
       ),
     ).distinct().listen((Position position) {
       // Mueve la cámara suavemente
-      _mapController?.animateCamera(
-        CameraUpdate.newLatLng(
-          LatLng(position.latitude, position.longitude),
-        ),
-      );
+      // _mapController?.animateCamera(
+      //   CameraUpdate.newLatLng(
+      //     LatLng(position.latitude, position.longitude),
+      //   ),
+      // );
 
       setState(() {
         latitudeUser = position.latitude;
         longitudeUser = position.longitude;
       });
-    });
-  }
-
-  // void _addNearbyMarkers() {
-  final nearbyPlaces = [
-    LatLng(-8.120775, -79.044919), // Lugar 1
-    LatLng(-8.113490, -79.027724), // Lugar 2
-    LatLng(-8.120468, -79.050339), // Lugar 3
-    LatLng(-8.119274, -79.036657), // Lugar 4
-    LatLng(-8.104353, -79.043062), // Lugar 5
-    LatLng(-8.111253, -79.014539), // Lugar 1
-    LatLng(-8.075354, -79.031943), // Lugar 2
-    LatLng(-7.318152, -78.175699), // Lugar 3
-    LatLng(-12.107716, -76.966874), // Lugar 4
-    LatLng(-2.898234, -79.007054), // Lugar 5
-    LatLng(36.175153, -115.141825), // Lugar 1
-  ];
-
-  final listChapters = [
-    LatLng(-8.120775, -79.044919), // Lugar 1
-    LatLng(-8.119848, -79.043964), // Lugar 2
-    LatLng(-8.120125, -79.043572), // Lugar 3
-  ];
-
-  final listChapters2 = [
-    LatLng(-8.120468, -79.050339), // Lugar 1
-    LatLng(-8.120905, -79.047984), // Lugar 2
-  ];
-
-  void _addMarkersChapters(int index) {
-    setState(() {
-      showMarkerChapters = true;
-      _markersChapters.clear();
-      _markersChapters.addAll(index == 0 ? listChapters : listChapters2);
     });
   }
 
@@ -214,8 +187,20 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
         ref.watch(countryProvinceProvider.notifier).getCountries();
     final provinces =
         ref.watch(countryProvinceProvider.notifier).getProvinces();
+    final stories = ref.watch(storiesAllProvider);
+    final filterState = ref.watch(filterCountryOrProvinceProvider);
+    final selectedCountryOrProvinceFilterProvider = filterState.provider;
 
-    // final chapters = ref.watch(chapterProvider);
+    void changePositionChapter({
+      required double latitude,
+      required double longitude,
+    }) {
+      _mapController?.animateCamera(
+        CameraUpdate.newLatLng(
+          LatLng(latitude, longitude), // Centrar en la ubicación actual
+        ),
+      );
+    }
 
     return SafeArea(
       child: Stack(
@@ -247,6 +232,9 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                     if (isSwiperVisible) {
                       toggleSwiper();
                     }
+                    setState(() {
+                      selectedCountryOrProvince = null;
+                    });
                   },
                   zoomControlsEnabled: true, // Activa los botones de zoom
                   myLocationButtonEnabled: true, // Activa el botón de ubicación
@@ -287,35 +275,39 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                             // locationUser();
                           }),
                     // ...Set.from(_markers),
-                    ...nearbyPlaces.asMap().entries.map((entry) {
-                      final e = entry.value;
-                      final i = entry.key;
-                      return Marker(
-                        markerId: MarkerId('marker_story_$e'),
-                        position: e,
-                        icon: customStoryIcon,
-                        infoWindow: InfoWindow(title: 'Title ${e.hashCode}'),
-                        onTap: () {
-                          setState(() {
-                            if (!isCardVisible) {
-                              toggleCard();
-                            }
-                          });
-                          _addMarkersChapters(i);
-                        },
-                      );
-                    }),
+                    if (stories.isNotEmpty)
+                      ...stories.map((story) {
+                        return Marker(
+                          markerId: MarkerId('marker_story_${story.id}'),
+                          position: LatLng(story.chapters[0].latitude,
+                              story.chapters[0].longitude),
+                          icon: customStoryIcon,
+                          infoWindow: InfoWindow(title: story.title),
+                          onTap: () {
+                            setState(() {
+                              if (!isCardVisible) {
+                                toggleCard();
+                              }
+                              if (isSwiperVisible) {
+                                toggleSwiper();
+                              }
+                              currentStory = story;
+                            });
+                            // _addMarkersChapters(i);
+                          },
+                        );
+                      }),
 
                     // MARKER DE LOS CHAPTERS DE LA STORY
-                    if (showMarkerChapters)
-                      ..._markersChapters.skip(1).map((e) => Marker(
-                            markerId: MarkerId('marker_chapter_$e'),
-                            position: e,
-                            icon: customChapterIcon,
-                            infoWindow:
-                                InfoWindow(title: 'Title ${e.hashCode}'),
-                            onTap: () {},
-                          )),
+                    // if (showMarkerChapters)
+                    //   ..._markersChapters.skip(1).map((e) => Marker(
+                    //         markerId: MarkerId('marker_chapter_$e'),
+                    //         position: e,
+                    //         icon: customChapterIcon,
+                    //         infoWindow:
+                    //             InfoWindow(title: 'Title ${e.hashCode}'),
+                    //         onTap: () {},
+                    //       )),
                   }, //
                 ),
           Padding(
@@ -414,6 +406,20 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                                           const EdgeInsets.only(right: 4.0),
                                       child: ElevatedButton(
                                         onPressed: () {
+                                          setState(() {
+                                            currentChapterChange = -1;
+                                            selectedCountryOrProvince =
+                                                option.name;
+                                          });
+                                          ref
+                                              .read(
+                                                  filterCountryOrProvinceProvider
+                                                      .notifier)
+                                              .selectProvider(
+                                                getStoriesByCountryNameProvider(
+                                                    option.name),
+                                              );
+
                                           if (isCardVisible) {
                                             toggleCard();
                                           }
@@ -422,9 +428,13 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                                           }
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: isDarkmode
-                                              ? Colors.black
-                                              : Colors.white,
+                                          backgroundColor:
+                                              selectedCountryOrProvince ==
+                                                      option.name
+                                                  ? colors.primary
+                                                  : isDarkmode
+                                                      ? Colors.black
+                                                      : Colors.white,
                                           padding: EdgeInsets.symmetric(
                                               vertical: 2.0, horizontal: 8.0),
                                           shadowColor: Colors
@@ -437,9 +447,12 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                                         child: Text(
                                           capitalizeAllWords(option.name),
                                           style: TextStyle(
-                                            color: isDarkmode
-                                                ? colors.primary
-                                                : Colors.black,
+                                            color: selectedCountryOrProvince ==
+                                                    option.name
+                                                ? Colors.black
+                                                : isDarkmode
+                                                    ? colors.primary
+                                                    : Colors.black,
                                           ),
                                         ),
                                       ));
@@ -451,6 +464,20 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                                           const EdgeInsets.only(right: 4.0),
                                       child: ElevatedButton(
                                         onPressed: () {
+                                          setState(() {
+                                            currentChapterChange = -1;
+                                            selectedCountryOrProvince =
+                                                option.name;
+                                          });
+                                          ref
+                                              .read(
+                                                  filterCountryOrProvinceProvider
+                                                      .notifier)
+                                              .selectProvider(
+                                                getStoriesByProvinceNameProvider(
+                                                    option.name),
+                                              );
+
                                           if (isCardVisible) {
                                             toggleCard();
                                           }
@@ -459,9 +486,13 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                                           }
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: isDarkmode
-                                              ? Colors.black
-                                              : Colors.white,
+                                          backgroundColor:
+                                              selectedCountryOrProvince ==
+                                                      option.name
+                                                  ? colors.primary
+                                                  : isDarkmode
+                                                      ? Colors.black
+                                                      : Colors.white,
                                           padding: EdgeInsets.symmetric(
                                               vertical: 2.0, horizontal: 8.0),
                                           shadowColor: Colors
@@ -474,9 +505,12 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                                         child: Text(
                                           capitalizeAllWords(option.name),
                                           style: TextStyle(
-                                            color: isDarkmode
-                                                ? colors.primary
-                                                : Colors.black,
+                                            color: selectedCountryOrProvince ==
+                                                    option.name
+                                                ? Colors.black
+                                                : isDarkmode
+                                                    ? colors.primary
+                                                    : Colors.black,
                                           ),
                                         ),
                                       ));
@@ -489,70 +523,122 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                   ))),
 
           // CARD DE LA STORY INDIVIDUAL
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              height: !isCardVisible ? 0 : 230,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 60),
-                child: AnimatedOpacity(
-                  opacity: isCardVisible ? 1.0 : 0.0,
-                  duration: Duration(milliseconds: 300),
-                  // The green box must be a child of the AnimatedOpacity widget.
-                  child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 70, vertical: 7),
-                      child: CardStoryMap(
-                        index: 1,
-                      )),
-                ),
-              ),
-            ),
-          ),
-
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              height: !isSwiperVisible ? 0 : 230,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 60),
-                child: AnimatedOpacity(
-                  opacity: isSwiperVisible ? 1.0 : 0.0,
-                  duration: Duration(milliseconds: 300),
-                  child: Swiper(
-                    itemCount: 10,
-                    index: 1,
-                    itemBuilder: (BuildContext context, int index) {
-                      // final chapter = chapters[index];
-
-                      return Padding(
+          if (currentStory != null)
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: SizedBox(
+                height: !isCardVisible ? 0 : 220,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 40),
+                  child: AnimatedOpacity(
+                    opacity: isCardVisible ? 1.0 : 0.0,
+                    duration: Duration(milliseconds: 300),
+                    child: Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 70, vertical: 7),
+                            horizontal: 70, vertical: 20),
                         child: CardStoryMap(
-                          index: 1,
-                        ),
-                      );
-                    },
-                    pagination: SwiperPagination(
-                      builder: DotSwiperPaginationBuilder(
-                        activeColor:
-                            colors.primary, // Color de los puntos activos
-                        color: isDarkmode ? Colors.grey[700] : Colors.grey[300],
-                        size: 8.0, // Tamaño de los puntos inactivos
-                        activeSize: 10.0, // Tamaño de los puntos activos
-                      ),
-                    ),
-                    loop: false, // Bucle infinito
-                    // Habilita la paginación
-                    control: SwiperControl(
-                      color: colors.primary, // Color de las flechas
-                      size: 30, // Tamaño de las flechas
-                    ),
+                          story: currentStory ??
+                              Story(
+                                id: 274,
+                                title: "El jinete de la historia",
+                                synopsis: "Sinopsis de la historia",
+                                imageUrl: "https://picsum.photos/id/1/200/300",
+                                genre: Genre.cuento,
+                                country: "Colombia",
+                                province: "Bogotá",
+                                publish: true,
+                                distance: 0,
+                                chapters: [
+                                  Chapter(
+                                    id: 1,
+                                    title: "Título del capítulo",
+                                    latitude: 0,
+                                    longitude: 0,
+                                    image:
+                                        "https://picsum.photos/seed/chapter1/100",
+                                    content: "Contenido del capítulo",
+                                  )
+                                ],
+                              ),
+                        )),
                   ),
                 ),
               ),
             ),
-          ),
+
+          if (selectedCountryOrProvinceFilterProvider != null)
+            ref.watch(selectedCountryOrProvinceFilterProvider).when(
+                  data: (stories) => Align(
+                    alignment: Alignment.bottomCenter,
+                    child: SizedBox(
+                      height: !isSwiperVisible ? 0 : 220,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 40),
+                        child: AnimatedOpacity(
+                          opacity: isSwiperVisible ? 1.0 : 0.0,
+                          duration: Duration(milliseconds: 300),
+                          child: Swiper(
+                            itemCount: stories.length,
+                            index: currentChapterChange,
+                            controller: _controllerSwiper,
+                            onIndexChanged: (index) {
+                              if (stories.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content:
+                                        Text("No hay historias disponibles"),
+                                    backgroundColor: colors.primary,
+                                  ),
+                                );
+                                return;
+                              }
+                              setState(() {
+                                currentChapterChange = index;
+                                changePositionChapter(
+                                    latitude:
+                                        stories[index].chapters[0].latitude,
+                                    longitude:
+                                        stories[index].chapters[0].longitude);
+                              });
+                            },
+                            itemBuilder: (BuildContext context, int index) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 70, vertical: 20),
+                                child: CardStoryMap(
+                                  story: stories[index],
+                                ),
+                              );
+                            },
+                            pagination: SwiperPagination(
+                              builder: DotSwiperPaginationBuilder(
+                                activeColor: colors
+                                    .primary, // Color de los puntos activos
+                                color: isDarkmode
+                                    ? Colors.grey[700]
+                                    : Colors.grey[300],
+                                size: 8.0, // Tamaño de los puntos inactivos
+                                activeSize:
+                                    10.0, // Tamaño de los puntos activos
+                              ),
+                            ),
+                            loop: false, // Bucle infinito
+                            // Habilita la paginación
+                            control: SwiperControl(
+                              color: colors.primary, // Color de las flechas
+                              size: 30, // Tamaño de las flechas
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  loading: () => Center(
+                      child: SpinKitFadingCircle(
+                          color: colors.primary, size: 30.0)),
+                  error: (_, __) =>
+                      ShowError(message: "No se encontraron resultados"),
+                ),
 
           Positioned(
             bottom: 24,
