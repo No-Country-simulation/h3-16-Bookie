@@ -11,6 +11,7 @@ import com.Bookie.entities.ProvinceEntity;
 import com.Bookie.entities.UserEntity;
 import com.Bookie.config.repository.HistoryRepository;
 import com.Bookie.config.repository.UserRepository;
+import com.Bookie.enums.GenreLiterary;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -141,6 +143,14 @@ public class HistoryService {
 
     public List<HistoryDtoResponse> getHistoriesByCountry(String countryName) {
         List<HistoryEntity> histories = historyRepository.findByCountryName(countryName);
+        return histories.stream().map(HistoryDtoResponse::new).toList();
+    }
+
+    public List<HistoryDtoResponse> getHistoriesByGenre(GenreLiterary genre) {
+        if (!EnumSet.allOf(GenreLiterary.class).contains(genre)) {
+            throw new IllegalArgumentException("Invalid genre: " + genre);
+        }
+        List<HistoryEntity> histories = historyRepository.findByGenre(genre);
         return histories.stream().map(HistoryDtoResponse::new).toList();
     }
 }

@@ -1,5 +1,6 @@
 package com.Bookie.service;
 
+import com.Bookie.dto.UserWithHistoriesDTO;
 import com.Bookie.entities.HistoryEntity;
 import com.Bookie.entities.UserEntity;
 import com.Bookie.config.repository.UserRepository;
@@ -75,5 +76,15 @@ public class UserService {
         Optional<UserEntity> userDB = userRepository.findById(id);
           return userDB.get().getWishlist();
 
+    }
+
+
+
+    public List<UserWithHistoriesDTO> getAllUsersWithHistoriesAndChapters() {
+        List<UserEntity> users = userRepository.findUsersWithHistories();
+        return users.stream()
+                .filter(user -> !user.getHistories().isEmpty()) // Filtra usuarios sin historias
+                .map(UserWithHistoriesDTO::new)
+                .toList();
     }
 }

@@ -2,6 +2,7 @@ package com.Bookie.Controllers;
 
 
 import com.Bookie.dto.HistoryDtoResponse;
+import com.Bookie.dto.UserWithHistoriesDTO;
 import com.Bookie.entities.UserEntity;
 import com.Bookie.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -73,8 +74,8 @@ public class UserController {
      */
     //IMPORTANTE este metodo despues abria que quitarlo o hacerlo solo para administrador!
     @GetMapping("/users")
-    public ResponseEntity<List<UserEntity>> getAllUsers(Authentication authentication) {
-        List<UserEntity> users = userService.getAllUsers();
+    public ResponseEntity<List<UserWithHistoriesDTO>> getAllUsersWithHistoriesAndChapters() {
+        List<UserWithHistoriesDTO> users = userService.getAllUsersWithHistoriesAndChapters();
         return ResponseEntity.ok(users);
     }
 

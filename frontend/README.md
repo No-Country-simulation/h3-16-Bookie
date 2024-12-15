@@ -5,6 +5,10 @@ Before running the project, you need to configure the following environment vari
 1. **OPEN_AI_API_KEY**: Your OpenAI API key.
 2. **AUTH0_DOMAIN**: The domain from your Auth0 configuration.
 3. **AUTH0_CLIENT_ID**: The client ID from your Auth0 configuration.
+4. **GOOGLE_MAPS_API_KEY**: The client Google Maps key.
+5. **URL_DEPLOY_BACKEND**: Url backend.
+
+   
 
 Make sure to add these variables to your `.env` file or configure them in your development environment.
 

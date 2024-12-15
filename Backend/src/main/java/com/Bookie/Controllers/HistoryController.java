@@ -3,6 +3,7 @@ package com.Bookie.Controllers;
 import com.Bookie.dto.HistoryDtoRequest;
 import com.Bookie.dto.HistoryDtoRequestUpdate;
 import com.Bookie.dto.HistoryDtoResponse;
+import com.Bookie.enums.GenreLiterary;
 import com.Bookie.service.HistoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -176,6 +177,12 @@ public class HistoryController {
     @GetMapping("/by-country")
     public ResponseEntity<List<HistoryDtoResponse>> getHistoriesByCountry(@RequestParam String country) {
         List<HistoryDtoResponse> histories = historyService.getHistoriesByCountry(country);
+        return ResponseEntity.ok(histories);
+    }
+
+    @GetMapping("/by-genre")
+    public ResponseEntity<List<HistoryDtoResponse>> getHistoriesByGenre(@RequestParam GenreLiterary genre) {
+        List<HistoryDtoResponse> histories = historyService.getHistoriesByGenre(genre);
         return ResponseEntity.ok(histories);
     }
 }
