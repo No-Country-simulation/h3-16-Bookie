@@ -107,9 +107,10 @@ class _SettingsProfileScreenState extends ConsumerState<SettingsProfileScreen> {
                         Center(
                           child: Text(
                             writer.name,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
+                              color: colors.primary,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -129,7 +130,7 @@ class _SettingsProfileScreenState extends ConsumerState<SettingsProfileScreen> {
                             textAlign: TextAlign.center,
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 16),
 
                         readers.isEmpty
                             ? Padding(
@@ -173,20 +174,22 @@ class _SettingsProfileScreenState extends ConsumerState<SettingsProfileScreen> {
                               )
                             : StoriesReadSection(readStories: readers),
 
+                        const SizedBox(height: 10),
+
                         // Historias del escritor
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text(
                             'Tus Historias',
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: colors.primary,
                             ),
                             textAlign: TextAlign.center,
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 16),
                         // Aquí usamos el FutureProvider para mostrar el estado de las historias.
                         stories.isNotEmpty
                             ? ListView.builder(

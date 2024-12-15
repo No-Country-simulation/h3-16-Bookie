@@ -3,7 +3,7 @@ final heroSectionTemporal = [
     'id': '1',
     'imageUrl':
         'https://res.cloudinary.com/dlixnwuhi/image/upload/v1733878708/skbd1nvjqziku8ydxvsh.webp',
-    'title': 'Descubre Historias a Tu Alrededor',
+    'title': 'Descubre historias a tu alrededor',
     'synopsis': 'Explora historias cerca de ti.',
     'rating': 4.5,
     'reads': 10000,
@@ -16,7 +16,7 @@ final heroSectionTemporal = [
     'id': '2',
     'imageUrl':
         'https://res.cloudinary.com/dlixnwuhi/image/upload/v1733878793/yrut6wrzigfqhwburzoc.webp',
-    'title': 'Tu Rastro de Lectura',
+    'title': 'Tu rastro de lectura',
     'synopsis': 'Revive las historias que ya has explorado.',
     'rating': 4.5,
     'reads': 10000,
@@ -29,7 +29,7 @@ final heroSectionTemporal = [
     'id': '3',
     'imageUrl':
         'https://res.cloudinary.com/dlixnwuhi/image/upload/v1733879005/lxverngjetmvt7qibhlc.webp',
-    'title': 'Un Mapa de Historias',
+    'title': 'Un mapa de historias',
     'synopsis': 'Ubica relatos fascinantes.',
     'rating': 3.5,
     'reads': 20000,
@@ -42,7 +42,7 @@ final heroSectionTemporal = [
     'id': '4',
     'imageUrl':
         'https://res.cloudinary.com/dlixnwuhi/image/upload/v1733878512/y5yyeoqio5tzv2ahijt6.webp',
-    'title': 'Comparte Tu Aventura',
+    'title': 'Comparte tu aventura',
     'synopsis': 'Escribe y publica tu primera historia.',
     'rating': 4.0,
     'reads': 30000,

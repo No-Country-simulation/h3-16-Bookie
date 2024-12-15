@@ -104,9 +104,10 @@ class _WriterProfileScreenState extends ConsumerState<WriterProfileScreen> {
                         Center(
                           child: Text(
                             writer.name,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
+                              color: colors.primary,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -133,7 +134,7 @@ class _WriterProfileScreenState extends ConsumerState<WriterProfileScreen> {
                           child: Text(
                             'Historias',
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: colors.primary,
                             ),

@@ -293,7 +293,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
     setState(() {
       isEnabled = false;
       isLoading = true;
-      loadingMessage = "Espera, estamos guardando la historia...";
+      loadingMessage = "Espera, estamos guardando el capítulo...";
     });
 
     final String title = _titleController.text;
@@ -444,7 +444,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           actionsAlignment: MainAxisAlignment.center,
-          title: Text('Generar texto'),
+          title: Text('Generar texto', style: TextStyle(color: colors.primary)),
           content: Text(
               'Se generará una historia basado en el contenido actual con inteligencia artificial, también puedes mejorar y corregir la historia que escribistes.'),
           actions: <Widget>[
@@ -501,7 +501,7 @@ class _CreateChapterScreenState extends ConsumerState<CreateChapterScreen> {
       isLoading = true;
       _generatedText = "";
       // _contentController.clear();
-      loadingMessage = "Generando historia...";
+      loadingMessage = "Creando capítulo...";
     });
 
     if (!_isGeneratingText) {

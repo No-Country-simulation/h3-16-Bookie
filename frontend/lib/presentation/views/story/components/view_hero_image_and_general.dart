@@ -179,7 +179,7 @@ class _StoryHeroImageAndGeneralState
                 child: Text(
                   genreStory,
                   style: TextStyle(
-                    color: colors.primary, // Color del texto
+                    color: isDarkmode ? colors.primary : Colors.white,
                     fontSize: 10,
                   ),
                 ),

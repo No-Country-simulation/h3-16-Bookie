@@ -26,7 +26,7 @@ class CustomBottomNavigation extends StatelessWidget {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
           BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Mapa'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.history_edu_sharp), label: 'Historia'),
+              icon: Icon(Icons.history_edu_sharp), label: 'Escribir'),
           BottomNavigationBarItem(
               icon: Icon(Icons.favorite), label: 'Favoritos'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
