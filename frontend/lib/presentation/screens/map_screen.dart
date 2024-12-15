@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bookie/config/geolocator/geolocator.dart';
 import 'package:bookie/config/helpers/capitalize.dart';
+import 'package:bookie/config/helpers/get_address.dart';
 import 'package:bookie/domain/entities/chapter_entity.dart';
 import 'package:bookie/domain/entities/genre_entity.dart';
 import 'package:bookie/domain/entities/story_entity.dart';
@@ -10,6 +11,7 @@ import 'package:bookie/presentation/providers/location_provider.dart';
 import 'package:bookie/presentation/providers/stories_all_provider.dart';
 import 'package:bookie/presentation/views/map/google_maps_dark.dart';
 import 'package:bookie/presentation/widgets/cards/story/map/card_chapter_map.dart';
+import 'package:bookie/presentation/widgets/search/search_input.dart';
 import 'package:bookie/presentation/widgets/shared/show_error.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
@@ -35,9 +37,6 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
   BitmapDescriptor customUserIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor customStoryIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor customChapterIcon = BitmapDescriptor.defaultMarker;
-
-  final TextEditingController _controller = TextEditingController();
-
   late Future<bool> isUnlockedFuture;
   bool isLoading = true;
   bool isLoadingMap = true;
@@ -49,6 +48,7 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
   bool isSwiperVisible = false;
   // final List<LatLng> _markersChapters = [];
   // bool showMarkerChapters = false;
+  bool isViewListPredictions = true;
   Story? currentStory;
   int? currentChapterChange;
   final SwiperController _controllerSwiper = SwiperController();
@@ -64,6 +64,28 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
     setState(() {
       isSwiperVisible = !isSwiperVisible;
     });
+  }
+
+  void toggleViewListPredictions() {
+    setState(() {
+      isViewListPredictions = !isViewListPredictions;
+    });
+  }
+
+  void goAdress(String address) async {
+    try {
+      final locationAddress = await latLongToAddress(address);
+
+      _mapController?.animateCamera(
+        CameraUpdate.newLatLng(
+          LatLng(locationAddress.latitude,
+              locationAddress.longitude), // Centrar en la ubicación actual
+        ),
+      );
+
+    } catch (e) {
+      // Manejo de errores
+    }
   }
 
   Future<void> _loadChapters() async {
@@ -232,6 +254,9 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
                     if (isSwiperVisible) {
                       toggleSwiper();
                     }
+                    if (isViewListPredictions) {
+                      toggleViewListPredictions();
+                    }
                     setState(() {
                       selectedCountryOrProvince = null;
                     });
@@ -340,187 +365,145 @@ class _MapChapterViewState extends ConsumerState<MapScreen> {
 
           // autcompletado
           Padding(
-              padding: const EdgeInsets.only(top: 65),
+              padding: const EdgeInsets.only(top: 120),
               child: Container(
-                  alignment: Alignment.topCenter,
-                  child: SizedBox(
-                    // height: kToolbarHeight - 10,
-                    // width: MediaQuery.of(context).size.width - 20,
-                    child: Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16, right: 16),
-                        child: SizedBox(
-                          height: 50,
-                          child: TextField(
-                            controller: _controller,
-                            onTap: () {
-                              if (isCardVisible) {
-                                toggleCard();
-                              }
-                            },
-                            // onChanged: () {},
-                            decoration: InputDecoration(
-                              hintText: 'Busca por país o ciudad...',
-                              hintStyle: TextStyle(color: Colors.grey.shade500),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                // borderSide: BorderSide(color: Colors.green),
-                              ),
-                              fillColor:
-                                  isDarkmode ? Colors.black : Colors.white,
-                              filled: true,
-                              // Icono a la derecha
-                              suffixIcon: IconButton(
-                                icon: Icon(Icons.search),
-                                onPressed: () {
-                                  if (isCardVisible) {
-                                    toggleCard();
-                                  }
-                                  if (!isSwiperVisible) {
-                                    toggleSwiper();
-                                  }
-                                },
-                              ),
-                            ),
+                alignment: Alignment.topCenter,
+                child: SizedBox(
+                  height: 40,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 4, right: 4),
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        if (countries.isNotEmpty)
+                          ...countries.map((option) {
+                            return Padding(
+                                padding: const EdgeInsets.only(right: 4.0),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      currentChapterChange = -1;
+                                      selectedCountryOrProvince = option.name;
+                                    });
+                                    ref
+                                        .read(filterCountryOrProvinceProvider
+                                            .notifier)
+                                        .selectProvider(
+                                          getStoriesByCountryNameProvider(
+                                              option.name),
+                                        );
 
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: isDarkmode ? Colors.white : Colors.black,
-                            ),
-                            textAlignVertical: TextAlignVertical.center,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        height: 40,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 4, right: 4),
-                          child: ListView(
-                            scrollDirection: Axis.horizontal,
-                            children: [
-                              if (countries.isNotEmpty)
-                                ...countries.map((option) {
-                                  return Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 4.0),
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            currentChapterChange = -1;
-                                            selectedCountryOrProvince =
-                                                option.name;
-                                          });
-                                          ref
-                                              .read(
-                                                  filterCountryOrProvinceProvider
-                                                      .notifier)
-                                              .selectProvider(
-                                                getStoriesByCountryNameProvider(
-                                                    option.name),
-                                              );
-
-                                          if (isCardVisible) {
-                                            toggleCard();
-                                          }
-                                          if (!isSwiperVisible) {
-                                            toggleSwiper();
-                                          }
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              selectedCountryOrProvince ==
-                                                      option.name
-                                                  ? colors.primary
-                                                  : isDarkmode
-                                                      ? Colors.black
-                                                      : Colors.white,
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 2.0, horizontal: 8.0),
-                                          shadowColor: Colors
-                                              .transparent, // Eliminar sombra
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                8.0), // Opcional, para bordes redondeados
-                                          ),
-                                        ),
-                                        child: Text(
-                                          capitalizeAllWords(option.name),
-                                          style: TextStyle(
-                                            color: selectedCountryOrProvince ==
-                                                    option.name
+                                    if (isCardVisible) {
+                                      toggleCard();
+                                    }
+                                    if (!isSwiperVisible) {
+                                      toggleSwiper();
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        selectedCountryOrProvince == option.name
+                                            ? colors.primary
+                                            : isDarkmode
                                                 ? Colors.black
-                                                : isDarkmode
-                                                    ? colors.primary
-                                                    : Colors.black,
-                                          ),
-                                        ),
-                                      ));
-                                }),
-                              if (provinces.isNotEmpty)
-                                ...provinces.map((option) {
-                                  return Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 4.0),
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            currentChapterChange = -1;
-                                            selectedCountryOrProvince =
-                                                option.name;
-                                          });
-                                          ref
-                                              .read(
-                                                  filterCountryOrProvinceProvider
-                                                      .notifier)
-                                              .selectProvider(
-                                                getStoriesByProvinceNameProvider(
-                                                    option.name),
-                                              );
+                                                : Colors.white,
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 2.0, horizontal: 8.0),
+                                    shadowColor:
+                                        Colors.transparent, // Eliminar sombra
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          8.0), // Opcional, para bordes redondeados
+                                    ),
+                                  ),
+                                  child: Text(
+                                    capitalizeAllWords(option.name),
+                                    style: TextStyle(
+                                      color: selectedCountryOrProvince ==
+                                              option.name
+                                          ? Colors.black
+                                          : isDarkmode
+                                              ? colors.primary
+                                              : Colors.black,
+                                    ),
+                                  ),
+                                ));
+                          }),
+                        if (provinces.isNotEmpty)
+                          ...provinces.map((option) {
+                            return Padding(
+                                padding: const EdgeInsets.only(right: 4.0),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      currentChapterChange = -1;
+                                      selectedCountryOrProvince = option.name;
+                                    });
+                                    ref
+                                        .read(filterCountryOrProvinceProvider
+                                            .notifier)
+                                        .selectProvider(
+                                          getStoriesByProvinceNameProvider(
+                                              option.name),
+                                        );
 
-                                          if (isCardVisible) {
-                                            toggleCard();
-                                          }
-                                          if (!isSwiperVisible) {
-                                            toggleSwiper();
-                                          }
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              selectedCountryOrProvince ==
-                                                      option.name
-                                                  ? colors.primary
-                                                  : isDarkmode
-                                                      ? Colors.black
-                                                      : Colors.white,
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 2.0, horizontal: 8.0),
-                                          shadowColor: Colors
-                                              .transparent, // Eliminar sombra
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                8.0), // Opcional, para bordes redondeados
-                                          ),
-                                        ),
-                                        child: Text(
-                                          capitalizeAllWords(option.name),
-                                          style: TextStyle(
-                                            color: selectedCountryOrProvince ==
-                                                    option.name
+                                    if (isCardVisible) {
+                                      toggleCard();
+                                    }
+                                    if (!isSwiperVisible) {
+                                      toggleSwiper();
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        selectedCountryOrProvince == option.name
+                                            ? colors.primary
+                                            : isDarkmode
                                                 ? Colors.black
-                                                : isDarkmode
-                                                    ? colors.primary
-                                                    : Colors.black,
-                                          ),
-                                        ),
-                                      ));
-                                }),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ]),
-                  ))),
+                                                : Colors.white,
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 2.0, horizontal: 8.0),
+                                    shadowColor:
+                                        Colors.transparent, // Eliminar sombra
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          8.0), // Opcional, para bordes redondeados
+                                    ),
+                                  ),
+                                  child: Text(
+                                    capitalizeAllWords(option.name),
+                                    style: TextStyle(
+                                      color: selectedCountryOrProvince ==
+                                              option.name
+                                          ? Colors.black
+                                          : isDarkmode
+                                              ? colors.primary
+                                              : Colors.black,
+                                    ),
+                                  ),
+                                ));
+                          }),
+                      ],
+                    ),
+                  ),
+                ),
+              )),
+
+          Padding(
+            padding: const EdgeInsets.only(top: 60),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16),
+              child: SearchInput(
+                isCardVisible: isCardVisible,
+                isSwiperVisible: isSwiperVisible,
+                toggleCard: toggleCard,
+                toggleSwiper: toggleSwiper,
+                isViewListPredictions: isViewListPredictions,
+                toggleViewListPredictions: toggleViewListPredictions,
+                goAdress: goAdress,
+              ),
+            ),
+          ),
 
           // CARD DE LA STORY INDIVIDUAL
           if (currentStory != null)
